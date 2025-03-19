@@ -1,0 +1,132 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { loginSchema, type User, type LoginCredentials } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
+
+interface AuthContextType {
+  user: User | null;
+  isLoading: boolean;
+  login: (credentials?: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [loginCredentials, setLoginCredentials] = useState<LoginCredentials | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Query for the current user
+  const { 
+    data: user, 
+    isLoading: isUserLoading, 
+    error: userError 
+  } = useQuery({
+    queryKey: ['/api/auth/me'],
+    onError: () => {
+      // Silent error - user is not logged in
+    },
+    retry: false
+  });
+
+  // Login mutation
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: LoginCredentials) => {
+      const response = await apiRequest('POST', '/api/auth/login', credentials);
+      return response.json();
+    },
+    onSuccess: (userData) => {
+      queryClient.setQueryData(['/api/auth/me'], userData);
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      toast({
+        title: "Login Successful",
+        description: `Welcome back, ${userData.fullName}!`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Login Failed",
+        description: error instanceof Error ? error.message : "Invalid credentials",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('POST', '/api/auth/logout', {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(['/api/auth/me'], null);
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Logout Failed",
+        description: error instanceof Error ? error.message : "An error occurred during logout",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Login function
+  const login = async (credentials?: LoginCredentials) => {
+    // If credentials are provided, use them directly
+    if (credentials) {
+      try {
+        // Validate credentials
+        loginSchema.parse(credentials);
+        await loginMutation.mutateAsync(credentials);
+      } catch (error) {
+        toast({
+          title: "Validation Error",
+          description: "Please provide a valid username and password",
+          variant: "destructive",
+        });
+      }
+      return;
+    }
+
+    // For demo purposes - use default credentials
+    // In a real app, this would show a login dialog
+    const defaultCredentials = { username: "admin", password: "admin123" };
+    await loginMutation.mutateAsync(defaultCredentials);
+  };
+
+  // Logout function
+  const logout = async () => {
+    await logoutMutation.mutateAsync();
+  };
+
+  return (
+    <AuthContext.Provider value={{ 
+      user: user || null, 
+      isLoading: isUserLoading || loginMutation.isPending || logoutMutation.isPending,
+      login, 
+      logout 
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
