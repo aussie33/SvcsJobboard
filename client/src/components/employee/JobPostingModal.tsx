@@ -41,6 +41,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
 }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
+  const [locationType, setLocationType] = useState(editJob?.job?.location || 'remote');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -64,6 +65,8 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
         requirements: '',
         type: 'full-time',
         location: 'remote',
+        city: '',
+        state: '',
         salaryRange: '',
         status: 'draft',
         publishOption: 'publish-now'
@@ -84,6 +87,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
         tags: editJob.tags || []
       });
       setTags(editJob.tags || []);
+      setLocationType(editJob.job?.location || 'remote');
     } else {
       form.reset({
         job: {
@@ -96,6 +100,8 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
           requirements: '',
           type: 'full-time',
           location: 'remote',
+          city: '',
+          state: '',
           salaryRange: '',
           status: 'draft',
           publishOption: 'publish-now'
@@ -272,7 +278,10 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
                   <FormItem>
                     <FormLabel>Location</FormLabel>
                     <Select 
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        setLocationType(value);
+                      }}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -291,6 +300,38 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
                 )}
               />
             </div>
+            
+            {locationType === "onsite" && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="job.city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="e.g. San Francisco" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="job.state"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>State/Province</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="e.g. California" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             
             <FormField
               control={form.control}

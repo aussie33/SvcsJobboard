@@ -43,6 +43,8 @@ export const jobs = pgTable('jobs', {
   requirements: text('requirements').notNull(),
   type: jobTypeEnum('type').notNull(),
   location: jobLocationEnum('location').notNull(),
+  city: text('city'),
+  state: text('state'),
   salaryRange: text('salary_range'),
   status: jobStatusEnum('status').notNull().default('draft'),
   postedDate: timestamp('posted_date').defaultNow(),
