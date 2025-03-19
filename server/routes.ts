@@ -515,7 +515,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/applications", upload.single("resume"), async (req, res) => {
     try {
       // Parse application data
-      const applicationData = req.body;
+      const applicationData = { ...req.body };
+      
+      // Convert string values to numbers for proper validation
+      if (applicationData.jobId) {
+        applicationData.jobId = parseInt(applicationData.jobId);
+      }
+      
+      if (applicationData.applicantId) {
+        applicationData.applicantId = parseInt(applicationData.applicantId);
+      }
       
       // Validate the data
       const parsedData = insertApplicationSchema.parse(applicationData);
