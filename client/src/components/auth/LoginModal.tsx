@@ -27,6 +27,7 @@ import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'wouter';
+import { useToast } from '@/hooks/use-toast';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [, navigate] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -63,19 +65,32 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setLoginError('');
     
     try {
-      await login({
+      const user = await login({
         username: data.username,
         password: data.password
       });
       
       onClose();
       
-      // Refresh the page to ensure state is properly updated
-      window.location.href = data.accountType === 'admin' 
-        ? '/admin' 
-        : data.accountType === 'employee' 
-          ? '/employee' 
-          : '/';
+      // Check if the user role matches the selected account type
+      if (user && user.role !== data.accountType) {
+        toast({
+          title: "Account Type Mismatch",
+          description: `You selected ${data.accountType} but logged in as ${user.role}. Redirecting to the correct portal.`,
+          variant: "warning"
+        });
+      }
+      
+      // Force a page refresh to ensure the session is properly recognized
+      setTimeout(() => {
+        if (user && user.role === 'admin') {
+          window.location.href = '/admin';
+        } else if (user && user.role === 'employee') {
+          window.location.href = '/employee';
+        } else {
+          window.location.href = '/';
+        }
+      }, 500);
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Login failed. Please check your credentials.');
     } finally {

@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (credentials?: LoginCredentials) => Promise<void>;
+  login: (credentials?: LoginCredentials) => Promise<User | null>;
   logout: () => Promise<void>;
 }
 
@@ -88,7 +88,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         // Validate credentials
         loginSchema.parse(credentials);
-        await loginMutation.mutateAsync(credentials);
+        const userData = await loginMutation.mutateAsync(credentials);
+        
+        // Force refetch user data to ensure state is updated
+        await queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+        queryClient.setQueryData(['/api/auth/me'], userData);
+        
+        return userData;
       } catch (error) {
         toast({
           title: "Validation Error",
@@ -97,7 +103,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
         throw error;
       }
-      return;
     }
     
     throw new Error("Login credentials are required");
