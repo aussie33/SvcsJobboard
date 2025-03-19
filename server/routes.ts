@@ -159,6 +159,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   app.get("/api/auth/me", requireAuth, (req, res) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
     const { password, ...userWithoutPassword } = req.user;
     res.json(userWithoutPassword);
   });

@@ -70,20 +70,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       
       onClose();
       
-      // Navigate based on account type
-      switch (data.accountType) {
-        case 'admin':
-          navigate('/admin');
-          break;
-        case 'employee':
-          navigate('/employee');
-          break;
-        case 'applicant':
-          navigate('/'); // Redirect to homepage for applicants
-          break;
-        default:
-          navigate('/');
-      }
+      // Refresh the page to ensure state is properly updated
+      window.location.href = data.accountType === 'admin' 
+        ? '/admin' 
+        : data.accountType === 'employee' 
+          ? '/employee' 
+          : '/';
     } catch (error) {
       setLoginError(error instanceof Error ? error.message : 'Login failed. Please check your credentials.');
     } finally {

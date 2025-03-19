@@ -21,7 +21,10 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: false
+    secure: false,
+    path: '/',
+    httpOnly: true,
+    sameSite: 'lax'
   }
 }));
 
