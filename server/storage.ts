@@ -105,15 +105,87 @@ export class MemStorage implements IStorage {
       role: "employee",
       isActive: true
     };
-    this.createUser(employeeUser);
+    const employeeId = this.createUser(employeeUser).then(user => user.id);
     
     // Add some default categories
     const categories = ["Engineering", "Marketing", "Design", "Product", "Sales"];
-    categories.forEach(name => {
-      this.createCategory({
+    const categoryPromises = categories.map(name => {
+      return this.createCategory({
         name,
         description: `${name} department jobs`,
         status: "active"
+      });
+    });
+    
+    // After categories are created, add sample jobs
+    Promise.all([employeeId, ...categoryPromises]).then(([empId, ...cats]) => {
+      // Add sample jobs
+      const sampleJobs = [
+        {
+          title: "Senior Frontend Developer",
+          department: "Engineering",
+          categoryId: cats[0].id,
+          employeeId: empId,
+          shortDescription: "Join our team as a Senior Frontend Developer to build cutting-edge web applications.",
+          fullDescription: "We're looking for an experienced frontend developer with expertise in React, TypeScript, and modern web development practices. You'll work on our core product and help shape the future of our platform.",
+          requirements: "5+ years of experience with modern JavaScript frameworks, Strong TypeScript skills, Experience with CSS-in-JS solutions",
+          type: "full-time",
+          location: "remote",
+          salaryRange: "$120,000 - $150,000",
+          status: "active",
+          postedDate: new Date(),
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        },
+        {
+          title: "Product Designer",
+          department: "Design",
+          categoryId: cats[2].id,
+          employeeId: empId,
+          shortDescription: "Create beautiful, functional designs for our growing product suite.",
+          fullDescription: "As a Product Designer, you'll work closely with our product and engineering teams to create intuitive and visually appealing user interfaces. You'll be involved in the entire product development lifecycle, from concept to implementation.",
+          requirements: "3+ years of experience in product design, Proficiency in Figma, Experience in UX research and user testing",
+          type: "full-time",
+          location: "hybrid",
+          salaryRange: "$90,000 - $120,000",
+          status: "active",
+          postedDate: new Date(),
+          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
+        {
+          title: "Marketing Intern",
+          department: "Marketing",
+          categoryId: cats[1].id,
+          employeeId: empId,
+          shortDescription: "Join our marketing team for a summer internship opportunity.",
+          fullDescription: "We're looking for enthusiastic marketing interns to join our team for a 3-month period. You'll gain hands-on experience in digital marketing, content creation, and campaign management.",
+          requirements: "Currently pursuing a degree in Marketing or a related field, Strong written and verbal communication skills, Familiarity with social media platforms",
+          type: "internship",
+          location: "onsite",
+          salaryRange: "$20-25/hour",
+          status: "active",
+          postedDate: new Date(),
+          expiryDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        }
+      ];
+      
+      // Create jobs and add tags
+      sampleJobs.forEach(async (jobData) => {
+        const job = await this.createJob(jobData);
+        
+        // Add tags based on job type
+        if (job.title.includes("Developer")) {
+          await this.addJobTag({ jobId: job.id, tag: "React" });
+          await this.addJobTag({ jobId: job.id, tag: "TypeScript" });
+          await this.addJobTag({ jobId: job.id, tag: "Frontend" });
+        } else if (job.title.includes("Designer")) {
+          await this.addJobTag({ jobId: job.id, tag: "UI/UX" });
+          await this.addJobTag({ jobId: job.id, tag: "Figma" });
+          await this.addJobTag({ jobId: job.id, tag: "Design" });
+        } else if (job.title.includes("Marketing")) {
+          await this.addJobTag({ jobId: job.id, tag: "Social Media" });
+          await this.addJobTag({ jobId: job.id, tag: "Content" });
+          await this.addJobTag({ jobId: job.id, tag: "Digital Marketing" });
+        }
       });
     });
   }
