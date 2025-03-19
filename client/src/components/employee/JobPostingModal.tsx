@@ -57,7 +57,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
       job: {
         title: '',
         department: '',
-        categoryId: 0,
+        categoryId: '',
         employeeId: 0, // Will be set by the server
         shortDescription: '',
         fullDescription: '',
@@ -89,7 +89,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
         job: {
           title: '',
           department: '',
-          categoryId: 0,
+          categoryId: '',
           employeeId: 0,
           shortDescription: '',
           fullDescription: '',
@@ -224,7 +224,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="0">-- Select Category --</SelectItem>
+                        <SelectItem value="">-- Select Category --</SelectItem>
                         {categories?.map((category: any) => (
                           <SelectItem key={category.id} value={category.id.toString()}>
                             {category.name}

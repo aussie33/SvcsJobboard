@@ -310,7 +310,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     if (employeeId) filters.employeeId = parseInt(employeeId.toString());
     if (status) filters.status = status.toString();
-    if (categoryId) filters.categoryId = parseInt(categoryId.toString());
+    if (categoryId && categoryId !== '' && categoryId !== 'all') filters.categoryId = parseInt(categoryId.toString());
     if (search) filters.search = search.toString();
     if (department) filters.department = department.toString();
     if (location) filters.location = location.toString();
