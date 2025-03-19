@@ -1,13 +1,12 @@
 import { User } from "@shared/schema";
+import { Session, SessionData } from "express-session";
 
 declare global {
   namespace Express {
     interface Request {
       user: User | null;
-      session: {
+      session: Session & Partial<SessionData> & {
         userId?: number;
-        destroy: (callback?: () => void) => boolean;
-        [key: string]: any;
       };
     }
   }
