@@ -107,6 +107,18 @@ export class MemStorage implements IStorage {
     };
     const employeeId = this.createUser(employeeUser).then(user => user.id);
     
+    // Add applicant user
+    const applicantUser: InsertUser = {
+      username: "applicant",
+      password: "applicant123",
+      email: "applicant@example.com",
+      fullName: "Job Applicant",
+      department: null,
+      role: "applicant",
+      isActive: true
+    };
+    this.createUser(applicantUser);
+    
     // Add some default categories
     const categories = ["Engineering", "Marketing", "Design", "Product", "Sales"];
     const categoryPromises = categories.map(name => {

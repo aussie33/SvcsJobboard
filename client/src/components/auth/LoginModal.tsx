@@ -77,7 +77,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         toast({
           title: "Account Type Mismatch",
           description: `You selected ${data.accountType} but logged in as ${user.role}. Redirecting to the correct portal.`,
-          variant: "warning"
+          variant: "destructive"
         });
       }
       
@@ -181,7 +181,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <ul className="list-disc pl-5 mt-1">
                 <li>Admin: username: <strong>admin</strong>, password: <strong>admin123</strong></li>
                 <li>Employee: username: <strong>employee</strong>, password: <strong>employee123</strong></li>
-                <li>Applicant: Not available in demo</li>
+                <li>Applicant: username: <strong>applicant</strong>, password: <strong>applicant123</strong></li>
               </ul>
             </div>
             
