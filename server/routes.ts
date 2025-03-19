@@ -461,8 +461,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       status?: string;
     } = {};
     
-    if (jobId) filters.jobId = parseInt(jobId.toString());
-    if (status) filters.status = status.toString();
+    if (jobId && jobId !== 'all') filters.jobId = parseInt(jobId.toString());
+    if (status && status !== 'all') filters.status = status.toString();
     
     // If employee, only show applications for their jobs
     if (req.user.role === "employee") {
