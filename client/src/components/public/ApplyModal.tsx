@@ -152,7 +152,12 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
                   <FormItem>
                     <FormLabel>Phone (optional)</FormLabel>
                     <FormControl>
-                      <Input type="tel" placeholder="Your phone number" {...field} />
+                      <Input 
+                        type="tel" 
+                        placeholder="Your phone number" 
+                        {...field} 
+                        value={field.value || ''}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -171,6 +176,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
                       placeholder="Tell us why you're interested in this position and what makes you a good fit"
                       className="min-h-[120px]"
                       {...field}
+                      value={field.value || ''}
                     />
                   </FormControl>
                   <FormMessage />

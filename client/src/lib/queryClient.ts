@@ -11,11 +11,22 @@ export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
+  customHeaders?: Record<string, string>,
 ): Promise<Response> {
+  // Use custom headers or default to JSON content type
+  let headers: Record<string, string> = {};
+  
+  if (customHeaders) {
+    headers = {...customHeaders};
+  } else if (data && !(data instanceof FormData)) {
+    headers = { "Content-Type": "application/json" };
+  }
+  
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers,
+    // Only stringify if not FormData
+    body: data instanceof FormData ? data : data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
 
