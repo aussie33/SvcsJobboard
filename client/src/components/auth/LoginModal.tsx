@@ -1,0 +1,205 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogFooter 
+} from '@/components/ui/dialog';
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from '@/components/ui/form';
+import { 
+  RadioGroup,
+  RadioGroupItem
+} from '@/components/ui/radio-group';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useLocation } from 'wouter';
+
+interface LoginModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const formSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
+  accountType: z.enum(['admin', 'employee', 'applicant'], {
+    required_error: 'You need to select an account type',
+  })
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+  const { login } = useAuth();
+  const [, navigate] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+      accountType: 'employee'
+    }
+  });
+
+  const onSubmit = async (data: FormData) => {
+    setIsLoading(true);
+    setLoginError('');
+    
+    try {
+      await login({
+        username: data.username,
+        password: data.password
+      });
+      
+      onClose();
+      
+      // Navigate based on account type
+      switch (data.accountType) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'employee':
+          navigate('/employee');
+          break;
+        case 'applicant':
+          navigate('/'); // Redirect to homepage for applicants
+          break;
+        default:
+          navigate('/');
+      }
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : 'Login failed. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-xl">Login to Your Account</DialogTitle>
+        </DialogHeader>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="accountType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Account Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="admin" id="account-admin" />
+                        <Label htmlFor="account-admin">Administrator</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="employee" id="account-employee" />
+                        <Label htmlFor="account-employee">Employee</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="applicant" id="account-applicant" />
+                        <Label htmlFor="account-applicant">Job Applicant</Label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter your username" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input 
+                      {...field} 
+                      type="password" 
+                      placeholder="Enter your password" 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {loginError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm">
+                {loginError}
+              </div>
+            )}
+
+            <div className="text-sm text-gray-500">
+              <p>Demo accounts available:</p>
+              <ul className="list-disc pl-5 mt-1">
+                <li>Admin: username: <strong>admin</strong>, password: <strong>admin123</strong></li>
+                <li>Employee: username: <strong>employee</strong>, password: <strong>employee123</strong></li>
+                <li>Applicant: Not available in demo</li>
+              </ul>
+            </div>
+            
+            <DialogFooter>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Login
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default LoginModal;

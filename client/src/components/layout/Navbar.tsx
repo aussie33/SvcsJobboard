@@ -3,11 +3,13 @@ import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Menu, X } from 'lucide-react';
+import LoginModal from '@/components/auth/LoginModal';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
-  const { user, login, logout, isLoading } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const { user, logout, isLoading } = useAuth();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
@@ -57,7 +59,7 @@ const Navbar = () => {
                 Log out
               </Button>
             ) : (
-              <Button onClick={() => login()} className="md:mr-4">
+              <Button onClick={() => setShowLoginModal(true)} className="md:mr-4">
                 Log in
               </Button>
             )}
@@ -111,6 +113,12 @@ const Navbar = () => {
           </div>
         </div>
       )}
+      
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </header>
   );
 };
