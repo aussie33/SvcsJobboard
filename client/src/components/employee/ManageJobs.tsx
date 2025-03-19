@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { 
   Table, 
   TableBody, 
@@ -17,7 +18,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDistanceToNow } from '@/lib/formatters';
-import { Pencil, Pause, Play, Trash } from 'lucide-react';
+import { Pencil, Pause, Play, Trash, Search } from 'lucide-react';
 
 interface ManageJobsProps {
   user: User;
@@ -26,6 +27,7 @@ interface ManageJobsProps {
 const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<JobWithTags | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -113,6 +115,17 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     refetch();
   };
 
+  // Filter jobs based on search query
+  const filteredJobs = jobs ? jobs.filter((job: JobWithTags) => {
+    if (!searchQuery) return true;
+    
+    const query = searchQuery.toLowerCase();
+    
+    // Search by job title or department
+    return job.title.toLowerCase().includes(query) || 
+           job.department.toLowerCase().includes(query);
+  }) : [];
+
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -133,11 +146,24 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     <>
       <Card>
         <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Your Job Postings</h2>
-            <Button onClick={() => setIsModalOpen(true)}>
-              Create New Job
-            </Button>
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Your Job Postings</h2>
+              <Button onClick={() => setIsModalOpen(true)}>
+                Create New Job
+              </Button>
+            </div>
+            
+            {/* Search input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input 
+                placeholder="Search by job title or department..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
           </div>
           
           {isLoading ? (
@@ -160,8 +186,8 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {jobs && jobs.length > 0 ? (
-                    jobs.map((job: JobWithTags) => (
+                  {filteredJobs.length > 0 ? (
+                    filteredJobs.map((job: JobWithTags) => (
                       <TableRow key={job.id}>
                         <TableCell className="font-medium">{job.title}</TableCell>
                         <TableCell>{job.department}</TableCell>
@@ -211,14 +237,20 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={6} className="text-center py-6">
-                        <p className="text-gray-500">No job postings found</p>
-                        <Button 
-                          variant="link" 
-                          onClick={() => setIsModalOpen(true)}
-                          className="mt-2"
-                        >
-                          Create your first job posting
-                        </Button>
+                        {searchQuery ? (
+                          <p className="text-gray-500">No job postings match your search</p>
+                        ) : (
+                          <>
+                            <p className="text-gray-500">No job postings found</p>
+                            <Button 
+                              variant="link" 
+                              onClick={() => setIsModalOpen(true)}
+                              className="mt-2"
+                            >
+                              Create your first job posting
+                            </Button>
+                          </>
+                        )}
                       </TableCell>
                     </TableRow>
                   )}
