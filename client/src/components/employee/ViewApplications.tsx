@@ -42,8 +42,8 @@ interface ViewApplicationsProps {
 }
 
 const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
-  const [selectedJob, setSelectedJob] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedJob, setSelectedJob] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const { toast } = useToast();
 
@@ -137,7 +137,7 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                   <SelectValue placeholder="All Job Postings" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Job Postings</SelectItem>
+                  <SelectItem value="all">All Job Postings</SelectItem>
                   {!isJobsLoading && jobs && jobs.map((job: any) => (
                     <SelectItem key={job.id} value={job.id.toString()}>
                       {job.title}
@@ -154,7 +154,7 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="new">New</SelectItem>
                   <SelectItem value="reviewing">Reviewing</SelectItem>
                   <SelectItem value="interviewed">Interviewed</SelectItem>
