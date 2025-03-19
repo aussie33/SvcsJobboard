@@ -64,18 +64,22 @@ const handleZodError = (err: unknown, res: Response) => {
 
 // Simple auth middleware
 const requireAuth = async (req: Request, res: Response, next: Function) => {
-  if (!req.session.userId) {
+  if (!req.session || !req.session.userId) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   
   const user = await storage.getUser(req.session.userId);
   if (!user) {
-    req.session.destroy(() => {});
+    req.session.destroy((err) => {
+      if (err) console.error('Session destroy error:', err);
+    });
     return res.status(401).json({ message: "User not found" });
   }
   
   if (!user.isActive) {
-    req.session.destroy(() => {});
+    req.session.destroy((err) => {
+      if (err) console.error('Session destroy error:', err);
+    });
     return res.status(403).json({ message: "Account is disabled" });
   }
   
@@ -105,19 +109,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   });
   
-  // Set up session
+  // Set up session middleware
   app.use((req, res, next) => {
-    if (!req.session) {
-      req.session = {};
-    }
-    // Add a custom destroy method if it doesn't exist
-    if (!req.session.destroy) {
-      req.session.destroy = (callback?: () => void) => {
-        req.session = {};
-        if (callback) callback();
-        return true;
-      };
-    }
+    // Session is already initialized by express-session middleware
+    // We just need to make sure userId is properly typed
     next();
   });
   
@@ -150,9 +145,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   app.post("/api/auth/logout", (req, res) => {
-    req.session.destroy(() => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error('Session destroy error:', err);
+          return res.status(500).json({ message: "Error logging out" });
+        }
+        res.json({ message: "Logged out successfully" });
+      });
+    } else {
       res.json({ message: "Logged out successfully" });
-    });
+    }
   });
   
   app.get("/api/auth/me", requireAuth, (req, res) => {
