@@ -28,16 +28,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     data: user, 
     isLoading: isUserLoading, 
     error: userError 
-  } = useQuery({
+  } = useQuery<User>({
     queryKey: ['/api/auth/me'],
-    onError: () => {
-      // Silent error - user is not logged in
-    },
-    retry: false
+    retry: false,
+    gcTime: 0
   });
 
   // Login mutation
-  const loginMutation = useMutation({
+  const loginMutation = useMutation<User, Error, LoginCredentials>({
     mutationFn: async (credentials: LoginCredentials) => {
       const response = await apiRequest('POST', '/api/auth/login', credentials);
       return response.json();
@@ -96,14 +94,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           description: "Please provide a valid username and password",
           variant: "destructive",
         });
+        throw error;
       }
       return;
     }
-
-    // For demo purposes - use default credentials
-    // In a real app, this would show a login dialog
-    const defaultCredentials = { username: "admin", password: "admin123" };
-    await loginMutation.mutateAsync(defaultCredentials);
+    
+    throw new Error("Login credentials are required");
   };
 
   // Logout function
