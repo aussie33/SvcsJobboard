@@ -178,7 +178,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
     <Dialog open={isOpen} onOpenChange={(open) => {
       if (!open && !mutation.isPending) onClose();
     }}>
-      <DialogContent className="sm:max-w-[800px]">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{editJob ? 'Edit Job Posting' : 'Create New Job Posting'}</DialogTitle>
         </DialogHeader>
