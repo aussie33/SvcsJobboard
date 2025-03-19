@@ -36,13 +36,15 @@ const EmployeePortal = () => {
           </Tabs>
         </Card>
         
-        <TabsContent value="manage-jobs" className="m-0" hidden={activeTab !== 'manage-jobs'}>
-          <ManageJobs user={user} />
-        </TabsContent>
-        
-        <TabsContent value="applications" className="m-0" hidden={activeTab !== 'applications'}>
-          <ViewApplications user={user} />
-        </TabsContent>
+        <Tabs value={activeTab} className="w-full">
+          <TabsContent value="manage-jobs">
+            <ManageJobs user={user} />
+          </TabsContent>
+          
+          <TabsContent value="applications">
+            <ViewApplications user={user} />
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );

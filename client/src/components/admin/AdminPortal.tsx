@@ -35,13 +35,15 @@ const AdminPortal = () => {
           </Tabs>
         </Card>
         
-        <TabsContent value="user-accounts" className="m-0" hidden={activeTab !== 'user-accounts'}>
-          <UserManagement />
-        </TabsContent>
-        
-        <TabsContent value="categories" className="m-0" hidden={activeTab !== 'categories'}>
-          <CategoryManagement />
-        </TabsContent>
+        <Tabs value={activeTab} className="w-full">
+          <TabsContent value="user-accounts">
+            <UserManagement />
+          </TabsContent>
+          
+          <TabsContent value="categories">
+            <CategoryManagement />
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );
