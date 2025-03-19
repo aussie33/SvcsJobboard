@@ -110,6 +110,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.session) {
       req.session = {};
     }
+    // Add a custom destroy method if it doesn't exist
+    if (!req.session.destroy) {
+      req.session.destroy = (callback?: () => void) => {
+        req.session = {};
+        if (callback) callback();
+        return true;
+      };
+    }
     next();
   });
   
