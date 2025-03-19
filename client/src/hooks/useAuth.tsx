@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, getQueryFn } from '@/lib/queryClient';
 import { loginSchema, type User, type LoginCredentials } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
@@ -31,7 +31,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   } = useQuery<User>({
     queryKey: ['/api/auth/me'],
     retry: false,
-    gcTime: 0
+    gcTime: 0,
+    queryFn: getQueryFn({ on401: "returnNull" }) // Return null on 401 instead of throwing
   });
 
   // Login mutation
