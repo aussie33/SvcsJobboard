@@ -31,11 +31,12 @@ import {
 } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import { User, Application } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { FileText, Download, ExternalLink } from 'lucide-react';
+import { FileText, Download, ExternalLink, Search } from 'lucide-react';
 
 interface ViewApplicationsProps {
   user: User;
@@ -44,6 +45,7 @@ interface ViewApplicationsProps {
 const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
   const [selectedJob, setSelectedJob] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const { toast } = useToast();
 
@@ -121,47 +123,73 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
     const job = jobs?.find(j => j.id === jobId);
     return job ? job.title : 'Unknown Job';
   };
+  
+  // Filter applications based on search query
+  const filteredApplications = applications ? applications.filter((app: Application) => {
+    if (!searchQuery) return true;
+    
+    const query = searchQuery.toLowerCase();
+    const jobTitle = getJobTitle(app.jobId).toLowerCase();
+    
+    // Search by applicant name or job title
+    return app.name.toLowerCase().includes(query) || 
+           jobTitle.includes(query) ||
+           app.email.toLowerCase().includes(query);
+  }) : [];
 
   return (
     <>
       <Card>
         <CardContent className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Applications Received</h2>
-            <div className="flex space-x-2">
-              <Select 
-                value={selectedJob} 
-                onValueChange={setSelectedJob}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="All Job Postings" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Job Postings</SelectItem>
-                  {!isJobsLoading && jobs && jobs.map((job: any) => (
-                    <SelectItem key={job.id} value={job.id.toString()}>
-                      {job.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <Select 
-                value={selectedStatus} 
-                onValueChange={setSelectedStatus}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="All Statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="new">New</SelectItem>
-                  <SelectItem value="reviewing">Reviewing</SelectItem>
-                  <SelectItem value="interviewed">Interviewed</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                  <SelectItem value="hired">Hired</SelectItem>
-                </SelectContent>
-              </Select>
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Applications Received</h2>
+              <div className="flex space-x-2">
+                <Select 
+                  value={selectedJob} 
+                  onValueChange={setSelectedJob}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="All Job Postings" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Job Postings</SelectItem>
+                    {!isJobsLoading && jobs && jobs.map((job: any) => (
+                      <SelectItem key={job.id} value={job.id.toString()}>
+                        {job.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                
+                <Select 
+                  value={selectedStatus} 
+                  onValueChange={setSelectedStatus}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="reviewing">Reviewing</SelectItem>
+                    <SelectItem value="interviewed">Interviewed</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="hired">Hired</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            {/* Search input */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Input 
+                placeholder="Search by applicant name, email or position..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
             </div>
           </div>
           
@@ -184,8 +212,8 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {applications && applications.length > 0 ? (
-                    applications.map((application: Application) => (
+                  {filteredApplications.length > 0 ? (
+                    filteredApplications.map((application: Application) => (
                       <TableRow key={application.id}>
                         <TableCell>
                           <div className="flex items-center">
@@ -216,7 +244,9 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-6">
-                        <p className="text-gray-500">No applications found</p>
+                        <p className="text-gray-500">
+                          {searchQuery ? 'No applications match your search' : 'No applications found'}
+                        </p>
                       </TableCell>
                     </TableRow>
                   )}
