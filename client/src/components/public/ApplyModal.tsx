@@ -41,7 +41,8 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
     resolver: zodResolver(applicationWithResumeSchema),
     defaultValues: {
       jobId: job.id,
-      applicantName: '',
+      applicantId: 0, // Will be set on the server for anonymous applications
+      name: '',
       email: '',
       phone: '',
       coverLetter: '',
@@ -52,9 +53,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
   
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const response = await apiRequest('POST', '/api/applications', data, {
-        'Content-Type': 'multipart/form-data'
-      });
+      const response = await apiRequest('POST', '/api/applications', data);
       return response.json();
     },
     onSuccess: () => {
@@ -87,7 +86,8 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
 
     const formData = new FormData();
     formData.append('jobId', job.id.toString());
-    formData.append('applicantName', data.applicantName);
+    formData.append('applicantId', '0'); // Will be assigned on server
+    formData.append('name', data.name);
     formData.append('email', data.email);
     formData.append('phone', data.phone || '');
     formData.append('coverLetter', data.coverLetter || '');
@@ -110,7 +110,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
         <DialogHeader>
           <DialogTitle className="text-xl">Apply for {job.title}</DialogTitle>
           <DialogDescription>
-            Complete the form below to apply for this position at {job.company}.
+            Complete the form below to apply for this position in the {job.department} department.
           </DialogDescription>
         </DialogHeader>
         
@@ -118,7 +118,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="applicantName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Full Name</FormLabel>

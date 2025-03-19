@@ -187,7 +187,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                   </div>
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-2" />
-                    <span>Posted {formatDate(new Date(job.postedDate))}</span>
+                    <span>Posted {job.postedDate ? formatDate(new Date(job.postedDate)) : 'Recently'}</span>
                   </div>
                 </div>
               </CardContent>
