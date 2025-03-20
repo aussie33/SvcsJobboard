@@ -20,6 +20,8 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('all');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedState, setSelectedState] = useState('');
   const [filteredJobs, setFilteredJobs] = useState<(Job & { tags: string[] })[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
   
@@ -61,7 +63,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
     }
   }, [applications]);
 
-  // Filter jobs based on search term, categories, and location
+  // Filter jobs based on search term, categories, location, city, and state
   useEffect(() => {
     let result = [...jobs];
     
@@ -86,8 +88,22 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
       result = result.filter(job => job.location === selectedLocation);
     }
     
+    // Filter by city
+    if (selectedCity) {
+      result = result.filter(job => 
+        job.city && job.city.toLowerCase().includes(selectedCity.toLowerCase())
+      );
+    }
+    
+    // Filter by state
+    if (selectedState) {
+      result = result.filter(job => 
+        job.state && job.state.toLowerCase().includes(selectedState.toLowerCase())
+      );
+    }
+    
     setFilteredJobs(result);
-  }, [jobs, searchTerm, selectedCategories, selectedLocation]);
+  }, [jobs, searchTerm, selectedCategories, selectedLocation, selectedCity, selectedState]);
 
   // Handlers for filters
   const handleSearch = (term: string) => {
@@ -106,6 +122,14 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   
   const handleLocationChange = (location: string) => {
     setSelectedLocation(location);
+  };
+  
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+  };
+  
+  const handleStateChange = (state: string) => {
+    setSelectedState(state);
   };
   
   // Handle job detail modal
@@ -134,8 +158,12 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
         onSearch={handleSearch}
         onCategoryChange={handleCategoryChange}
         onLocationChange={handleLocationChange}
+        onCityChange={handleCityChange}
+        onStateChange={handleStateChange}
         selectedCategories={selectedCategories}
         selectedLocation={selectedLocation}
+        selectedCity={selectedCity}
+        selectedState={selectedState}
       />
       
       {/* Job Listings */}

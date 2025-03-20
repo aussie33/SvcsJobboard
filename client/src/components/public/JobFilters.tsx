@@ -32,10 +32,16 @@ const JobFilters: React.FC<JobFiltersProps> = ({
   onSearch, 
   onCategoryChange, 
   onLocationChange,
+  onCityChange,
+  onStateChange,
   selectedCategories,
-  selectedLocation
+  selectedLocation,
+  selectedCity,
+  selectedState
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [cityInput, setCityInput] = useState(selectedCity || '');
+  const [stateInput, setStateInput] = useState(selectedState || '');
   const locationOptions = ['all', 'remote', 'onsite', 'hybrid'];
 
   // Handle search input
@@ -49,11 +55,35 @@ const JobFilters: React.FC<JobFiltersProps> = ({
     onSearch(searchTerm);
   };
 
+  // Handle city input
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCityInput(e.target.value);
+  };
+
+  // Handle state input
+  const handleStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStateInput(e.target.value);
+  };
+
+  // Apply city filter
+  const handleApplyCityFilter = () => {
+    onCityChange(cityInput);
+  };
+
+  // Apply state filter
+  const handleApplyStateFilter = () => {
+    onStateChange(stateInput);
+  };
+
   // Clear all filters
   const handleClearFilters = () => {
     setSearchTerm('');
+    setCityInput('');
+    setStateInput('');
     onSearch('');
     onLocationChange('all');
+    onCityChange('');
+    onStateChange('');
     
     // Uncheck all categories
     selectedCategories.forEach(categoryId => {
@@ -62,7 +92,8 @@ const JobFilters: React.FC<JobFiltersProps> = ({
   };
 
   // Check if any filters are active
-  const hasActiveFilters = searchTerm || selectedCategories.length > 0 || selectedLocation !== 'all';
+  const hasActiveFilters = searchTerm || selectedCategories.length > 0 || 
+                          selectedLocation !== 'all' || selectedCity || selectedState;
 
   return (
     <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8 space-y-6">
@@ -131,6 +162,49 @@ const JobFilters: React.FC<JobFiltersProps> = ({
               ))}
             </SelectContent>
           </Select>
+        </div>
+      </div>
+      
+      {/* City and State filters */}
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* City filter */}
+        <div className="flex-1">
+          <h3 className="font-medium mb-2">City</h3>
+          <div className="flex space-x-2">
+            <Input
+              type="text"
+              placeholder="Filter by city"
+              value={cityInput}
+              onChange={handleCityChange}
+            />
+            <Button 
+              onClick={handleApplyCityFilter} 
+              variant="outline" 
+              className="shrink-0"
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+        
+        {/* State filter */}
+        <div className="flex-1">
+          <h3 className="font-medium mb-2">State/Province</h3>
+          <div className="flex space-x-2">
+            <Input
+              type="text"
+              placeholder="Filter by state"
+              value={stateInput}
+              onChange={handleStateChange}
+            />
+            <Button 
+              onClick={handleApplyStateFilter} 
+              variant="outline" 
+              className="shrink-0"
+            >
+              Apply
+            </Button>
+          </div>
         </div>
       </div>
 
