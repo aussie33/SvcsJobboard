@@ -120,7 +120,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/login", async (req, res) => {
     try {
       const credentials = loginSchema.parse(req.body);
-      const user = await storage.getUserByUsername(credentials.username);
+      
+      // Check if the provided username is an email address
+      const isEmail = credentials.username.includes('@');
+      
+      // Try to find user by username or email
+      let user = isEmail 
+        ? await storage.getUserByEmail(credentials.username) 
+        : await storage.getUserByUsername(credentials.username);
+      
+      // If we didn't find a user and the username doesn't look like an email,
+      // let's try finding by email anyway (for backward compatibility)
+      if (!user && !isEmail) {
+        user = await storage.getUserByEmail(credentials.username);
+      }
       
       if (!user || user.password !== credentials.password) {
         return res.status(401).json({ message: "Invalid credentials" });

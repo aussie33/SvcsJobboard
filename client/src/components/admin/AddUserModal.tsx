@@ -402,7 +402,6 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                       <Switch
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        disabled={editUser?.isSuperAdmin && currentUser?.id !== editUser?.id}
                       />
                     </FormControl>
                     <FormMessage />

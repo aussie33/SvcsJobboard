@@ -111,7 +111,7 @@ export type InsertApplication = z.infer<typeof insertApplicationSchema>;
 
 // Extended schemas for the client
 export const loginSchema = z.object({
-  username: z.string().min(3),
+  username: z.string().min(3).describe("Username or email address"),
   password: z.string().min(6),
 });
 
