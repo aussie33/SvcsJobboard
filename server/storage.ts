@@ -293,23 +293,21 @@ export class MemStorage implements IStorage {
     const user = this.users.get(id);
     if (!user) return undefined;
     
-    // Super admin protection - Cannot change role or active status of the super admin
-    if (user.isSuperAdmin && (updates.role !== undefined || updates.isActive !== undefined)) {
-      // Only allow the super admin to update their own non-admin properties
-      if (currentUserId !== id) {
-        // Someone else trying to change super admin's role or status
-        throw new Error("Cannot modify super admin role or status");
+    // Get current user for permission checks
+    const currentUser = currentUserId ? this.users.get(currentUserId) : null;
+    
+    // If the current user is not a super admin and target user is a super admin
+    if (user.isSuperAdmin && (!currentUser || !currentUser.isSuperAdmin)) {
+      if (updates.role !== undefined || updates.isActive !== undefined || updates.isSuperAdmin !== undefined) {
+        // Non-super admin trying to change super admin properties
+        throw new Error("Only super admins can modify super admin properties");
       }
-      
-      // Delete attempts to change role or active status even by themselves
-      delete updates.role;
-      delete updates.isActive;
-      delete updates.isSuperAdmin;
     }
     
-    // Self-protection - Admins cannot downgrade their own admin status
-    if (currentUserId === id && user.role === 'admin' && updates.role !== undefined && updates.role !== 'admin') {
-      throw new Error("Admins cannot change their own admin status");
+    // Self-protection - Regular admins cannot downgrade their own admin status
+    if (currentUserId === id && user.role === 'admin' && !user.isSuperAdmin && 
+        updates.role !== undefined && updates.role !== 'admin') {
+      throw new Error("Regular admins cannot change their own admin status");
     }
     
     // Update fullName if name components are changed
