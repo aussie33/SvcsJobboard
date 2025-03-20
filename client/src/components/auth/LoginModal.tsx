@@ -108,10 +108,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-gradient-to-b from-white to-gray-50 border-2 border-gray-300">
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/assets/base_icon_transparent_background.png" 
+              alt="The Resource Consultants Logo" 
+              className="h-20 w-auto"
+            />
+          </div>
           <DialogHeader>
-            <DialogTitle className="text-xl">Login to Your Account</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-xl text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold">Login to Your Account</DialogTitle>
+            <DialogDescription className="text-center">
               Enter your credentials to access your account. You can log in with either your username or email address.
             </DialogDescription>
           </DialogHeader>
@@ -123,24 +130,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 name="accountType"
                 render={({ field }) => (
                   <FormItem className="space-y-3">
-                    <FormLabel>Account Type</FormLabel>
+                    <FormLabel className="text-purple-800 font-medium">Account Type</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        className="flex flex-col space-y-1"
+                        className="grid grid-cols-1 gap-2 sm:grid-cols-3"
                       >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="admin" id="account-admin" />
-                          <Label htmlFor="account-admin">Administrator</Label>
+                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'admin' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
+                          <RadioGroupItem value="admin" id="account-admin" className="sr-only" />
+                          <Label htmlFor="account-admin" className="cursor-pointer font-medium">Administrator</Label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="employee" id="account-employee" />
-                          <Label htmlFor="account-employee">Employee</Label>
+                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'employee' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
+                          <RadioGroupItem value="employee" id="account-employee" className="sr-only" />
+                          <Label htmlFor="account-employee" className="cursor-pointer font-medium">Employee</Label>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="applicant" id="account-applicant" />
-                          <Label htmlFor="account-applicant">Job Applicant</Label>
+                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'applicant' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
+                          <RadioGroupItem value="applicant" id="account-applicant" className="sr-only" />
+                          <Label htmlFor="account-applicant" className="cursor-pointer font-medium">Job Applicant</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -154,9 +161,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username or Email</FormLabel>
+                    <FormLabel className="text-purple-800 font-medium">Username or Email</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Enter your username or email" />
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
+                        <Input 
+                          {...field} 
+                          placeholder="Enter your username or email" 
+                          className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -168,13 +182,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel className="text-purple-800 font-medium">Password</FormLabel>
                     <FormControl>
-                      <Input 
-                        {...field} 
-                        type="password" 
-                        placeholder="Enter your password" 
-                      />
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
+                        <Input 
+                          {...field} 
+                          type="password" 
+                          placeholder="Enter your password" 
+                          className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300"
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -182,50 +200,67 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               />
               
               {/* Account management links */}
-              <div className="text-sm flex flex-col space-y-2">
-                <button 
-                  type="button" 
-                  className="text-primary hover:underline text-left"
-                  onClick={() => setShowSignupModal(true)}
-                >
-                  Create an account
-                </button>
-                <button 
-                  type="button" 
-                  className="text-primary hover:underline text-left"
-                  onClick={() => setShowResetModal(true)}
-                >
-                  Forgot password?
-                </button>
+              <div className="flex justify-between items-center bg-purple-50 rounded-lg p-4 border-2 border-purple-100">
+                <div className="text-sm space-y-1">
+                  <button 
+                    type="button" 
+                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-left flex items-center gap-1"
+                    onClick={() => setShowSignupModal(true)}
+                  >
+                    <span className="text-xs">➕</span> Create an account
+                  </button>
+                  <button 
+                    type="button" 
+                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-left flex items-center gap-1"
+                    onClick={() => setShowResetModal(true)}
+                  >
+                    <span className="text-xs">🔑</span> Forgot password?
+                  </button>
+                </div>
+                <div className="text-gray-600 text-sm">
+                  <div className="text-center mb-1 font-medium">The Resource Consultants</div>
+                  <div className="text-xs text-center text-gray-500">Connecting talent with opportunity</div>
+                </div>
               </div>
               
               {loginError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm">
+                <div className="bg-red-50 border-2 border-red-200 text-red-700 p-3 rounded-md text-sm">
                   {loginError}
                 </div>
               )}
 
-              <div className="text-sm text-gray-500">
-                <p>Demo accounts available:</p>
-                <ul className="list-disc pl-5 mt-1">
-                  <li>Admin: username: <strong>admin</strong>, password: <strong>admin123</strong></li>
-                  <li>Employee: username: <strong>employee</strong>, password: <strong>employee123</strong></li>
-                  <li>Applicant: username: <strong>applicant</strong>, password: <strong>applicant123</strong></li>
+              <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+                <p className="font-medium mb-2">Demo accounts available:</p>
+                <ul className="space-y-1">
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-blue-600"></span> 
+                    Admin: <strong className="text-blue-800">admin</strong> / <strong className="text-blue-800">admin123</strong>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-600"></span> 
+                    Employee: <strong className="text-green-800">employee</strong> / <strong className="text-green-800">employee123</strong>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-purple-600"></span> 
+                    Applicant: <strong className="text-purple-800">applicant</strong> / <strong className="text-purple-800">applicant123</strong>
+                  </li>
                 </ul>
               </div>
               
-              <DialogFooter>
+              <DialogFooter className="gap-3">
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={onClose}
                   disabled={isLoading}
+                  className="border-2 border-gray-300 hover:bg-gray-100"
                 >
                   Cancel
                 </Button>
                 <Button 
                   type="submit"
                   disabled={isLoading}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium"
                 >
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Login
