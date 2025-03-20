@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { 
   Dialog, 
   DialogContent, 
@@ -24,7 +24,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
-import { type Job, applicationWithResumeSchema, type ApplicationWithResume } from '@shared/schema';
+import { type Job, applicationWithResumeSchema, type ApplicationWithResume, type Application } from '@shared/schema';
+import { useAuth } from '@/hooks/useAuth';
 
 interface ApplyModalProps {
   job: Job & { tags: string[] };
