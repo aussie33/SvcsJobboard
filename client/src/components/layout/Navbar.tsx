@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-primary font-bold text-xl">CareerConnect</Link>
+            <Link href="/" className="text-primary font-bold text-xl">The Resource Consultants</Link>
           </div>
           
           {/* Navigation */}
