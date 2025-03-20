@@ -107,7 +107,13 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
             </div>
             <div className="flex items-center text-gray-700">
               <MapPin className="h-4 w-4 mr-1" />
-              <span>{job.location.charAt(0).toUpperCase() + job.location.slice(1)}</span>
+              <span>
+                {job.location.charAt(0).toUpperCase() + job.location.slice(1)}
+                {(job.city || job.state) && ' - '}
+                {job.city && job.city}
+                {job.city && job.state && ', '}
+                {job.state && job.state}
+              </span>
             </div>
             {category && (
               <div className="flex items-center text-gray-700">

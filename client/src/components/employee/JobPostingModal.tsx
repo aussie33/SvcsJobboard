@@ -27,7 +27,27 @@ interface JobPostingModalProps {
 const formSchema = jobWithTagsSchema.extend({
   job: insertJobSchema.extend({
     status: z.enum(['draft', 'active']),
-    publishOption: z.enum(['publish-now', 'save-draft'])
+    publishOption: z.enum(['publish-now', 'save-draft']),
+    city: z.string().optional()
+      .refine((city, ctx) => {
+        // If location is hybrid, city is required
+        if (ctx.parent.location === 'hybrid' && !city) {
+          return false;
+        }
+        return true;
+      }, {
+        message: "City is required for hybrid positions",
+      }),
+    state: z.string().optional()
+      .refine((state, ctx) => {
+        // If location is hybrid, state is required
+        if (ctx.parent.location === 'hybrid' && !state) {
+          return false;
+        }
+        return true;
+      }, {
+        message: "State is required for hybrid positions",
+      })
   })
 });
 
@@ -308,10 +328,13 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
                   name="job.city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel>City {locationType === "hybrid" && <span className="text-red-500">*</span>}</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="e.g. San Francisco" />
                       </FormControl>
+                      <FormDescription>
+                        {locationType === "hybrid" && "For hybrid positions, please specify the city where employees would work onsite."}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -322,10 +345,13 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
                   name="job.state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>State/Province</FormLabel>
+                      <FormLabel>State/Province {locationType === "hybrid" && <span className="text-red-500">*</span>}</FormLabel>
                       <FormControl>
                         <Input {...field} placeholder="e.g. California" />
                       </FormControl>
+                      <FormDescription>
+                        {locationType === "hybrid" && "For hybrid positions, please specify the state where employees would work onsite."}
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
