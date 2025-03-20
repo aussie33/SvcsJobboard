@@ -143,69 +143,69 @@ const JobFilters: React.FC<JobFiltersProps> = ({
           </div>
         </div>
 
-        {/* Location filter */}
-        <div className="flex-1">
-          <h3 className="font-medium mb-2">Location</h3>
-          <Select 
-            value={selectedLocation} 
-            onValueChange={onLocationChange}
-          >
-            <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 bg-white">
-              <SelectValue placeholder="Select location" />
-            </SelectTrigger>
-            <SelectContent>
-              {locationOptions.map((location) => (
-                <SelectItem key={location} value={location}>
-                  {location === 'all' ? 'All Locations' : 
-                    location.charAt(0).toUpperCase() + location.slice(1)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      
-      {/* City and State filters - Arranged as City above State */}
-      <div className="space-y-4">
-        {/* City filter */}
-        <div>
-          <h3 className="font-medium mb-2">City</h3>
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              placeholder="Filter by city"
-              value={cityInput}
-              onChange={handleCityChange}
-              className="border-gray-300 focus:border-blue-500"
-            />
-            <Button 
-              onClick={handleApplyCityFilter} 
-              variant="outline" 
-              className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
+        {/* Location filters */}
+        <div className="flex-1 space-y-4">
+          {/* Location type filter */}
+          <div>
+            <h3 className="font-medium mb-2">Location</h3>
+            <Select 
+              value={selectedLocation} 
+              onValueChange={onLocationChange}
             >
-              Apply
-            </Button>
+              <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 bg-white">
+                <SelectValue placeholder="Select location" />
+              </SelectTrigger>
+              <SelectContent>
+                {locationOptions.map((location) => (
+                  <SelectItem key={location} value={location}>
+                    {location === 'all' ? 'All Locations' : 
+                      location.charAt(0).toUpperCase() + location.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        </div>
-        
-        {/* State filter */}
-        <div>
-          <h3 className="font-medium mb-2">State/Province</h3>
-          <div className="flex space-x-2">
-            <Input
-              type="text"
-              placeholder="Filter by state"
-              value={stateInput}
-              onChange={handleStateChange}
-              className="border-gray-300 focus:border-blue-500"
-            />
-            <Button 
-              onClick={handleApplyStateFilter} 
-              variant="outline" 
-              className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
-            >
-              Apply
-            </Button>
+          
+          {/* City filter */}
+          <div>
+            <h3 className="font-medium mb-2">City</h3>
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                placeholder="Filter by city"
+                value={cityInput}
+                onChange={handleCityChange}
+                className="border-gray-300 focus:border-blue-500"
+              />
+              <Button 
+                onClick={handleApplyCityFilter} 
+                variant="outline" 
+                className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
+          
+          {/* State filter */}
+          <div>
+            <h3 className="font-medium mb-2">State/Province</h3>
+            <div className="flex space-x-2">
+              <Input
+                type="text"
+                placeholder="Filter by state"
+                value={stateInput}
+                onChange={handleStateChange}
+                className="border-gray-300 focus:border-blue-500"
+              />
+              <Button 
+                onClick={handleApplyStateFilter} 
+                variant="outline" 
+                className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
+              >
+                Apply
+              </Button>
+            </div>
           </div>
         </div>
       </div>
