@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import { type Job, applicationWithResumeSchema, type ApplicationWithResume, type Application } from '@shared/schema';
 import { useAuth } from '@/hooks/useAuth';
 

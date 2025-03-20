@@ -507,9 +507,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json(applications);
   });
   
-  app.get("/api/my-applications", requireAuth, requireRole(["applicant"]), async (req, res) => {
-    const applications = await storage.getApplications({ applicantId: req.user.id });
-    res.json(applications);
+  app.get("/api/my-applications", requireAuth, async (req, res) => {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      // Get applications for the current user
+      const applications = await storage.getApplications({ applicantId: req.user.id });
+      
+      // Add extra details like resume URLs if needed
+      const processedApplications = applications.map(app => ({
+        ...app,
+        resumeUrl: app.resumeUrl ? `/api/applications/${app.id}/resume` : null
+      }));
+      
+      res.json(processedApplications);
+    } catch (err) {
+      console.error('Error fetching applications:', err);
+      return res.status(500).json({ message: 'Failed to fetch applications' });
+    }
   });
   
   app.post("/api/applications", upload.single("resume"), async (req, res) => {
