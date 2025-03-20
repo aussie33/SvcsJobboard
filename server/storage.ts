@@ -120,8 +120,18 @@ export class MemStorage implements IStorage {
     };
     this.createUser(applicantUser);
     
-    // Add some default categories
-    const categories = ["Engineering", "Marketing", "Design", "Product", "Sales"];
+    // Add default categories
+    const categories = [
+      "Engineering", "Marketing", "Design", "Product", "Sales",
+      "IT", "Software Development", "Healthcare & Medical", "Nursing", "Pharmacy", 
+      "Counseling", "Engineering & Construction", "Mechanical Engineering", 
+      "Business & Finance", "Education & Training", "Legal & Compliance", 
+      "Government & Public Service", "Customer Service & Support", 
+      "Logistics & Supply Chain", "Hospitality & Tourism", "Creative & Design", 
+      "Graphic Design", "Video Production", "Photography", "Science & Research", 
+      "Manufacturing & Trades", "Remote & Freelance", "Virtual Assistance", 
+      "Content Writing", "Remote IT Support"
+    ];
     const categoryPromises = categories.map(name => {
       return this.createCategory({
         name,
@@ -144,6 +154,8 @@ export class MemStorage implements IStorage {
           requirements: "5+ years of experience with modern JavaScript frameworks, Strong TypeScript skills, Experience with CSS-in-JS solutions",
           type: "full-time",
           location: "remote",
+          city: "San Francisco",
+          state: "California",
           salaryRange: "$120,000 - $150,000",
           status: "active",
           postedDate: new Date(),
@@ -159,6 +171,8 @@ export class MemStorage implements IStorage {
           requirements: "3+ years of experience in product design, Proficiency in Figma, Experience in UX research and user testing",
           type: "full-time",
           location: "hybrid",
+          city: "Austin",
+          state: "Texas",
           salaryRange: "$90,000 - $120,000",
           status: "active",
           postedDate: new Date(),
@@ -174,6 +188,8 @@ export class MemStorage implements IStorage {
           requirements: "Currently pursuing a degree in Marketing or a related field, Strong written and verbal communication skills, Familiarity with social media platforms",
           type: "internship",
           location: "onsite",
+          city: "Chicago",
+          state: "Illinois",
           salaryRange: "$20-25/hour",
           status: "active",
           postedDate: new Date(),
@@ -305,7 +321,9 @@ export class MemStorage implements IStorage {
     categoryId?: number,
     search?: string,
     department?: string,
-    location?: string
+    location?: string,
+    city?: string,
+    state?: string
   }): Promise<Job[]> {
     let jobs = Array.from(this.jobs.values());
     
@@ -330,12 +348,22 @@ export class MemStorage implements IStorage {
         jobs = jobs.filter(job => job.location === filters.location);
       }
       
+      if (filters.city) {
+        jobs = jobs.filter(job => job.city && job.city.toLowerCase().includes(filters.city!.toLowerCase()));
+      }
+      
+      if (filters.state) {
+        jobs = jobs.filter(job => job.state && job.state.toLowerCase().includes(filters.state!.toLowerCase()));
+      }
+      
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
         jobs = jobs.filter(job => 
           job.title.toLowerCase().includes(searchLower) || 
           job.shortDescription.toLowerCase().includes(searchLower) ||
-          job.fullDescription.toLowerCase().includes(searchLower)
+          job.fullDescription.toLowerCase().includes(searchLower) ||
+          (job.city && job.city.toLowerCase().includes(searchLower)) ||
+          (job.state && job.state.toLowerCase().includes(searchLower))
         );
       }
     }
