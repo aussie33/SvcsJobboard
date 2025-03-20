@@ -40,7 +40,7 @@ interface LoginModalProps {
 }
 
 const formSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
+  username: z.string().min(1, 'Username or email is required'),
   password: z.string().min(1, 'Password is required'),
   accountType: z.enum(['admin', 'employee', 'applicant'], {
     required_error: 'You need to select an account type',
@@ -112,7 +112,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           <DialogHeader>
             <DialogTitle className="text-xl">Login to Your Account</DialogTitle>
             <DialogDescription>
-              Enter your credentials to access your account.
+              Enter your credentials to access your account. You can log in with either your username or email address.
             </DialogDescription>
           </DialogHeader>
           
@@ -154,9 +154,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Username or Email</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Enter your username" />
+                      <Input {...field} placeholder="Enter your username or email" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
