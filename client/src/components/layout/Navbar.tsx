@@ -14,7 +14,9 @@ const Navbar = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
   const isActive = (path: string) => {
-    return location === path ? 'text-primary' : 'text-gray-600 hover:text-primary';
+    return location === path 
+      ? 'text-primary border-b-2 border-primary font-semibold' 
+      : 'text-gray-600 hover:text-primary';
   };
 
   return (
@@ -95,7 +97,7 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link 
               href="/" 
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/' ? 'text-primary border-l-4 border-primary bg-gray-50' : 'text-gray-700'} hover:text-primary hover:bg-gray-50`}
               onClick={toggleMenu}
             >
               Job Listings
@@ -104,7 +106,7 @@ const Navbar = () => {
             {(user && user.role === 'employee') || user?.role === 'admin' ? (
               <Link 
                 href="/employee" 
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/employee' ? 'text-primary border-l-4 border-primary bg-gray-50' : 'text-gray-700'} hover:text-primary hover:bg-gray-50`}
                 onClick={toggleMenu}
               >
                 Employee Portal
@@ -114,7 +116,7 @@ const Navbar = () => {
             {user?.role === 'admin' && (
               <Link 
                 href="/admin" 
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50"
+                className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/admin' ? 'text-primary border-l-4 border-primary bg-gray-50' : 'text-gray-700'} hover:text-primary hover:bg-gray-50`}
                 onClick={toggleMenu}
               >
                 Admin Portal

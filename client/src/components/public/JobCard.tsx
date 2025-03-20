@@ -31,7 +31,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onApplyClick, onTitleClick }) =>
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition duration-150">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 border-solid border-1 p-6 hover:shadow-md transition duration-150">
       <div className="flex justify-between items-start">
         <div>
           <h2 

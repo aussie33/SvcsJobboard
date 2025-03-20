@@ -96,7 +96,7 @@ const JobFilters: React.FC<JobFiltersProps> = ({
                           selectedLocation !== 'all' || selectedCity || selectedState;
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8 space-y-6">
+    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 border-solid border-1 shadow-sm mb-8 space-y-6">
       {/* Search bar */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative flex-grow">
