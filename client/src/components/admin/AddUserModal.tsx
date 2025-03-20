@@ -25,6 +25,10 @@ interface AddUserModalProps {
 
 // Extended schema for the form
 const formSchema = insertUserSchema.extend({
+  firstName: z.string().min(1, 'First name is required'),
+  lastName: z.string().min(1, 'Last name is required'),
+  middleName: z.string().optional(),
+  preferredName: z.string().optional(),
   confirmPassword: z.string().min(1, 'Confirm password is required'),
   notes: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -50,6 +54,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       email: '',
       password: '',
       confirmPassword: '',
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      preferredName: '',
       fullName: '',
       role: 'employee',
       department: '',
@@ -66,6 +74,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         email: editUser.email,
         password: '', // Don't expose the password
         confirmPassword: '',
+        firstName: editUser.firstName || '',
+        lastName: editUser.lastName || '',
+        middleName: editUser.middleName || '',
+        preferredName: editUser.preferredName || '',
         fullName: editUser.fullName,
         role: editUser.role,
         department: editUser.department || '',
@@ -78,6 +90,10 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         email: '',
         password: '',
         confirmPassword: '',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        preferredName: '',
         fullName: '',
         role: 'employee',
         department: '',
@@ -126,6 +142,11 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   });
   
   const onSubmit = (data: FormData) => {
+    // Generate the fullName from name components if not explicitly provided
+    if (!data.fullName || data.fullName.trim() === '') {
+      data.fullName = `${data.firstName} ${data.middleName ? data.middleName + ' ' : ''}${data.lastName}`.trim();
+    }
+    
     mutation.mutate(data);
   };
   
@@ -140,16 +161,77 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name*</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="John" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name*</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Doe" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="middleName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Middle Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="A." />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="preferredName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Preferred Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Johnny" />
+                    </FormControl>
+                    <FormDescription>
+                      If provided, this name will be displayed in greetings
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
             <FormField
               control={form.control}
               name="fullName"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                <FormItem className="hidden">
                   <FormControl>
-                    <Input {...field} placeholder="John Doe" />
+                    <Input {...field} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
