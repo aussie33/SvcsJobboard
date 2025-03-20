@@ -50,6 +50,7 @@ export interface IStorage {
   }): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplication(id: number, updates: Partial<Application>): Promise<Application | undefined>;
+  getApplicationCount(jobId: number): Promise<number>;
 }
 
 // In-memory implementation of the storage interface
@@ -441,6 +442,11 @@ export class MemStorage implements IStorage {
     };
     this.applications.set(id, updatedApplication);
     return updatedApplication;
+  }
+  
+  async getApplicationCount(jobId: number): Promise<number> {
+    const applications = await this.getApplications({ jobId });
+    return applications.length;
   }
 }
 

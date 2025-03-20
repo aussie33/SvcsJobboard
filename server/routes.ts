@@ -329,16 +329,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     const jobs = await storage.getJobs(filters);
     
-    // Get tags for each job
-    const jobsWithTags = await Promise.all(jobs.map(async (job) => {
+    // Get tags and application counts for each job
+    const jobsWithTagsAndCounts = await Promise.all(jobs.map(async (job) => {
       const tags = await storage.getJobTags(job.id);
+      const applicationCount = await storage.getApplicationCount(job.id);
       return {
         ...job,
-        tags: tags.map(tag => tag.tag)
+        tags: tags.map(tag => tag.tag),
+        applicationCount
       };
     }));
     
-    res.json(jobsWithTags);
+    res.json(jobsWithTagsAndCounts);
   });
   
   app.get("/api/jobs/:id", async (req, res) => {
