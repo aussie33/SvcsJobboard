@@ -12,8 +12,9 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { JobWithTags, User } from '@shared/schema';
+import { JobWithTags, User, Category } from '@shared/schema';
 import JobPostingModal from './JobPostingModal';
+import JobDetailModal from '@/components/shared/JobDetailModal';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -26,7 +27,9 @@ interface ManageJobsProps {
 
 const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [editingJob, setEditingJob] = useState<JobWithTags | null>(null);
+  const [selectedJob, setSelectedJob] = useState<JobWithTags | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -38,6 +41,13 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     refetch
   } = useQuery({
     queryKey: ['/api/jobs', { employeeId: user.id }],
+  });
+
+  // Query to get all categories
+  const { 
+    data: categories = [],
+  } = useQuery({
+    queryKey: ['/api/categories'],
   });
 
   // Mutation to update job status
@@ -88,14 +98,28 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     }
   });
 
+  const handleViewJobDetail = (job: JobWithTags) => {
+    setSelectedJob(job);
+    setIsDetailModalOpen(true);
+  };
+
   const handleEditJob = (job: JobWithTags) => {
     setEditingJob(job);
     setIsModalOpen(true);
+    // If detail modal is open, close it
+    if (isDetailModalOpen) {
+      setIsDetailModalOpen(false);
+    }
   };
 
   const handleToggleStatus = (job: JobWithTags) => {
     const newStatus = job.status === 'active' ? 'paused' : 'active';
     updateJobStatus.mutate({ id: job.id, status: newStatus });
+  };
+  
+  const handleDetailModalClose = () => {
+    setIsDetailModalOpen(false);
+    setSelectedJob(null);
   };
 
   const handleDeleteJob = (id: number) => {
@@ -189,7 +213,14 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                   {filteredJobs.length > 0 ? (
                     filteredJobs.map((job: JobWithTags) => (
                       <TableRow key={job.id}>
-                        <TableCell className="font-medium">{job.title}</TableCell>
+                        <TableCell className="font-medium">
+                          <span 
+                            className="cursor-pointer text-blue-600 hover:text-blue-800 transition-colors"
+                            onClick={() => handleViewJobDetail(job)}
+                          >
+                            {job.title}
+                          </span>
+                        </TableCell>
                         <TableCell>{job.department}</TableCell>
                         <TableCell>{renderStatusBadge(job.status)}</TableCell>
                         <TableCell>0</TableCell>
@@ -267,6 +298,19 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
         onSave={handleJobSaved}
         editJob={editingJob}
       />
+
+      {/* Job Detail Modal */}
+      {selectedJob && (
+        <JobDetailModal
+          job={selectedJob}
+          isOpen={isDetailModalOpen}
+          onClose={handleDetailModalClose}
+          onEditClick={() => handleEditJob(selectedJob)}
+          categories={categories}
+          isEmployee={true}
+          currentUser={user}
+        />
+      )}
     </>
   );
 };
