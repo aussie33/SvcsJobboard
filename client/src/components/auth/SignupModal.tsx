@@ -85,18 +85,30 @@ const SignupModal: React.FC<SignupModalProps> = ({
       setSignupSuccess(true);
       toast({
         title: "Account Created",
-        description: "Your account has been created successfully. You can now log in.",
+        description: "Your account has been created successfully. Logging you in...",
       });
       
       // Auto login after successful registration
       try {
-        await login({
+        const loginResult = await login({
           username: data.username,
           password: form.getValues('password') 
         });
+        
+        // Close both modals - the signup modal and the parent login modal
         onClose();
+        
+        // Force a page refresh to ensure the session is properly recognized
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       } catch (error) {
         // If auto-login fails, just close the modal and let them log in manually
+        toast({
+          title: "Login Error",
+          description: "Account created but couldn't log in automatically. Please try logging in manually.",
+          variant: "destructive"
+        });
         setTimeout(() => onClose(), 1500);
       }
     },

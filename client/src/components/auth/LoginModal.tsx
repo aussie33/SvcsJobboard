@@ -240,7 +240,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       {showSignupModal && (
         <SignupModal 
           isOpen={showSignupModal} 
-          onClose={() => setShowSignupModal(false)} 
+          onClose={() => {
+            setShowSignupModal(false);
+            // Close the parent login modal as well when account creation is successful
+            onClose();
+          }} 
         />
       )}
 
