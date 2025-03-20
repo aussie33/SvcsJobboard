@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Briefcase, MapPin, Clock, Calendar, CheckCircle } from 'lucide-react';
 import JobFilters from './JobFilters';
+import JobCard from './JobCard';
+import JobDetailModal from './JobDetailModal';
 import { type Job, type Category, type Application } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
 import { useAuth } from '@/hooks/useAuth';

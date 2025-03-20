@@ -60,9 +60,9 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
                 <span>{category.name}</span>
               </div>
             )}
-            {job.salary && (
+            {job.salaryRange && (
               <div className="flex items-center text-gray-700">
-                <span>${job.salary.toLocaleString()}</span>
+                <span>{job.salaryRange}</span>
               </div>
             )}
           </div>
