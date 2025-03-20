@@ -25,7 +25,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import AddUserModal from './AddUserModal';
 
 const UserManagement = () => {
@@ -268,10 +268,16 @@ const UserManagement = () => {
                   <Pagination>
                     <PaginationContent>
                       <PaginationItem>
-                        <PaginationPrevious 
-                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                           disabled={currentPage === 1}
-                        />
+                          className="cursor-pointer"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          <span className="sr-only">Previous page</span>
+                        </Button>
                       </PaginationItem>
                       {Array.from({ length: totalPages }).map((_, index) => (
                         <PaginationItem key={index}>
@@ -284,10 +290,16 @@ const UserManagement = () => {
                         </PaginationItem>
                       ))}
                       <PaginationItem>
-                        <PaginationNext 
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                           disabled={currentPage === totalPages}
-                        />
+                          className="cursor-pointer"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                          <span className="sr-only">Next page</span>
+                        </Button>
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
