@@ -89,7 +89,9 @@ export class MemStorage implements IStorage {
     const adminUser: InsertUser = {
       username: "admin",
       password: "admin123",
-      email: "admin@careerconnect.com",
+      email: "admin@theresourceconsultants.com",
+      firstName: "Admin",
+      lastName: "User",
       fullName: "Admin User",
       role: "admin",
       isActive: true
@@ -100,7 +102,10 @@ export class MemStorage implements IStorage {
     const employeeUser: InsertUser = {
       username: "employee",
       password: "employee123",
-      email: "employee@careerconnect.com",
+      email: "employee@theresourceconsultants.com",
+      firstName: "Employee",
+      lastName: "User",
+      preferredName: "HR",
       fullName: "Employee User",
       department: "Engineering",
       role: "employee",
@@ -113,6 +118,9 @@ export class MemStorage implements IStorage {
       username: "applicant",
       password: "applicant123",
       email: "applicant@example.com",
+      firstName: "Job",
+      middleName: "A.",
+      lastName: "Applicant",
       fullName: "Job Applicant",
       department: null,
       role: "applicant",
@@ -255,8 +263,16 @@ export class MemStorage implements IStorage {
   async createUser(user: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
     const timestamp = new Date();
+    
+    // If fullName is not provided, generate it from first and last name
+    let fullName = user.fullName;
+    if (!fullName && user.firstName && user.lastName) {
+      fullName = `${user.firstName} ${user.middleName ? user.middleName + ' ' : ''}${user.lastName}`;
+    }
+    
     const newUser: User = { 
       ...user, 
+      fullName: fullName || `${user.firstName} ${user.lastName}`,
       id, 
       lastLogin: null,
       createdAt: timestamp
@@ -268,6 +284,15 @@ export class MemStorage implements IStorage {
   async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
     const user = this.users.get(id);
     if (!user) return undefined;
+    
+    // Update fullName if name components are changed
+    if ((updates.firstName || updates.lastName || updates.middleName) && !updates.fullName) {
+      const firstName = updates.firstName || user.firstName;
+      const lastName = updates.lastName || user.lastName;
+      const middleName = updates.middleName !== undefined ? updates.middleName : user.middleName;
+      
+      updates.fullName = `${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`;
+    }
     
     const updatedUser = { ...user, ...updates };
     this.users.set(id, updatedUser);

@@ -16,7 +16,11 @@ export const users = pgTable('users', {
   username: text('username').notNull().unique(),
   password: text('password').notNull(),
   email: text('email').notNull().unique(),
-  fullName: text('full_name').notNull(),
+  firstName: text('first_name').notNull(),
+  lastName: text('last_name').notNull(),
+  middleName: text('middle_name'),
+  preferredName: text('preferred_name'),
+  fullName: text('full_name').notNull(), // Kept for backward compatibility
   role: userRoleEnum('role').notNull().default('applicant'),
   department: text('department'),
   isActive: boolean('is_active').notNull().default(true),
