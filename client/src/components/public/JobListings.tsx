@@ -40,7 +40,8 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   // Fetch user's applications if logged in as applicant
   const { 
     data: applications = [],
-    isLoading: isApplicationsLoading
+    isLoading: isApplicationsLoading,
+    refetch: refetchApplications
   } = useQuery<Application[]>({
     queryKey: ['/api/my-applications'],
     enabled: !!user && user.role === 'applicant',

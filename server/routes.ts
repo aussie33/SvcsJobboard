@@ -556,12 +556,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set applicant id if logged in
       if (req.user) {
+        console.log('Setting applicant ID to:', req.user.id);
         parsedData.applicantId = req.user.id;
+        
+        // Check if user already applied for this job
+        const existingApplications = await storage.getApplications({ 
+          jobId: parsedData.jobId,
+          applicantId: req.user.id 
+        });
+        
+        if (existingApplications.length > 0) {
+          return res.status(400).json({ 
+            message: "You have already applied for this position" 
+          });
+        }
       }
       
       const newApplication = await storage.createApplication(parsedData);
+      console.log('Created application:', newApplication);
+      
       res.status(201).json(newApplication);
     } catch (err) {
+      console.error('Application submission error:', err);
       handleZodError(err, res);
     }
   });
