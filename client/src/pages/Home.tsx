@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import JobListings from '@/components/public/JobListings';
 import ApplyModal from '@/components/public/ApplyModal';
 import { type Job } from '@shared/schema';
 
 const Home = () => {
+  const queryClient = useQueryClient();
   const [selectedJob, setSelectedJob] = useState<(Job & { tags: string[] }) | null>(null);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
@@ -19,6 +21,9 @@ const Home = () => {
   const handleApplicationSubmit = () => {
     setIsApplyModalOpen(false);
     setSelectedJob(null);
+    
+    // Invalidate both jobs and applications queries to refresh the data
+    queryClient.invalidateQueries({ queryKey: ['/api/my-applications'] });
   };
 
   return (

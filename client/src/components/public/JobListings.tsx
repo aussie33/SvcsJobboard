@@ -3,20 +3,23 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Briefcase, MapPin, Clock, Calendar } from 'lucide-react';
+import { Briefcase, MapPin, Clock, Calendar, CheckCircle } from 'lucide-react';
 import JobFilters from './JobFilters';
-import { type Job, type Category } from '@shared/schema';
+import { type Job, type Category, type Application } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
+import { useAuth } from '@/hooks/useAuth';
 
 interface JobListingsProps {
   onApplyClick: (job: Job & { tags: string[] }) => void;
 }
 
 const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [filteredJobs, setFilteredJobs] = useState<(Job & { tags: string[] })[]>([]);
+  const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
 
   // Fetch all jobs
   const { 
@@ -33,6 +36,23 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
+  
+  // Fetch user's applications if logged in as applicant
+  const { 
+    data: applications = [],
+    isLoading: isApplicationsLoading
+  } = useQuery<Application[]>({
+    queryKey: ['/api/my-applications'],
+    enabled: !!user && user.role === 'applicant',
+  });
+
+  // Track jobs the user has already applied to
+  useEffect(() => {
+    if (applications.length > 0) {
+      const appliedJobIds = applications.map(app => app.jobId);
+      setAppliedJobs(appliedJobIds);
+    }
+  }, [applications]);
 
   // Filter jobs based on search term, categories, and location
   useEffect(() => {
@@ -195,12 +215,23 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                 <div className="text-lg font-medium">
                   {job.salaryRange || 'Salary negotiable'}
                 </div>
-                <Button 
-                  onClick={() => onApplyClick(job)}
-                  className="transition-all duration-200"
-                >
-                  Apply Now
-                </Button>
+                {appliedJobs.includes(job.id) ? (
+                  <Button 
+                    variant="outline"
+                    className="bg-green-50 text-green-600 border-green-200 hover:bg-green-50 cursor-default flex items-center gap-2"
+                    disabled
+                  >
+                    <CheckCircle className="h-4 w-4" />
+                    Applied
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => onApplyClick(job)}
+                    className="transition-all duration-200"
+                  >
+                    Apply Now
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))

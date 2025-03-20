@@ -36,14 +36,36 @@ interface ApplyModalProps {
 const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit }) => {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
+
+  // Get any applications to check if user has already applied
+  const { data: applications = [] } = useQuery<Application[]>({
+    queryKey: ['/api/my-applications'],
+    enabled: !!user && user.role === 'applicant' && isOpen,
+  });
+
+  // Check if the user has already applied for this job
+  const hasApplied = applications.some(app => app.jobId === job.id);
+
+  useEffect(() => {
+    // If already applied, show a message and close the modal
+    if (hasApplied) {
+      toast({
+        title: 'Already Applied',
+        description: 'You have already applied for this position.',
+        variant: 'default',
+      });
+      onClose();
+    }
+  }, [hasApplied, toast, onClose]);
 
   const form = useForm<ApplicationWithResume>({
     resolver: zodResolver(applicationWithResumeSchema),
     defaultValues: {
       jobId: job.id,
       applicantId: 0, // Will be set on the server for anonymous applications
-      name: '',
-      email: '',
+      name: user?.fullName || '',
+      email: user?.email || '',
       phone: '',
       coverLetter: '',
       resumeUrl: '',
