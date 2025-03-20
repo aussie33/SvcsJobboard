@@ -323,7 +323,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                           form.setValue('isSuperAdmin', false);
                         }
                       }}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -365,7 +365,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                   <FormControl>
                     <RadioGroup
                       onValueChange={(value) => field.onChange(value === 'active')}
-                      defaultValue={field.value ? 'active' : 'inactive'}
+                      value={field.value ? 'active' : 'inactive'}
                       className="flex flex-col space-y-1"
                     >
                       <div className="flex items-center space-x-2">
