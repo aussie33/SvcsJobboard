@@ -22,6 +22,10 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [filteredJobs, setFilteredJobs] = useState<(Job & { tags: string[] })[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<number[]>([]);
+  
+  // State for job detail modal
+  const [selectedJob, setSelectedJob] = useState<(Job & { tags: string[] }) | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   // Fetch all jobs
   const { 
@@ -103,6 +107,16 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
   const handleLocationChange = (location: string) => {
     setSelectedLocation(location);
   };
+  
+  // Handle job detail modal
+  const handleOpenJobDetail = (job: Job & { tags: string[] }) => {
+    setSelectedJob(job);
+    setIsDetailModalOpen(true);
+  };
+  
+  const handleCloseJobDetail = () => {
+    setIsDetailModalOpen(false);
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -172,7 +186,12 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-xl mb-1">{job.title}</CardTitle>
+                    <CardTitle 
+                      className="text-xl mb-1 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors"
+                      onClick={() => handleOpenJobDetail(job)}
+                    >
+                      {job.title}
+                    </CardTitle>
                     <div className="text-sm text-gray-500">
                       {job.department}
                     </div>
@@ -240,6 +259,18 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
           ))
         )}
       </div>
+      
+      {/* Job Detail Modal */}
+      {selectedJob && (
+        <JobDetailModal
+          job={selectedJob}
+          isOpen={isDetailModalOpen}
+          onClose={handleCloseJobDetail}
+          onApplyClick={() => onApplyClick(selectedJob)}
+          categories={categories}
+          hasApplied={appliedJobs.includes(selectedJob.id)}
+        />
+      )}
     </div>
   );
 };

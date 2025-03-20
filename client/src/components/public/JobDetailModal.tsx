@@ -93,16 +93,7 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
             </div>
           )}
           
-          {/* Benefits */}
-          {job.benefits && (
-            <div>
-              <h3 className="font-medium text-gray-900 mb-2">Benefits</h3>
-              <div 
-                className="text-gray-700 prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: job.benefits.replace(/\n/g, '<br/>') }}
-              />
-            </div>
-          )}
+          {/* Additional sections can be added here if needed */}
           
           {/* Tags */}
           {job.tags && job.tags.length > 0 && (
