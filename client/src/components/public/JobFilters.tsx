@@ -18,8 +18,12 @@ interface JobFiltersProps {
   onSearch: (term: string) => void;
   onCategoryChange: (categoryId: number, isSelected: boolean) => void;
   onLocationChange: (location: string) => void;
+  onCityChange: (city: string) => void;
+  onStateChange: (state: string) => void;
   selectedCategories: number[];
   selectedLocation: string;
+  selectedCity: string;
+  selectedState: string;
 }
 
 const JobFilters: React.FC<JobFiltersProps> = ({ 

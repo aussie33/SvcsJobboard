@@ -301,7 +301,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
               />
             </div>
             
-            {locationType === "onsite" && (
+            {(locationType === "onsite" || locationType === "hybrid") && (
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}

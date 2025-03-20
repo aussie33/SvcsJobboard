@@ -305,7 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Job routes
   app.get("/api/jobs", async (req, res) => {
-    const { employeeId, status, categoryId, search, department, location } = req.query;
+    const { employeeId, status, categoryId, search, department, location, city, state } = req.query;
     const filters: {
       employeeId?: number;
       status?: string;
@@ -313,6 +313,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       search?: string;
       department?: string;
       location?: string;
+      city?: string;
+      state?: string;
     } = {};
     
     if (employeeId) filters.employeeId = parseInt(employeeId.toString());
@@ -321,6 +323,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (search) filters.search = search.toString();
     if (department) filters.department = department.toString();
     if (location) filters.location = location.toString();
+    if (city) filters.city = city.toString();
+    if (state) filters.state = state.toString();
     
     // For public access, only show active jobs
     if (!req.user) {
@@ -412,7 +416,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const allowedUpdates = [
           "title", "department", "categoryId", "shortDescription", 
           "fullDescription", "requirements", "type", "location",
-          "salaryRange", "status", "expiryDate"
+          "city", "state", "salaryRange", "status", "expiryDate"
         ];
         
         const filteredUpdates: Partial<typeof job> = {};
