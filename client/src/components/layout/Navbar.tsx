@@ -55,9 +55,14 @@ const Navbar = () => {
             {isLoading ? (
               <div className="w-20 h-8 bg-gray-200 animate-pulse rounded-md"></div>
             ) : user ? (
-              <Button variant="outline" onClick={logout} className="md:mr-4">
-                Log out
-              </Button>
+              <div className="flex items-center gap-4">
+                <p className="text-gray-700 hidden md:block">
+                  Hello, {user.fullName.split(' ')[0]}
+                </p>
+                <Button variant="outline" onClick={logout} className="md:mr-4">
+                  Log out
+                </Button>
+              </div>
             ) : (
               <Button onClick={() => setShowLoginModal(true)} className="md:mr-4">
                 Log in
@@ -82,6 +87,11 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-gray-200">
+          {user && (
+            <div className="px-3 py-2 border-b border-gray-100">
+              <p className="text-gray-700 font-medium">Hello, {user.fullName.split(' ')[0]}</p>
+            </div>
+          )}
           <div className="px-2 pt-2 pb-3 space-y-1">
             <Link 
               href="/" 
