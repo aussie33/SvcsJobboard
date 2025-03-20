@@ -100,16 +100,16 @@ const JobFilters: React.FC<JobFiltersProps> = ({
       {/* Search bar */}
       <form onSubmit={handleSearchSubmit} className="flex gap-2">
         <div className="relative flex-grow">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
           <Input
             type="text"
             placeholder="Search job titles, skills, or keywords"
             value={searchTerm}
             onChange={handleSearchChange}
-            className="pl-10"
+            className="pl-10 border-gray-300 focus:border-blue-500"
           />
         </div>
-        <Button type="submit">Search</Button>
+        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Search</Button>
       </form>
 
       <div className="flex flex-col md:flex-row gap-6">
@@ -150,7 +150,7 @@ const JobFilters: React.FC<JobFiltersProps> = ({
             value={selectedLocation} 
             onValueChange={onLocationChange}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 bg-white">
               <SelectValue placeholder="Select location" />
             </SelectTrigger>
             <SelectContent>
@@ -176,11 +176,12 @@ const JobFilters: React.FC<JobFiltersProps> = ({
               placeholder="Filter by city"
               value={cityInput}
               onChange={handleCityChange}
+              className="border-gray-300 focus:border-blue-500"
             />
             <Button 
               onClick={handleApplyCityFilter} 
               variant="outline" 
-              className="shrink-0"
+              className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
             >
               Apply
             </Button>
@@ -196,11 +197,12 @@ const JobFilters: React.FC<JobFiltersProps> = ({
               placeholder="Filter by state"
               value={stateInput}
               onChange={handleStateChange}
+              className="border-gray-300 focus:border-blue-500"
             />
             <Button 
               onClick={handleApplyStateFilter} 
               variant="outline" 
-              className="shrink-0"
+              className="shrink-0 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
             >
               Apply
             </Button>
@@ -214,7 +216,7 @@ const JobFilters: React.FC<JobFiltersProps> = ({
           <Button
             variant="outline"
             size="sm"
-            className="text-gray-600"
+            className="text-gray-600 border-2 border-gray-300 bg-gray-50 hover:bg-gray-100"
             onClick={handleClearFilters}
           >
             <X className="h-4 w-4 mr-2" />

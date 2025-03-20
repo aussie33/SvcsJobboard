@@ -474,7 +474,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
                     onClick={() => handlePageChange(totalPages)}
                     disabled={currentPage === totalPages}
                   >
