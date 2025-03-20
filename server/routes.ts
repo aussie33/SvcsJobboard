@@ -158,6 +158,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // User registration route (public)
+  app.post("/api/users/register", async (req, res) => {
+    try {
+      const { username, email, password, firstName, lastName, middleName, preferredName, fullName, role } = req.body;
+      
+      // Validation checks
+      if (!username || !email || !password || !firstName || !lastName) {
+        return res.status(400).json({ message: "Required fields are missing" });
+      }
+      
+      // Check if username already exists
+      const existingUsername = await storage.getUserByUsername(username);
+      if (existingUsername) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+      
+      // Check if email already exists
+      const existingEmail = await storage.getUserByEmail(email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      
+      // Only allow applicant role through public registration
+      if (role !== 'applicant') {
+        return res.status(403).json({ message: "Only applicant accounts can be created through registration" });
+      }
+      
+      // Create the user
+      const newUser = await storage.createUser({
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        middleName: middleName || null,
+        preferredName: preferredName || null,
+        fullName: fullName || `${firstName} ${lastName}`,
+        role: 'applicant',
+        isActive: true,
+        department: null,
+      });
+      
+      // Remove password from response
+      const { password: _, ...userWithoutPassword } = newUser;
+      
+      res.status(201).json(userWithoutPassword);
+    } catch (err) {
+      handleZodError(err, res);
+    }
+  });
+  
+  // Password reset request route
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      // For security reasons, don't reveal if the email exists or not
+      // Just return a success message even if the email doesn't exist
+      
+      // In a real system, this would send an email with a password reset link
+      // For this demo, we'll just return a success message
+      
+      res.json({ message: "If an account with that email exists, password reset instructions have been sent." });
+    } catch (err) {
+      handleZodError(err, res);
+    }
+  });
+  
   app.get("/api/auth/me", requireAuth, (req, res) => {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
