@@ -80,6 +80,9 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
       return response.json();
     },
     onSuccess: () => {
+      // Invalidate the applications cache to refresh the list
+      queryClient.invalidateQueries({ queryKey: ['/api/my-applications'] });
+      
       toast({
         title: 'Application Submitted',
         description: 'Your application has been successfully submitted.',
