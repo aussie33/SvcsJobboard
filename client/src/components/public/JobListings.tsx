@@ -305,7 +305,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
         ) : (
           // Job listings
           paginatedJobs.map((job) => (
-            <Card key={job.id} className="overflow-hidden transition-all duration-200 hover:shadow-md">
+            <Card key={job.id} className="overflow-hidden transition-all duration-200 hover:shadow-md border-2 border-gray-300">
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
                   <div>
@@ -384,7 +384,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
         
         {/* Pagination controls - only shown when there are jobs */}
         {!isJobsLoading && filteredJobs.length > 0 && (
-          <div className="mt-8 flex flex-col gap-4">
+          <div className="mt-8 flex flex-col gap-4 p-6 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-md">
             <div className="flex justify-between items-center">
               <div className="text-sm text-gray-500">
                 Showing {paginatedJobs.length} of {filteredJobs.length} jobs
@@ -418,7 +418,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
                     onClick={() => handlePageChange(1)}
                     disabled={currentPage === 1}
                   >
@@ -431,7 +431,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                   >
@@ -448,6 +448,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                       <PaginationLink
                         isActive={page === currentPage}
                         onClick={() => handlePageChange(page)}
+                        className={page === currentPage ? "border-2 border-blue-500 font-bold bg-blue-50" : "border border-gray-300"}
                       >
                         {page}
                       </PaginationLink>
@@ -460,7 +461,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                   >
