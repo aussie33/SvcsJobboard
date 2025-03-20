@@ -7,9 +7,10 @@ import { formatDistanceToNow } from '@/lib/formatters';
 interface JobCardProps {
   job: Job & { tags: string[] };
   onApplyClick: () => void;
+  onTitleClick: () => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ job, onApplyClick }) => {
+const JobCard: React.FC<JobCardProps> = ({ job, onApplyClick, onTitleClick }) => {
   // Determine badge colors for job type
   const getTypeColor = (type: string) => {
     return 'bg-blue-100 text-blue-800';
@@ -33,7 +34,12 @@ const JobCard: React.FC<JobCardProps> = ({ job, onApplyClick }) => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition duration-150">
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-xl font-semibold">{job.title}</h2>
+          <h2 
+            className="text-xl font-semibold text-blue-600 hover:text-blue-800 cursor-pointer transition-colors" 
+            onClick={onTitleClick}
+          >
+            {job.title}
+          </h2>
           <p className="text-gray-600 mt-1">{job.department}</p>
           <div className="flex mt-2 space-x-2">
             <Badge variant="secondary" className={getTypeColor(job.type)}>
@@ -59,7 +65,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onApplyClick }) => {
       
       <div className="mt-4 text-sm text-gray-500 flex items-center">
         <Clock className="h-4 w-4 mr-1" />
-        <span>Posted {formatDistanceToNow(new Date(job.postedDate))} ago</span>
+        <span>Posted {formatDistanceToNow(new Date(job.postedDate || new Date()))} ago</span>
       </div>
     </div>
   );
