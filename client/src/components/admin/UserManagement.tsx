@@ -180,6 +180,7 @@ const UserManagement = () => {
                       <TableHead>Email</TableHead>
                       <TableHead>Role</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Admin Type</TableHead>
                       <TableHead>Last Login</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -209,6 +210,17 @@ const UserManagement = () => {
                               <Badge className="bg-green-100 text-green-800">Active</Badge>
                             ) : (
                               <Badge className="bg-red-100 text-red-800">Inactive</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {user.role === 'admin' ? (
+                              user.isSuperAdmin ? (
+                                <Badge className="bg-purple-100 text-purple-800">Super Admin</Badge>
+                              ) : (
+                                <Badge className="bg-blue-100 text-blue-700">Regular Admin</Badge>
+                              )
+                            ) : (
+                              <Badge variant="outline" className="text-gray-500">N/A</Badge>
                             )}
                           </TableCell>
                           <TableCell>

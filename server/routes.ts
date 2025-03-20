@@ -294,8 +294,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
+      // Get current user ID for permission checks
+      const currentUserId = req.user?.id;
+      
       // Only allow certain fields to be updated
-      const { username, email, fullName, role, department, isActive } = req.body;
+      const { 
+        username, email, firstName, lastName, middleName, 
+        preferredName, fullName, role, department, isActive, isSuperAdmin 
+      } = req.body;
+      
       const updates: Partial<typeof user> = {};
       
       if (username !== undefined) {
@@ -314,20 +321,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updates.email = email;
       }
       
+      // Update name fields
+      if (firstName !== undefined) updates.firstName = firstName;
+      if (lastName !== undefined) updates.lastName = lastName;
+      if (middleName !== undefined) updates.middleName = middleName;
+      if (preferredName !== undefined) updates.preferredName = preferredName;
       if (fullName !== undefined) updates.fullName = fullName;
+      
+      // Update role and status (protected by the storage.updateUser method)
       if (role !== undefined) updates.role = role;
       if (department !== undefined) updates.department = department;
       if (isActive !== undefined) updates.isActive = isActive;
       
-      const updatedUser = await storage.updateUser(userId, updates);
-      
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
+      // Only super admins can set another user as super admin
+      if (isSuperAdmin !== undefined) {
+        const currentUser = await storage.getUser(currentUserId!);
+        if (currentUser && currentUser.isSuperAdmin) {
+          updates.isSuperAdmin = isSuperAdmin;
+        } else {
+          return res.status(403).json({ message: "Only super admins can assign super admin status" });
+        }
       }
       
-      // Remove password from response
-      const { password, ...userWithoutPassword } = updatedUser;
-      res.json(userWithoutPassword);
+      try {
+        // Pass the current user ID to check permissions
+        const updatedUser = await storage.updateUser(userId, updates, currentUserId);
+        
+        if (!updatedUser) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        
+        // Remove password from response
+        const { password, ...userWithoutPassword } = updatedUser;
+        res.json(userWithoutPassword);
+      } catch (error) {
+        // Handle specific error messages from the storage layer
+        if (error instanceof Error) {
+          return res.status(403).json({ message: error.message });
+        }
+        throw error;
+      }
     } catch (err) {
       handleZodError(err, res);
     }
