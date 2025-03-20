@@ -165,10 +165,10 @@ const JobFilters: React.FC<JobFiltersProps> = ({
         </div>
       </div>
       
-      {/* City and State filters */}
-      <div className="flex flex-col md:flex-row gap-6">
+      {/* City and State filters - Arranged as City above State */}
+      <div className="space-y-4">
         {/* City filter */}
-        <div className="flex-1">
+        <div>
           <h3 className="font-medium mb-2">City</h3>
           <div className="flex space-x-2">
             <Input
@@ -189,7 +189,7 @@ const JobFilters: React.FC<JobFiltersProps> = ({
         </div>
         
         {/* State filter */}
-        <div className="flex-1">
+        <div>
           <h3 className="font-medium mb-2">State/Province</h3>
           <div className="flex space-x-2">
             <Input
