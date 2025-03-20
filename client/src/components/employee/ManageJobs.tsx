@@ -223,7 +223,7 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                         </TableCell>
                         <TableCell>{job.department}</TableCell>
                         <TableCell>{renderStatusBadge(job.status)}</TableCell>
-                        <TableCell>0</TableCell>
+                        <TableCell>{job.applicationCount || 0}</TableCell>
                         <TableCell>
                           {job.postedDate 
                             ? formatDistanceToNow(new Date(job.postedDate)) + ' ago'

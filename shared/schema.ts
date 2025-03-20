@@ -115,6 +115,7 @@ export type LoginCredentials = z.infer<typeof loginSchema>;
 export const jobWithTagsSchema = z.object({
   job: z.object(createInsertSchema(jobs).shape),
   tags: z.array(z.string()),
+  applicationCount: z.number().optional(),
 });
 
 export type JobWithTags = z.infer<typeof jobWithTagsSchema>;

@@ -12,9 +12,10 @@ import { Badge } from '@/components/ui/badge';
 import { Briefcase, MapPin, Building, Calendar, Tag, Pencil } from 'lucide-react';
 import { formatDate } from '@/lib/formatters';
 import { Job, Category, User } from '@shared/schema';
+import { Users } from 'lucide-react';
 
 interface JobDetailModalProps {
-  job: Job & { tags: string[] };
+  job: Job & { tags: string[]; applicationCount?: number };
   isOpen: boolean;
   onClose: () => void;
   categories: Category[];
@@ -188,6 +189,15 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
                 <span className="text-gray-500">Department:</span>
                 <p className="text-gray-700">{job.department}</p>
               </div>
+              {isAdminView && (
+                <div>
+                  <span className="text-gray-500">Applications:</span>
+                  <p className="text-gray-700 flex items-center">
+                    <Users className="h-4 w-4 mr-1" />
+                    {job.applicationCount || 0}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
