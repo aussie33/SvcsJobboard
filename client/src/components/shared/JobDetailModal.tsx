@@ -56,7 +56,7 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto border border-solid border-1 border-gray-200">
         <DialogHeader>
           <div className="flex justify-between items-start">
             <div>
@@ -100,13 +100,13 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
           )}
           
           {/* Job summary */}
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center text-gray-700">
-              <Briefcase className="h-4 w-4 mr-1" />
+          <div className="flex flex-wrap gap-4 text-sm p-4 bg-gray-50 rounded-md border border-solid border-1 border-gray-200">
+            <div className="flex items-center text-gray-700 bg-white px-3 py-2 rounded border border-gray-200">
+              <Briefcase className="h-4 w-4 mr-2 text-blue-500" />
               <span>{job.type.charAt(0).toUpperCase() + job.type.slice(1).replace('-', ' ')}</span>
             </div>
-            <div className="flex items-center text-gray-700">
-              <MapPin className="h-4 w-4 mr-1" />
+            <div className="flex items-center text-gray-700 bg-white px-3 py-2 rounded border border-gray-200">
+              <MapPin className="h-4 w-4 mr-2 text-red-500" />
               <span>
                 {job.location.charAt(0).toUpperCase() + job.location.slice(1)}
                 {(job.city || job.state) && ' - '}
@@ -116,14 +116,14 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
               </span>
             </div>
             {category && (
-              <div className="flex items-center text-gray-700">
-                <Building className="h-4 w-4 mr-1" />
+              <div className="flex items-center text-gray-700 bg-white px-3 py-2 rounded border border-gray-200">
+                <Building className="h-4 w-4 mr-2 text-purple-500" />
                 <span>{category.name}</span>
               </div>
             )}
             {job.salaryRange && (
-              <div className="flex items-center text-gray-700">
-                <span>{job.salaryRange}</span>
+              <div className="flex items-center text-gray-700 bg-white px-3 py-2 rounded border border-gray-200">
+                <span className="font-medium">{job.salaryRange}</span>
               </div>
             )}
           </div>
@@ -161,7 +161,7 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
                 <Tag className="h-4 w-4 mr-1" />
                 Skills & Technologies
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-md border border-solid border-1 border-gray-200">
                 {job.tags.map((tag, index) => (
                   <Badge key={index} variant="outline" className="bg-gray-100 text-gray-800">
                     {tag}
@@ -174,7 +174,7 @@ const JobDetailModal: React.FC<JobDetailModalProps> = ({
           {/* Job details */}
           <div className="border-t border-gray-200 pt-4">
             <h3 className="font-medium text-gray-900 mb-2">Additional Information</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm p-4 bg-gray-50 rounded-md border border-solid border-1 border-gray-200">
               <div>
                 <span className="text-gray-500">Posted Date:</span>
                 <p className="text-gray-700">
