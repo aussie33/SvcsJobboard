@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Lock, User } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
