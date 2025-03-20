@@ -24,6 +24,7 @@ export const users = pgTable('users', {
   role: userRoleEnum('role').notNull().default('applicant'),
   department: text('department'),
   isActive: boolean('is_active').notNull().default(true),
+  isSuperAdmin: boolean('is_super_admin').notNull().default(false),
   lastLogin: timestamp('last_login'),
   createdAt: timestamp('created_at').defaultNow(),
 });

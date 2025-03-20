@@ -85,7 +85,7 @@ export class MemStorage implements IStorage {
   }
   
   private initializeData() {
-    // Add admin user
+    // Add admin user (Super Admin)
     const adminUser: InsertUser = {
       username: "admin",
       password: "admin123",
@@ -94,7 +94,11 @@ export class MemStorage implements IStorage {
       lastName: "User",
       fullName: "Admin User",
       role: "admin",
-      isActive: true
+      isActive: true,
+      isSuperAdmin: true, // Mark as super admin
+      middleName: null,
+      preferredName: null,
+      department: "Management"
     };
     this.createUser(adminUser);
     
@@ -105,11 +109,13 @@ export class MemStorage implements IStorage {
       email: "employee@theresourceconsultants.com",
       firstName: "Employee",
       lastName: "User",
+      middleName: null,
       preferredName: "HR",
       fullName: "Employee User",
       department: "Engineering",
       role: "employee",
-      isActive: true
+      isActive: true,
+      isSuperAdmin: false
     };
     const employeeId = this.createUser(employeeUser).then(user => user.id);
     
@@ -122,9 +128,11 @@ export class MemStorage implements IStorage {
       middleName: "A.",
       lastName: "Applicant",
       fullName: "Job Applicant",
+      preferredName: null,
       department: null,
       role: "applicant",
-      isActive: true
+      isActive: true,
+      isSuperAdmin: false
     };
     this.createUser(applicantUser);
     
@@ -281,9 +289,28 @@ export class MemStorage implements IStorage {
     return newUser;
   }
   
-  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+  async updateUser(id: number, updates: Partial<User>, currentUserId?: number): Promise<User | undefined> {
     const user = this.users.get(id);
     if (!user) return undefined;
+    
+    // Super admin protection - Cannot change role or active status of the super admin
+    if (user.isSuperAdmin && (updates.role !== undefined || updates.isActive !== undefined)) {
+      // Only allow the super admin to update their own non-admin properties
+      if (currentUserId !== id) {
+        // Someone else trying to change super admin's role or status
+        throw new Error("Cannot modify super admin role or status");
+      }
+      
+      // Delete attempts to change role or active status even by themselves
+      delete updates.role;
+      delete updates.isActive;
+      delete updates.isSuperAdmin;
+    }
+    
+    // Self-protection - Admins cannot downgrade their own admin status
+    if (currentUserId === id && user.role === 'admin' && updates.role !== undefined && updates.role !== 'admin') {
+      throw new Error("Admins cannot change their own admin status");
+    }
     
     // Update fullName if name components are changed
     if ((updates.firstName || updates.lastName || updates.middleName) && !updates.fullName) {
