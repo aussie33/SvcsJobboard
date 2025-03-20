@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -10,10 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { insertUserSchema, User } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { Loader2, Shield, AlertCircle } from 'lucide-react';
 import { z } from 'zod';
 
 interface AddUserModalProps {
@@ -31,6 +33,7 @@ const formSchema = insertUserSchema.extend({
   preferredName: z.string().optional(),
   confirmPassword: z.string().min(1, 'Confirm password is required'),
   notes: z.string().optional(),
+  isSuperAdmin: z.boolean().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ['confirmPassword'],
@@ -45,6 +48,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   editUser 
 }) => {
   const { toast } = useToast();
+  const { user: currentUser } = useAuth();
+  const [showSuperAdminField, setShowSuperAdminField] = useState(false);
   
   // Form setup
   const form = useForm<FormData>({
@@ -66,6 +71,11 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     }
   });
   
+  // Check if current user is super admin
+  useEffect(() => {
+    setShowSuperAdminField(currentUser?.isSuperAdmin === true);
+  }, [currentUser]);
+
   // Set default values when editing a user
   useEffect(() => {
     if (editUser) {
@@ -82,6 +92,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         role: editUser.role,
         department: editUser.department || '',
         isActive: editUser.isActive,
+        isSuperAdmin: editUser.isSuperAdmin || false,
         notes: ''
       });
     } else {
@@ -98,6 +109,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
         role: 'employee',
         department: '',
         isActive: true,
+        isSuperAdmin: false,
         notes: ''
       });
     }
@@ -304,7 +316,13 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                   <FormItem>
                     <FormLabel>Role</FormLabel>
                     <Select 
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        // Reset isSuperAdmin to false if role is not admin
+                        if (value !== 'admin' && form.getValues('isSuperAdmin')) {
+                          form.setValue('isSuperAdmin', false);
+                        }
+                      }}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -364,6 +382,34 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                 </FormItem>
               )}
             />
+            
+            {showSuperAdminField && form.watch('role') === 'admin' && (
+              <FormField
+                control={form.control}
+                name="isSuperAdmin"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 space-y-0">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base flex items-center">
+                        <Shield className="h-4 w-4 mr-2 text-purple-600" />
+                        Super Admin
+                      </FormLabel>
+                      <FormDescription>
+                        Super Admins have additional privileges and cannot be modified by regular admins.
+                      </FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={editUser?.isSuperAdmin && currentUser?.id !== editUser?.id}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             
             <FormField
               control={form.control}
