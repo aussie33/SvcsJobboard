@@ -64,7 +64,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
     resolver: zodResolver(applicationWithResumeSchema),
     defaultValues: {
       jobId: job.id,
-      applicantId: 0, // Will be set on the server for anonymous applications
+      applicantId: user?.id || 0, // Set applicantId if user is logged in
       name: user?.fullName || '',
       email: user?.email || '',
       phone: '',
@@ -112,7 +112,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
 
     const formData = new FormData();
     formData.append('jobId', job.id.toString());
-    formData.append('applicantId', '0'); // Will be assigned on server
+    formData.append('applicantId', user?.id ? user.id.toString() : '0');
     formData.append('name', data.name);
     formData.append('email', data.email);
     formData.append('phone', data.phone || '');

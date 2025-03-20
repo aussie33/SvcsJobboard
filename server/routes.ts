@@ -558,11 +558,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.user) {
         console.log('Setting applicant ID to:', req.user.id);
         parsedData.applicantId = req.user.id;
-        
-        // Check if user already applied for this job
+      }
+      
+      // Check if user already applied for this job
+      if (parsedData.applicantId) {
         const existingApplications = await storage.getApplications({ 
           jobId: parsedData.jobId,
-          applicantId: req.user.id 
+          applicantId: parsedData.applicantId 
         });
         
         if (existingApplications.length > 0) {

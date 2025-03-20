@@ -24,6 +24,7 @@ const Home = () => {
     
     // Invalidate both jobs and applications queries to refresh the data
     queryClient.invalidateQueries({ queryKey: ['/api/my-applications'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
   };
 
   return (
