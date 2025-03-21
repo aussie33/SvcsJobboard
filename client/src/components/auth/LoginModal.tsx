@@ -108,7 +108,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[425px] bg-gradient-to-b from-white to-gray-50 border-2 border-gray-300">
+        <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 border-2 border-gray-300">
           <div className="flex justify-center mb-4">
             <img 
               src="/assets/base_icon_transparent_background.png" 
@@ -156,9 +156,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 )}
               />
               
-              <div className="bg-gray-100 p-4 rounded-lg border-2 border-gray-300 shadow-sm">
+              <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
                 <div className="mb-3 text-center">
-                  <h3 className="text-purple-900 font-semibold">Enter Your Credentials</h3>
+                  <h3 className="text-purple-900 font-semibold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">Enter Your Credentials</h3>
                 </div>
                 <FormField
                   control={form.control}
@@ -205,7 +205,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </div>
               
               {/* Account management links */}
-              <div className="flex justify-between items-center bg-purple-50 rounded-lg p-4 border-2 border-purple-100">
+              <div className="flex justify-between items-center bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-4 border-2 border-purple-200 shadow-sm">
                 <div className="text-sm space-y-1">
                   <button 
                     type="button" 
@@ -234,7 +234,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 </div>
               )}
 
-              <div className="text-sm text-gray-600 bg-gray-50 p-4 rounded-lg border-2 border-gray-200">
+              <div className="text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-200 shadow-sm">
                 <p className="font-medium mb-2">Demo accounts available:</p>
                 <ul className="space-y-1">
                   <li className="flex items-center gap-2">
@@ -265,7 +265,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <Button 
                   type="submit"
                   disabled={isLoading}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium border-2 border-purple-400 shadow-md"
                 >
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Login
