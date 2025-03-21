@@ -205,26 +205,22 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               </div>
               
               {/* Account management links */}
-              <div className="flex justify-between items-center bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-4 border-2 border-purple-200 shadow-sm">
-                <div className="text-sm space-y-1">
+              <div className="flex justify-center bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-4 border-2 border-purple-200 shadow-sm">
+                <div className="text-sm flex gap-6">
                   <button 
                     type="button" 
-                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-left flex items-center gap-1"
+                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-center flex items-center gap-1"
                     onClick={() => setShowSignupModal(true)}
                   >
                     <span className="text-xs">➕</span> Create an account
                   </button>
                   <button 
                     type="button" 
-                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-left flex items-center gap-1"
+                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-center flex items-center gap-1"
                     onClick={() => setShowResetModal(true)}
                   >
                     <span className="text-xs">🔑</span> Forgot password?
                   </button>
-                </div>
-                <div className="text-gray-600 text-sm">
-                  <div className="text-center mb-1 font-medium">The Resource Consultants</div>
-                  <div className="text-xs text-center text-gray-500">Connecting talent with opportunity</div>
                 </div>
               </div>
               
