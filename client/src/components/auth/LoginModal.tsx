@@ -153,7 +153,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex justify-center mb-3">
                   <img 
                     src="/assets/base_icon_transparent_background.png" 
-                    alt="The Resource Consultants Logo" 
+                    alt="Logo" 
                     className="h-16 w-auto"
                   />
                 </div>
