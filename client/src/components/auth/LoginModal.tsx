@@ -63,7 +63,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     defaultValues: {
       username: '',
       password: '',
-      accountType: 'employee'
+      accountType: 'applicant'
     }
   });
 
@@ -137,17 +137,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                         defaultValue={field.value}
                         className="grid grid-cols-1 gap-2 sm:grid-cols-3"
                       >
-                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'admin' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
-                          <RadioGroupItem value="admin" id="account-admin" className="sr-only" />
-                          <Label htmlFor="account-admin" className="cursor-pointer font-medium">Administrator</Label>
+                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'applicant' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
+                          <RadioGroupItem value="applicant" id="account-applicant" className="sr-only" />
+                          <Label htmlFor="account-applicant" className="cursor-pointer font-medium">Job Applicant</Label>
                         </div>
                         <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'employee' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
                           <RadioGroupItem value="employee" id="account-employee" className="sr-only" />
                           <Label htmlFor="account-employee" className="cursor-pointer font-medium">Employee</Label>
                         </div>
-                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'applicant' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
-                          <RadioGroupItem value="applicant" id="account-applicant" className="sr-only" />
-                          <Label htmlFor="account-applicant" className="cursor-pointer font-medium">Job Applicant</Label>
+                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'admin' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
+                          <RadioGroupItem value="admin" id="account-admin" className="sr-only" />
+                          <Label htmlFor="account-admin" className="cursor-pointer font-medium">Administrator</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -156,48 +156,53 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                 )}
               />
               
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-purple-800 font-medium">Username or Email</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
-                        <Input 
-                          {...field} 
-                          placeholder="Enter your username or email" 
-                          className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-purple-800 font-medium">Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
-                        <Input 
-                          {...field} 
-                          type="password" 
-                          placeholder="Enter your password" 
-                          className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="bg-gray-100 p-4 rounded-lg border-2 border-gray-300 shadow-sm">
+                <div className="mb-3 text-center">
+                  <h3 className="text-purple-900 font-semibold">Enter Your Credentials</h3>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem className="mb-4">
+                      <FormLabel className="text-purple-800 font-medium">Username or Email</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
+                          <Input 
+                            {...field} 
+                            placeholder="Enter your username or email" 
+                            className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300 bg-white"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-purple-800 font-medium">Password</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
+                          <Input 
+                            {...field} 
+                            type="password" 
+                            placeholder="Enter your password" 
+                            className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300 bg-white"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               
               {/* Account management links */}
               <div className="flex justify-between items-center bg-purple-50 rounded-lg p-4 border-2 border-purple-100">
