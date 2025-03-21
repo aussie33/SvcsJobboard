@@ -109,13 +109,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 border-2 border-gray-300">
-          <div className="flex justify-center mb-4">
-            <img 
-              src="/assets/base_icon_transparent_background.png" 
-              alt="The Resource Consultants Logo" 
-              className="h-20 w-auto"
-            />
-          </div>
           <DialogHeader>
             <DialogTitle className="text-xl text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold">Login to Your Account</DialogTitle>
             <DialogDescription className="text-center">
@@ -157,6 +150,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               />
               
               <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
+                <div className="flex justify-center mb-3">
+                  <img 
+                    src="/assets/base_icon_transparent_background.png" 
+                    alt="The Resource Consultants Logo" 
+                    className="h-16 w-auto"
+                  />
+                </div>
                 <div className="mb-3 text-center">
                   <h3 className="text-purple-900 font-semibold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">Enter Your Credentials</h3>
                 </div>
