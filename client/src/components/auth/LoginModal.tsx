@@ -33,8 +33,7 @@ import { useToast } from '@/hooks/use-toast';
 import SignupModal from './SignupModal';
 import ResetPasswordModal from './ResetPasswordModal';
 
-// Import the logo
-import logoImage from '../../cropped-logo.png';
+// No need to import the logo since we're using the public folder
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -126,7 +125,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 pt-20 pb-10 px-4 text-white text-center">
               <div className="flex justify-center mb-6 mt-8">
                 <img 
-                  src={logoImage} 
+                  src="/images/logo.png" 
                   alt="The Resource Consultants Logo" 
                   className="w-full max-w-[380px] h-auto"
                 />
