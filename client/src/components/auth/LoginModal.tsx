@@ -152,7 +152,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
                 <div className="flex justify-center mb-3">
                   <img 
-                    src="/assets/base_icon_transparent_background.png" 
+                    src="/img/logo.png" 
                     alt="Logo" 
                     className="h-16 w-auto"
                   />
