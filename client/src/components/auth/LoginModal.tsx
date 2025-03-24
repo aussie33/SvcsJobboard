@@ -112,7 +112,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
         <DialogContent 
-          className="sm:max-w-[400px] p-0 overflow-hidden border-0 shadow-xl"
+          className="sm:max-w-[450px] p-0 overflow-hidden border-0 shadow-xl"
           aria-labelledby="login-title"
           aria-describedby="login-description"
         >
@@ -123,12 +123,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           
           <div className="flex flex-col h-full">
             {/* Header with logo and title */}
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-6 px-6 text-white text-center">
-              <div className="flex justify-center mb-3">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-10 px-4 text-white text-center">
+              <div className="flex justify-center mb-6">
                 <img 
                   src={logoImage} 
                   alt="The Resource Consultants Logo" 
-                  className="h-14 w-auto max-w-[250px]"
+                  className="w-full max-w-[380px] h-auto"
                 />
               </div>
               <h1 className="text-2xl font-bold">Login Now</h1>
