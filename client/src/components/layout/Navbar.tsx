@@ -5,8 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Menu, X } from 'lucide-react';
 import LoginModal from '@/components/auth/LoginModal';
 
-// Import the logo image
-const logoImage = '/cropped_logo.png';
+// Import the logo
+import navbarLogo from '../../cropped-logo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,7 +28,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <img src={logoImage} alt="The Resource Consultants Logo" className="h-8 w-auto" />
+              <img src="/cropped_logo.png" alt="The Resource Consultants Logo" className="h-7 w-auto" />
             </Link>
           </div>
           
