@@ -34,7 +34,7 @@ import SignupModal from './SignupModal';
 import ResetPasswordModal from './ResetPasswordModal';
 
 // Import the logo
-import logoImage from '../../full-logo.png';
+import logoImage from '../../cropped-logo.png';
 
 interface LoginModalProps {
   isOpen: boolean;
