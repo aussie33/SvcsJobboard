@@ -4,9 +4,8 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { Menu, X } from 'lucide-react';
 import LoginModal from '@/components/auth/LoginModal';
-
-// Use the logo from the public directory
-const logoPath = '/logo.png';
+// Import the logo directly
+import logoImage from '../../assets/logo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,7 +27,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <img src={logoPath} alt="The Resource Consultants Logo" className="h-10 w-auto" />
+              <img src={logoImage} alt="The Resource Consultants Logo" className="h-10 w-auto" />
             </Link>
           </div>
           
