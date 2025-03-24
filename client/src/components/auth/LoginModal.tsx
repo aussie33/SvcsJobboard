@@ -5,7 +5,10 @@ import { z } from 'zod';
 import { 
   Dialog, 
   DialogContent,
-  DialogFooter
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
 } from '@/components/ui/dialog';
 import { 
   Form, 
@@ -31,7 +34,7 @@ import SignupModal from './SignupModal';
 import ResetPasswordModal from './ResetPasswordModal';
 
 // Import the logo
-import logoImage from '../../logo.png';
+import logoImage from '../../full-logo.png';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -108,15 +111,24 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden border-0 shadow-xl">
+        <DialogContent 
+          className="sm:max-w-[400px] p-0 overflow-hidden border-0 shadow-xl"
+          aria-labelledby="login-title"
+          aria-describedby="login-description"
+        >
+          <DialogTitle id="login-title" className="sr-only">Login to your account</DialogTitle>
+          <DialogDescription id="login-description" className="sr-only">
+            Enter your credentials to access The Resource Consultants portal
+          </DialogDescription>
+          
           <div className="flex flex-col h-full">
             {/* Header with logo and title */}
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-6 px-6 text-white text-center">
               <div className="flex justify-center mb-3">
                 <img 
                   src={logoImage} 
-                  alt="Logo" 
-                  className="h-16 w-auto"
+                  alt="The Resource Consultants Logo" 
+                  className="h-14 w-auto max-w-[250px]"
                 />
               </div>
               <h1 className="text-2xl font-bold">Login Now</h1>
