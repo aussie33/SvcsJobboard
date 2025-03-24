@@ -123,12 +123,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           
           <div className="flex flex-col h-full">
             {/* Header with logo and title */}
-            <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-10 px-4 text-white text-center">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 pt-14 pb-10 px-4 text-white text-center">
               <div className="flex justify-center mb-6">
                 <img 
                   src={logoImage} 
                   alt="The Resource Consultants Logo" 
-                  className="w-full max-w-[380px] h-auto"
+                  className="w-full max-w-[380px] h-auto mt-2"
                 />
               </div>
               <h1 className="text-2xl font-bold">Login Now</h1>
