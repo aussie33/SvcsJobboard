@@ -5,6 +5,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Menu, X } from 'lucide-react';
 import LoginModal from '@/components/auth/LoginModal';
 
+// Import the logo image
+const logoImage = '/black_logo_transparent_background.png';
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
