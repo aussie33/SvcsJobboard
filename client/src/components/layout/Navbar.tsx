@@ -5,7 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Menu, X } from 'lucide-react';
 import LoginModal from '@/components/auth/LoginModal';
 
-// Use the text version for now since we're having issues with the image
+// Use the logo from the public directory
+const logoPath = '/logo.png';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,8 +27,8 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="text-primary font-bold text-xl">
-              The Resource Consultants
+            <Link href="/" className="flex items-center">
+              <img src={logoPath} alt="The Resource Consultants Logo" className="h-10 w-auto" />
             </Link>
           </div>
           
