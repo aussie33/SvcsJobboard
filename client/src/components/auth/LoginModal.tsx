@@ -151,11 +151,36 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
               
               <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
                 <div className="flex justify-center mb-3">
-                  <img 
-                    src="/img/logo.png" 
-                    alt="Logo" 
-                    className="h-16 w-auto"
-                  />
+                  <svg 
+                    width="80" 
+                    height="80" 
+                    viewBox="0 0 200 200" 
+                  >
+                    <polygon 
+                      points="100,20 180,160 20,160" 
+                      fill="#9333ea" 
+                      stroke="#9333ea" 
+                      strokeWidth="6"
+                    />
+                    <polygon 
+                      points="100,60 140,120 60,120" 
+                      fill="#1e1e1e" 
+                      stroke="#9333ea" 
+                      strokeWidth="0"
+                    />
+                    <path 
+                      d="M 100,20 L 100,160" 
+                      stroke="#9333ea" 
+                      strokeWidth="6"
+                      fill="none"
+                    />
+                    <path 
+                      d="M 54,120 L 146,120" 
+                      stroke="#9333ea" 
+                      strokeWidth="6"
+                      fill="none"
+                    />
+                  </svg>
                 </div>
                 <div className="mb-3 text-center">
                   <h3 className="text-purple-900 font-semibold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">Enter Your Credentials</h3>
