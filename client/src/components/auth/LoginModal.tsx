@@ -4,18 +4,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { 
   Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter,
-  DialogDescription
+  DialogContent,
+  DialogFooter
 } from '@/components/ui/dialog';
 import { 
   Form, 
   FormControl, 
   FormField, 
   FormItem, 
-  FormLabel, 
   FormMessage 
 } from '@/components/ui/form';
 import { 
@@ -25,7 +21,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Loader2, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Facebook, Loader2, Twitter } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
@@ -59,6 +55,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [loginError, setLoginError] = useState('');
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -111,167 +108,193 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 border-2 border-gray-300">
-          <DialogHeader>
-            <DialogTitle className="text-xl text-center bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent font-bold">Login to Your Account</DialogTitle>
-            <DialogDescription className="text-center">
-              Enter your credentials to access your account. You can log in with either your username or email address.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="accountType"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel className="text-purple-800 font-medium">Account Type</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="grid grid-cols-1 gap-2 sm:grid-cols-3"
-                      >
-                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'applicant' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
-                          <RadioGroupItem value="applicant" id="account-applicant" className="sr-only" />
-                          <Label htmlFor="account-applicant" className="cursor-pointer font-medium">Job Applicant</Label>
+        <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden border-0 shadow-xl">
+          <div className="flex flex-col h-full">
+            {/* Header with logo and title */}
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 py-6 px-6 text-white text-center">
+              <div className="flex justify-center mb-3">
+                <img 
+                  src={logoImage} 
+                  alt="Logo" 
+                  className="h-16 w-auto"
+                />
+              </div>
+              <h1 className="text-2xl font-bold">Login Now</h1>
+              <p className="text-sm text-white/90 mt-2">
+                Please login or sign up to continue using our app
+              </p>
+            </div>
+            
+            {/* Account type selector */}
+            <div className="bg-gray-100 px-6 py-4">
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="accountType"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <div className="flex justify-center gap-2">
+                          <div className="flex flex-wrap justify-center gap-2 sm:flex-nowrap">
+                            <div 
+                              className={`px-4 py-2 border-2 rounded-md cursor-pointer transition-all text-center min-w-[80px] ${field.value === 'applicant' ? 'bg-purple-100 border-purple-500 text-purple-700' : 'border-gray-300 text-gray-700'}`}
+                              onClick={() => form.setValue('accountType', 'applicant')}
+                            >
+                              <Label className="cursor-pointer font-medium">Applicant</Label>
+                            </div>
+                            
+                            <div 
+                              className={`px-4 py-2 border-2 rounded-md cursor-pointer transition-all text-center min-w-[80px] ${field.value === 'employee' ? 'bg-purple-100 border-purple-500 text-purple-700' : 'border-gray-300 text-gray-700'}`}
+                              onClick={() => form.setValue('accountType', 'employee')}
+                            >
+                              <Label className="cursor-pointer font-medium">Employee</Label>
+                            </div>
+                            
+                            <div 
+                              className={`px-4 py-2 border-2 rounded-md cursor-pointer transition-all text-center min-w-[80px] ${field.value === 'admin' ? 'bg-purple-100 border-purple-500 text-purple-700' : 'border-gray-300 text-gray-700'}`}
+                              onClick={() => form.setValue('accountType', 'admin')}
+                            >
+                              <Label className="cursor-pointer font-medium">Admin</Label>
+                            </div>
+                          </div>
                         </div>
-                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'employee' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
-                          <RadioGroupItem value="employee" id="account-employee" className="sr-only" />
-                          <Label htmlFor="account-employee" className="cursor-pointer font-medium">Employee</Label>
-                        </div>
-                        <div className={`flex items-center justify-center space-x-2 border-2 rounded-md p-3 cursor-pointer transition-all ${field.value === 'admin' ? 'bg-purple-100 border-purple-500 shadow-sm' : 'border-gray-300 hover:border-purple-400'}`}>
-                          <RadioGroupItem value="admin" id="account-admin" className="sr-only" />
-                          <Label htmlFor="account-admin" className="cursor-pointer font-medium">Administrator</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
-                <div className="flex justify-center mb-3">
-                  <img 
-                    src={logoImage} 
-                    alt="Logo" 
-                    className="h-16 w-auto"
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="mb-3 text-center">
-                  <h3 className="text-purple-900 font-semibold bg-gradient-to-r from-purple-700 to-blue-700 bg-clip-text text-transparent">Enter Your Credentials</h3>
-                </div>
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem className="mb-4">
-                      <FormLabel className="text-purple-800 font-medium">Username or Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
-                          <Input 
-                            {...field} 
-                            placeholder="Enter your username or email" 
-                            className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300 bg-white"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  
+                  {/* Social login section */}
+                  <div className="space-y-4">
+                    <div className="text-center text-sm text-gray-600 font-medium">
+                      Enter via Social Networks
+                    </div>
+                    <div className="flex justify-center gap-4">
+                      <button
+                        type="button"
+                        className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                      >
+                        <Facebook className="h-5 w-5 text-blue-600" />
+                      </button>
+                      <button
+                        type="button"
+                        className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
+                      >
+                        <Twitter className="h-5 w-5 text-blue-400" />
+                      </button>
+                    </div>
+                    
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300"></div>
+                      </div>
+                      <div className="relative flex justify-center text-xs">
+                        <span className="px-2 bg-gray-100 text-gray-500">or login with email</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Email and password fields */}
+                  <div className="space-y-4 pt-2">
+                    <FormField
+                      control={form.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input 
+                              {...field} 
+                              placeholder="Your username or email"
+                              className="h-12 px-4 border-2 border-gray-300 rounded-lg bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input 
+                                {...field} 
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Your password" 
+                                className="h-12 px-4 border-2 border-gray-300 rounded-lg bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-200"
+                              />
+                              <button 
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-5 w-5" />
+                                ) : (
+                                  <Eye className="h-5 w-5" />
+                                )}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex justify-end">
+                      <button 
+                        type="button" 
+                        className="text-sm text-purple-600 font-medium hover:underline"
+                        onClick={() => setShowResetModal(true)}
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {loginError && (
+                    <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded text-sm text-red-700">
+                      {loginError}
+                    </div>
                   )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-purple-800 font-medium">Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-500 h-4 w-4" />
-                          <Input 
-                            {...field} 
-                            type="password" 
-                            placeholder="Enter your password" 
-                            className="pl-10 border-2 border-gray-300 focus:border-purple-500 transition-colors focus:ring-purple-300 bg-white"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              {/* Account management links */}
-              <div className="flex justify-center bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-4 border-2 border-purple-200 shadow-sm">
-                <div className="text-sm flex gap-6">
-                  <button 
-                    type="button" 
-                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-center flex items-center gap-1"
-                    onClick={() => setShowSignupModal(true)}
+                  
+                  {/* Login button */}
+                  <Button 
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg"
                   >
-                    <span className="text-xs">➕</span> Create an account
-                  </button>
-                  <button 
-                    type="button" 
-                    className="text-purple-700 hover:text-purple-900 font-medium hover:underline text-center flex items-center gap-1"
-                    onClick={() => setShowResetModal(true)}
-                  >
-                    <span className="text-xs">🔑</span> Forgot password?
-                  </button>
-                </div>
-              </div>
-              
-              {loginError && (
-                <div className="bg-red-50 border-2 border-red-200 text-red-700 p-3 rounded-md text-sm">
-                  {loginError}
-                </div>
-              )}
-
-              <div className="text-sm text-gray-600 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-200 shadow-sm">
-                <p className="font-medium mb-2">Demo accounts available:</p>
-                <ul className="space-y-1">
-                  <li className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-blue-600"></span> 
-                    Admin: <strong className="text-blue-800">admin</strong> / <strong className="text-blue-800">admin123</strong>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-green-600"></span> 
-                    Employee: <strong className="text-green-800">employee</strong> / <strong className="text-green-800">employee123</strong>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-purple-600"></span> 
-                    Applicant: <strong className="text-purple-800">applicant</strong> / <strong className="text-purple-800">applicant123</strong>
-                  </li>
-                </ul>
-              </div>
-              
-              <DialogFooter className="gap-3">
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={onClose}
-                  disabled={isLoading}
-                  className="border-2 border-gray-300 hover:bg-gray-100"
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium border-2 border-purple-400 shadow-md"
-                >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Login
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
+                    {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
+                    Login
+                  </Button>
+                  
+                  {/* Demo accounts section */}
+                  <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <p className="font-medium mb-1">Demo accounts:</p>
+                    <ul className="space-y-1">
+                      <li>Admin: <span className="font-mono text-purple-700">admin / admin123</span></li>
+                      <li>Employee: <span className="font-mono text-purple-700">employee / employee123</span></li>
+                      <li>Applicant: <span className="font-mono text-purple-700">applicant / applicant123</span></li>
+                    </ul>
+                  </div>
+                  
+                  {/* Sign up link */}
+                  <div className="text-center text-sm">
+                    Don't have an account? {" "}
+                    <button 
+                      type="button" 
+                      className="text-purple-600 font-medium hover:underline"
+                      onClick={() => setShowSignupModal(true)}
+                    >
+                      Sign up
+                    </button>
+                  </div>
+                </form>
+              </Form>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
