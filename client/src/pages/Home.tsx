@@ -29,12 +29,12 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-20 px-4">
+      <div className="bg-gradient-to-r from-[#9C27B0] to-[#8E24AA] py-20 px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Find Your Dream Career
           </h1>
-          <p className="text-xl text-blue-100 max-w-xl mx-auto">
+          <p className="text-xl text-purple-100 max-w-xl mx-auto">
             Explore opportunities that match your skills and ambitions. Your next career move starts here.
           </p>
         </div>
