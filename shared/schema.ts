@@ -117,13 +117,17 @@ export const loginSchema = z.object({
 
 export type LoginCredentials = z.infer<typeof loginSchema>;
 
+// This schema is used when creating or updating a job with tags
 export const jobWithTagsSchema = z.object({
   job: z.object(createInsertSchema(jobs).shape),
   tags: z.array(z.string()),
-  applicationCount: z.number().optional(),
 });
 
-export type JobWithTags = z.infer<typeof jobWithTagsSchema>;
+// This type represents a job with its tags - matches the API response format
+export type JobWithTags = Job & { 
+  tags: string[],
+  applicationCount?: number 
+};
 
 export const applicationWithResumeSchema = insertApplicationSchema.extend({
   resume: z.instanceof(File).optional(),
