@@ -189,7 +189,7 @@ const CategoryManagement = () => {
               </Table>
               
               {totalCategories > 0 && (
-                <div className="mt-4">
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-sm">
                   <PaginationControls
                     currentPage={currentPage}
                     totalPages={totalPages}
