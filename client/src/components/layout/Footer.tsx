@@ -1,5 +1,6 @@
 import { Link } from 'wouter';
-import { Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Facebook, Linkedin } from 'lucide-react';
+import { FaTwitter } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -50,7 +51,7 @@ const Footer = () => {
               <Facebook className="h-6 w-6" />
             </a>
             <a href="#" aria-label="Twitter" className="text-gray-300 hover:text-white">
-              <Twitter className="h-6 w-6" />
+              <FaTwitter className="h-6 w-6" />
             </a>
             <a href="#" aria-label="LinkedIn" className="text-gray-300 hover:text-white">
               <Linkedin className="h-6 w-6" />
