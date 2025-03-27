@@ -32,6 +32,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import PaginationControls from '@/components/shared/PaginationControls';
 import { User, Application } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
 import { apiRequest } from '@/lib/queryClient';
@@ -47,7 +48,20 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const { toast } = useToast();
+  
+  // Handle pagination
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   // Fetch employee's jobs
   const { data: jobs, isLoading: isJobsLoading } = useQuery({
@@ -136,6 +150,15 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
            jobTitle.includes(query) ||
            app.email.toLowerCase().includes(query);
   }) : [];
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+  
+  // Get paginated applications
+  const paginatedApplications = filteredApplications.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <>
@@ -213,7 +236,7 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                 </TableHeader>
                 <TableBody>
                   {filteredApplications.length > 0 ? (
-                    filteredApplications.map((application: Application) => (
+                    paginatedApplications.map((application: Application) => (
                       <TableRow key={application.id}>
                         <TableCell>
                           <div className="flex items-center">
@@ -252,6 +275,21 @@ const ViewApplications: React.FC<ViewApplicationsProps> = ({ user }) => {
                   )}
                 </TableBody>
               </Table>
+              
+              {/* Pagination controls */}
+              {filteredApplications.length > 0 && (
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-sm">
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredApplications.length}
+                    itemsPerPage={itemsPerPage}
+                    setCurrentPage={handlePageChange}
+                    setItemsPerPage={handleItemsPerPageChange}
+                    showItemsPerPageSelect={true}
+                  />
+                </div>
+              )}
             </div>
           )}
         </CardContent>

@@ -8,21 +8,8 @@ import {
   MapPin, 
   Clock, 
   Calendar, 
-  CheckCircle, 
-  ChevronLeft, 
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight
+  CheckCircle
 } from 'lucide-react';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -30,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import PaginationControls from '@/components/shared/PaginationControls';
 import JobFilters from './JobFilters';
 import JobCard from './JobCard';
 import JobDetailModal from '@/components/shared/JobDetailModal';
@@ -191,50 +179,10 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
     setCurrentPage(page);
   };
   
-  const handleJobsPerPageChange = (value: string) => {
-    setJobsPerPage(parseInt(value));
+  // Pagination handler
+  const handleItemsPerPageChange = (value: number) => {
+    setJobsPerPage(value);
     setCurrentPage(1); // Reset to first page when changing items per page
-  };
-  
-  // Generate array of page numbers for pagination
-  const getPageNumbers = () => {
-    const visiblePages = 5; // Number of page buttons to show
-    const pages: (number | null)[] = [];
-    
-    if (totalPages <= visiblePages) {
-      // Show all pages if there are few
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Always show first page
-      pages.push(1);
-      
-      if (currentPage > 3) {
-        // Add ellipsis if current page is far from start
-        pages.push(null);
-      }
-      
-      // Calculate range around current page
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-      
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-      
-      if (currentPage < totalPages - 2) {
-        // Add ellipsis if current page is far from end
-        pages.push(null);
-      }
-      
-      // Always show last page
-      if (totalPages > 1) {
-        pages.push(totalPages);
-      }
-    }
-    
-    return pages;
   };
 
   return (
@@ -385,104 +333,15 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
         {/* Pagination controls - only shown when there are jobs */}
         {!isJobsLoading && filteredJobs.length > 0 && (
           <div className="mt-8 flex flex-col gap-4 p-6 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-md">
-            <div className="flex justify-between items-center">
-              <div className="text-sm text-gray-500">
-                Showing {paginatedJobs.length} of {filteredJobs.length} jobs
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Jobs per page:</span>
-                <Select
-                  value={jobsPerPage.toString()}
-                  onValueChange={handleJobsPerPageChange}
-                >
-                  <SelectTrigger className="w-[80px] h-8">
-                    <SelectValue placeholder="20" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="40">40</SelectItem>
-                    <SelectItem value="60">60</SelectItem>
-                    <SelectItem value="80">80</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <Pagination>
-              <PaginationContent>
-                {/* First page button */}
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
-                    onClick={() => handlePageChange(1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronsLeft className="h-4 w-4" />
-                  </Button>
-                </PaginationItem>
-                
-                {/* Previous page button */}
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                </PaginationItem>
-                
-                {/* Page numbers */}
-                {getPageNumbers().map((page, index) => (
-                  <PaginationItem key={index}>
-                    {page === null ? (
-                      <PaginationEllipsis />
-                    ) : (
-                      <PaginationLink
-                        isActive={page === currentPage}
-                        onClick={() => handlePageChange(page)}
-                        className={page === currentPage ? "border-2 border-blue-500 font-bold bg-blue-50" : "border border-gray-300"}
-                      >
-                        {page}
-                      </PaginationLink>
-                    )}
-                  </PaginationItem>
-                ))}
-                
-                {/* Next page button */}
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </PaginationItem>
-                
-                {/* Last page button */}
-                <PaginationItem>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 border-2 border-gray-300 bg-gray-50"
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronsRight className="h-4 w-4" />
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredJobs.length}
+              itemsPerPage={jobsPerPage}
+              setCurrentPage={handlePageChange}
+              setItemsPerPage={handleItemsPerPageChange}
+              showItemsPerPageSelect={true}
+            />
           </div>
         )}
       </div>

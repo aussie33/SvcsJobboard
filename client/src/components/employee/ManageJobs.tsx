@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { JobWithTags, User, Category } from '@shared/schema';
 import JobPostingModal from './JobPostingModal';
 import JobDetailModal from '@/components/shared/JobDetailModal';
+import PaginationControls from '@/components/shared/PaginationControls';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -31,8 +32,21 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   const [editingJob, setEditingJob] = useState<JobWithTags | null>(null);
   const [selectedJob, setSelectedJob] = useState<JobWithTags | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  
+  // Handle pagination
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   // Query to get all of employee's jobs regardless of status
   const jobsQueryParams = { employeeId: user.id, includeAllStatuses: true };
@@ -158,6 +172,12 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     return job.title.toLowerCase().includes(query) || 
            job.department.toLowerCase().includes(query);
   });
+  
+  // Calculate total pages and paginated jobs
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {
@@ -220,7 +240,7 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                 </TableHeader>
                 <TableBody>
                   {filteredJobs.length > 0 ? (
-                    filteredJobs.map((job: JobWithTags) => (
+                    paginatedJobs.map((job: JobWithTags) => (
                       <TableRow key={job.id}>
                         <TableCell className="font-medium">
                           <span 
@@ -296,6 +316,21 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
                   )}
                 </TableBody>
               </Table>
+              
+              {/* Pagination controls */}
+              {filteredJobs.length > 0 && (
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-sm">
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={filteredJobs.length}
+                    itemsPerPage={itemsPerPage}
+                    setCurrentPage={handlePageChange}
+                    setItemsPerPage={handleItemsPerPageChange}
+                    showItemsPerPageSelect={true}
+                  />
+                </div>
+              )}
             </div>
           )}
         </CardContent>

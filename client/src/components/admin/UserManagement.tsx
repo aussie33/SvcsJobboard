@@ -20,13 +20,13 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
-import { Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import AddUserModal from './AddUserModal';
+import PaginationControls from '../shared/PaginationControls';
 
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,7 +35,13 @@ const UserManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(20); // Default to 20 items per page as specified
+  
+  // Handle items per page change
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
   
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -161,7 +167,7 @@ const UserManagement = () => {
                 placeholder="Search users..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-2"
               />
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -172,7 +178,7 @@ const UserManagement = () => {
               value={roleFilter} 
               onValueChange={setRoleFilter}
             >
-              <SelectTrigger className="w-full sm:w-auto">
+              <SelectTrigger className="w-full sm:w-auto border-2">
                 <SelectValue placeholder="All Roles" />
               </SelectTrigger>
               <SelectContent>
@@ -187,7 +193,7 @@ const UserManagement = () => {
               value={statusFilter} 
               onValueChange={setStatusFilter}
             >
-              <SelectTrigger className="w-full sm:w-auto">
+              <SelectTrigger className="w-full sm:w-auto border-2">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
@@ -291,52 +297,17 @@ const UserManagement = () => {
                 </Table>
               </div>
               
-              {totalPages > 1 && (
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-sm text-gray-700">
-                    Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium">{Math.min(currentPage * itemsPerPage, filteredUsers.length)}</span> of <span className="font-medium">{filteredUsers.length}</span> results
-                  </div>
-                  
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                          disabled={currentPage === 1}
-                          className="cursor-pointer"
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                          <span className="sr-only">Previous page</span>
-                        </Button>
-                      </PaginationItem>
-                      {Array.from({ length: totalPages }).map((_, index) => (
-                        <PaginationItem key={index}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(index + 1)}
-                            isActive={currentPage === index + 1}
-                          >
-                            {index + 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                          disabled={currentPage === totalPages}
-                          className="cursor-pointer"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                          <span className="sr-only">Next page</span>
-                        </Button>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-gray-300 shadow-sm">
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalItems={filteredUsers.length}
+                  itemsPerPage={itemsPerPage}
+                  setCurrentPage={setCurrentPage}
+                  setItemsPerPage={handleItemsPerPageChange}
+                  showItemsPerPageSelect={true}
+                />
+              </div>
             </>
           )}
         </CardContent>

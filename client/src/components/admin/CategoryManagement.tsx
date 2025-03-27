@@ -16,13 +16,27 @@ import { useToast } from '@/hooks/use-toast';
 import { formatDate } from '@/lib/formatters';
 import { Category } from '@shared/schema';
 import { Loader2 } from 'lucide-react';
+import PaginationControls from '@/components/shared/PaginationControls';
 import AddCategoryModal from './AddCategoryModal';
 
 const CategoryManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  
+  // Handle pagination
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  
+  // Handle items per page change
+  const handleItemsPerPageChange = (value: number) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Reset to first page when changing items per page
+  };
 
   // Fetch categories including inactive ones
   const { data: categories, isLoading } = useQuery({
@@ -82,6 +96,15 @@ const CategoryManagement = () => {
     if (!jobs) return 0;
     return jobs.filter((job: any) => job.categoryId === categoryId).length;
   };
+  
+  // Calculate total pages and get paginated data
+  const totalCategories = categories ? categories.length : 0;
+  const totalPages = Math.ceil(totalCategories / itemsPerPage);
+  
+  // Get paginated categories
+  const paginatedCategories = categories ? 
+    categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : 
+    [];
 
   return (
     <>
