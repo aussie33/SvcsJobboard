@@ -59,7 +59,10 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
+      // Important: Use a more specific query key to keep the includeAllStatuses parameter
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/jobs', { employeeId: user.id, includeAllStatuses: true }] 
+      });
       toast({
         title: "Job Updated",
         description: "Job status has been updated successfully.",
@@ -83,7 +86,10 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
+      // Important: Use a more specific query key to keep the includeAllStatuses parameter
+      queryClient.invalidateQueries({ 
+        queryKey: ['/api/jobs', { employeeId: user.id, includeAllStatuses: true }] 
+      });
       toast({
         title: "Job Deleted",
         description: "Job has been removed successfully.",
