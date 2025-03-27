@@ -41,8 +41,8 @@ const UserManagement = () => {
   const { toast } = useToast();
 
   // Query users with filters
-  const { data: users, isLoading } = useQuery({
-    queryKey: ['/api/users', { role: roleFilter, active: statusFilter }],
+  const { data: users = [], isLoading } = useQuery<User[]>({
+    queryKey: ['/api/users', { role: roleFilter !== 'all' ? roleFilter : undefined, active: statusFilter !== 'all' ? statusFilter : undefined }],
   });
 
   // Update user status mutation
@@ -88,7 +88,7 @@ const UserManagement = () => {
   };
 
   // Filtered users based on search term
-  const filteredUsers = users
+  const filteredUsers = Array.isArray(users) 
     ? users.filter((user: User) => 
         user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -117,7 +117,7 @@ const UserManagement = () => {
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Accounts</h2>
+            <h2 className="text-xl font-semibold">Portal User Accounts</h2>
             <Button onClick={() => setIsModalOpen(true)}>
               Add New User
             </Button>
