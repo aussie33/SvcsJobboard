@@ -136,7 +136,7 @@ const CategoryManagement = () => {
                 </TableHeader>
                 <TableBody>
                   {categories && categories.length > 0 ? (
-                    categories.map((category: Category) => (
+                    paginatedCategories.map((category: Category) => (
                       <TableRow key={category.id}>
                         <TableCell className="font-medium">{category.name}</TableCell>
                         <TableCell>{category.description || '-'}</TableCell>
@@ -187,6 +187,20 @@ const CategoryManagement = () => {
                   )}
                 </TableBody>
               </Table>
+              
+              {totalCategories > 0 && (
+                <div className="mt-4">
+                  <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalItems={totalCategories}
+                    itemsPerPage={itemsPerPage}
+                    setCurrentPage={handlePageChange}
+                    setItemsPerPage={handleItemsPerPageChange}
+                    showItemsPerPageSelect={true}
+                  />
+                </div>
+              )}
             </div>
           )}
         </CardContent>
