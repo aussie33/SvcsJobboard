@@ -439,18 +439,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } = {};
     
     if (employeeId) filters.employeeId = parseInt(employeeId.toString());
-    if (status) filters.status = status.toString();
+    
+    // Only apply status filter if:
+    // 1. Status is explicitly provided in the query OR
+    // 2. For public access (no logged-in user)
+    if (status) {
+      filters.status = status.toString();
+    } else if (!req.user) {
+      // For public access, only show active jobs
+      filters.status = "active";
+    }
+    
     if (categoryId && categoryId !== '' && categoryId !== 'all') filters.categoryId = parseInt(categoryId.toString());
     if (search) filters.search = search.toString();
     if (department) filters.department = department.toString();
     if (location) filters.location = location.toString();
     if (city) filters.city = city.toString();
     if (state) filters.state = state.toString();
-    
-    // For public access, only show active jobs
-    if (!req.user) {
-      filters.status = "active";
-    }
     
     const jobs = await storage.getJobs(filters);
     

@@ -34,7 +34,7 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Query to get employee's jobs
+  // Query to get all of employee's jobs regardless of status
   const { 
     data: jobs, 
     isLoading,
