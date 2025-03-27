@@ -40,13 +40,31 @@ const UserManagement = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Query users with filters - added console logging
+  // Query users with filters - fixed parameter handling
   const { data: users = [], isLoading } = useQuery<User[]>({
-    queryKey: ['/api/users', { 
-      role: roleFilter !== 'all' ? roleFilter : undefined, 
-      active: statusFilter !== 'all' ? statusFilter === 'true' : undefined 
-    }],
-    onSuccess: (data) => console.log('Fetched users:', data.length),
+    queryKey: ['/api/users'],
+    queryFn: () => {
+      // Create query string manually for better control
+      let url = '/api/users';
+      const params = new URLSearchParams();
+      
+      if (roleFilter !== 'all' && roleFilter) {
+        params.append('role', roleFilter);
+      }
+      
+      if (statusFilter !== 'all' && statusFilter) {
+        params.append('active', statusFilter);
+      }
+      
+      // Only add ? if we have parameters
+      if (params.toString()) {
+        url += '?' + params.toString();
+      }
+      
+      console.log('Fetching users with URL:', url);
+      return fetch(url).then(res => res.json());
+    },
+    onSuccess: (data) => console.log('Fetched users:', data?.length || 0),
     onError: (error) => console.error('Error fetching users:', error)
   });
 

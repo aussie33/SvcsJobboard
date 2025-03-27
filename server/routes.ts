@@ -262,10 +262,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     console.log('GET /api/users - Request query params:', req.query);
     
-    if (role) filters.role = role.toString();
-    if (active !== undefined) filters.isActive = active === "true";
+    // Only apply filters if they're explicitly provided with valid values
+    if (role && role !== 'all') {
+      filters.role = role.toString();
+    }
     
-    console.log('Filters for getUsers:', filters);
+    // Only apply active filter if explicitly provided
+    if (active === 'true') {
+      filters.isActive = true;
+    } else if (active === 'false') {
+      filters.isActive = false;
+    }
+    // If active is not provided or invalid, no filter is applied
+    
+    console.log('Processed filters for getUsers:', filters);
     
     // Get all users from storage
     const allUsers = await storage.getUsers({});
