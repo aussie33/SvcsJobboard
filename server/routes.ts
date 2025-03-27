@@ -267,32 +267,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       filters.role = role.toString();
     }
     
-    // Only apply active filter if explicitly provided
+    // Only apply active filter if explicitly provided and not 'all'
     if (active === 'true') {
       filters.isActive = true;
     } else if (active === 'false') {
       filters.isActive = false;
     }
-    // If active is not provided or invalid, no filter is applied
+    // If active is not provided, is 'all', or is invalid, no filter is applied
     
     console.log('Processed filters for getUsers:', filters);
     
-    // Get all users from storage
-    const allUsers = await storage.getUsers({});
-    console.log('Total users in system:', allUsers.length);
-    
-    // Get filtered users
-    const users = await storage.getUsers(filters);
-    console.log('Filtered users count:', users.length);
-    
-    // Remove passwords from response
-    const usersWithoutPasswords = users.map(user => {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
-    
-    console.log('Sending users response with', usersWithoutPasswords.length, 'users');
-    res.json(usersWithoutPasswords);
+    try {
+      // Get all users from storage
+      const allUsers = await storage.getUsers({});
+      console.log('Total users in system:', allUsers.length);
+      
+      // Get filtered users
+      const users = await storage.getUsers(filters);
+      console.log('Filtered users count:', users.length);
+      
+      // Remove passwords from response
+      const usersWithoutPasswords = users.map(user => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      
+      console.log('Sending users response with', usersWithoutPasswords.length, 'users');
+      res.json(usersWithoutPasswords);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
   });
   
   app.post("/api/users", requireAuth, requireRole(["admin"]), async (req, res) => {

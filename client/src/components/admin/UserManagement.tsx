@@ -41,19 +41,23 @@ const UserManagement = () => {
   const { toast } = useToast();
 
   // Query users with filters - fixed parameter handling
-  const { data: users = [], isLoading } = useQuery<User[]>({
-    queryKey: ['/api/users'],
-    queryFn: () => {
+  const { data: users = [], isLoading, refetch } = useQuery<User[]>({
+    queryKey: ['/api/users', { role: roleFilter, status: statusFilter }],
+    queryFn: async ({ queryKey }) => {
       // Create query string manually for better control
       let url = '/api/users';
       const params = new URLSearchParams();
       
-      if (roleFilter !== 'all' && roleFilter) {
-        params.append('role', roleFilter);
+      const [_, { role, status }] = queryKey as [string, { role?: string, status?: string }];
+      
+      // Only add role filter if it's not 'all'
+      if (role && role !== 'all') {
+        params.append('role', role);
       }
       
-      if (statusFilter !== 'all' && statusFilter) {
-        params.append('active', statusFilter);
+      // Only add status filter if it's not 'all'
+      if (status && status !== 'all') {
+        params.append('active', status);
       }
       
       // Only add ? if we have parameters
@@ -62,10 +66,15 @@ const UserManagement = () => {
       }
       
       console.log('Fetching users with URL:', url);
-      return fetch(url).then(res => res.json());
-    },
-    onSuccess: (data) => console.log('Fetched users:', data?.length || 0),
-    onError: (error) => console.error('Error fetching users:', error)
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error fetching users: ${errorText}`);
+      }
+      
+      return response.json();
+    }
   });
 
   // Update user status mutation

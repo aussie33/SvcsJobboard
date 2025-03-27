@@ -305,18 +305,25 @@ export class MemStorage implements IStorage {
   }
   
   async getUsers(filters?: { role?: string, isActive?: boolean }): Promise<User[]> {
+    // Start with all users
     let users = Array.from(this.users.values());
     
+    // Apply filters only if they're explicitly provided and have valid values
     if (filters) {
+      // Filter by role
       if (filters.role) {
+        console.log(`Filtering users by role: ${filters.role}`);
         users = users.filter(user => user.role === filters.role);
       }
       
+      // Filter by active status
       if (filters.isActive !== undefined) {
+        console.log(`Filtering users by active status: ${filters.isActive}`);
         users = users.filter(user => user.isActive === filters.isActive);
       }
     }
     
+    console.log(`getUsers returning ${users.length} users after applying filters`);
     return users;
   }
   
