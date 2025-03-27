@@ -117,7 +117,7 @@ const UserManagement = () => {
       <Card>
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Employee Accounts</h2>
+            <h2 className="text-xl font-semibold">Accounts</h2>
             <Button onClick={() => setIsModalOpen(true)}>
               Add New User
             </Button>
