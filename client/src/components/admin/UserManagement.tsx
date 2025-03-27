@@ -40,9 +40,14 @@ const UserManagement = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Query users with filters
+  // Query users with filters - added console logging
   const { data: users = [], isLoading } = useQuery<User[]>({
-    queryKey: ['/api/users', { role: roleFilter !== 'all' ? roleFilter : undefined, active: statusFilter !== 'all' ? statusFilter : undefined }],
+    queryKey: ['/api/users', { 
+      role: roleFilter !== 'all' ? roleFilter : undefined, 
+      active: statusFilter !== 'all' ? statusFilter === 'true' : undefined 
+    }],
+    onSuccess: (data) => console.log('Fetched users:', data.length),
+    onError: (error) => console.error('Error fetching users:', error)
   });
 
   // Update user status mutation

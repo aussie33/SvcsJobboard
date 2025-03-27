@@ -260,16 +260,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { role, active } = req.query;
     const filters: { role?: string, isActive?: boolean } = {};
     
+    console.log('GET /api/users - Request query params:', req.query);
+    
     if (role) filters.role = role.toString();
     if (active !== undefined) filters.isActive = active === "true";
     
+    console.log('Filters for getUsers:', filters);
+    
+    // Get all users from storage
+    const allUsers = await storage.getUsers({});
+    console.log('Total users in system:', allUsers.length);
+    
+    // Get filtered users
     const users = await storage.getUsers(filters);
+    console.log('Filtered users count:', users.length);
+    
     // Remove passwords from response
     const usersWithoutPasswords = users.map(user => {
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
     
+    console.log('Sending users response with', usersWithoutPasswords.length, 'users');
     res.json(usersWithoutPasswords);
   });
   

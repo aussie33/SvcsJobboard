@@ -85,8 +85,11 @@ export class MemStorage implements IStorage {
   }
   
   private initializeData() {
+    // Direct initialization without async (since this is a memory DB)
+    
     // Add admin user (Super Admin)
-    const adminUser: InsertUser = {
+    const adminUser: User = {
+      id: this.userIdCounter++,
       username: "admin",
       password: "admin123",
       email: "admin@theresourceconsultants.com",
@@ -98,12 +101,15 @@ export class MemStorage implements IStorage {
       isSuperAdmin: true, // Mark as super admin
       middleName: null,
       preferredName: null,
-      department: "Management"
+      department: "Management",
+      createdAt: new Date(),
+      lastLogin: null
     };
-    this.createUser(adminUser);
+    this.users.set(adminUser.id, adminUser);
     
     // Add employee user
-    const employeeUser: InsertUser = {
+    const employeeUser: User = {
+      id: this.userIdCounter++,
       username: "employee",
       password: "employee123",
       email: "employee@theresourceconsultants.com",
@@ -115,12 +121,15 @@ export class MemStorage implements IStorage {
       department: "Engineering",
       role: "employee",
       isActive: true,
-      isSuperAdmin: false
+      isSuperAdmin: false,
+      createdAt: new Date(),
+      lastLogin: null
     };
-    const employeeId = this.createUser(employeeUser).then(user => user.id);
+    this.users.set(employeeUser.id, employeeUser);
     
     // Add applicant user
-    const applicantUser: InsertUser = {
+    const applicantUser: User = {
+      id: this.userIdCounter++,
       username: "applicant",
       password: "applicant123",
       email: "applicant@example.com",
@@ -132,11 +141,18 @@ export class MemStorage implements IStorage {
       department: null,
       role: "applicant",
       isActive: true,
-      isSuperAdmin: false
+      isSuperAdmin: false,
+      createdAt: new Date(),
+      lastLogin: null
     };
-    this.createUser(applicantUser);
+    this.users.set(applicantUser.id, applicantUser);
     
-    // Add default categories
+    console.log('Initialized users:', this.users.size);
+    
+    // Add default categories directly without promises
+    const categoryIndex = new Map<string, Category>();
+    
+    // Create categories directly
     const categories = [
       "Engineering", "Marketing", "Design", "Product", "Sales",
       "IT", "Software Development", "Healthcare & Medical", "Nursing", "Pharmacy", 
@@ -148,91 +164,127 @@ export class MemStorage implements IStorage {
       "Manufacturing & Trades", "Remote & Freelance", "Virtual Assistance", 
       "Content Writing", "Remote IT Support"
     ];
-    const categoryPromises = categories.map(name => {
-      return this.createCategory({
+    
+    categories.forEach(name => {
+      const id = this.categoryIdCounter++;
+      const category: Category = {
+        id,
         name,
         description: `${name} department jobs`,
-        status: "active"
-      });
+        status: "active",
+        createdAt: new Date()
+      };
+      this.categories.set(id, category);
+      categoryIndex.set(name, category);
     });
     
-    // After categories are created, add sample jobs
-    Promise.all([employeeId, ...categoryPromises]).then(([empId, ...cats]) => {
-      // Add sample jobs
-      const sampleJobs = [
-        {
-          title: "Senior Frontend Developer",
-          department: "Engineering",
-          categoryId: cats[0].id,
-          employeeId: empId,
-          shortDescription: "Join our team as a Senior Frontend Developer to build cutting-edge web applications.",
-          fullDescription: "We're looking for an experienced frontend developer with expertise in React, TypeScript, and modern web development practices. You'll work on our core product and help shape the future of our platform.",
-          requirements: "5+ years of experience with modern JavaScript frameworks, Strong TypeScript skills, Experience with CSS-in-JS solutions",
-          type: "full-time",
-          location: "remote",
-          city: "San Francisco",
-          state: "California",
-          salaryRange: "$120,000 - $150,000",
-          status: "active",
-          postedDate: new Date(),
-          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-        },
-        {
-          title: "Product Designer",
-          department: "Design",
-          categoryId: cats[2].id,
-          employeeId: empId,
-          shortDescription: "Create beautiful, functional designs for our growing product suite.",
-          fullDescription: "As a Product Designer, you'll work closely with our product and engineering teams to create intuitive and visually appealing user interfaces. You'll be involved in the entire product development lifecycle, from concept to implementation.",
-          requirements: "3+ years of experience in product design, Proficiency in Figma, Experience in UX research and user testing",
-          type: "full-time",
-          location: "hybrid",
-          city: "Austin",
-          state: "Texas",
-          salaryRange: "$90,000 - $120,000",
-          status: "active",
-          postedDate: new Date(),
-          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        },
-        {
-          title: "Marketing Intern",
-          department: "Marketing",
-          categoryId: cats[1].id,
-          employeeId: empId,
-          shortDescription: "Join our marketing team for a summer internship opportunity.",
-          fullDescription: "We're looking for enthusiastic marketing interns to join our team for a 3-month period. You'll gain hands-on experience in digital marketing, content creation, and campaign management.",
-          requirements: "Currently pursuing a degree in Marketing or a related field, Strong written and verbal communication skills, Familiarity with social media platforms",
-          type: "internship",
-          location: "onsite",
-          city: "Chicago",
-          state: "Illinois",
-          salaryRange: "$20-25/hour",
-          status: "active",
-          postedDate: new Date(),
-          expiryDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        }
-      ];
+    console.log('Initialized categories:', this.categories.size);
+    
+    // Get the employee ID directly since we assigned it above
+    const employeeId = 2; // From the initialization above
+    
+    // Create sample jobs directly
+    const sampleJobs = [
+      {
+        title: "Senior Frontend Developer",
+        department: "Engineering",
+        categoryId: categoryIndex.get("Engineering")?.id || 1,
+        employeeId: employeeId,
+        shortDescription: "Join our team as a Senior Frontend Developer to build cutting-edge web applications.",
+        fullDescription: "We're looking for an experienced frontend developer with expertise in React, TypeScript, and modern web development practices. You'll work on our core product and help shape the future of our platform.",
+        requirements: "5+ years of experience with modern JavaScript frameworks, Strong TypeScript skills, Experience with CSS-in-JS solutions",
+        type: "full-time",
+        location: "remote",
+        city: "San Francisco",
+        state: "California",
+        salaryRange: "$120,000 - $150,000",
+        status: "active",
+        postedDate: new Date(),
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      },
+      {
+        title: "Product Designer",
+        department: "Design",
+        categoryId: categoryIndex.get("Design")?.id || 3,
+        employeeId: employeeId,
+        shortDescription: "Create beautiful, functional designs for our growing product suite.",
+        fullDescription: "As a Product Designer, you'll work closely with our product and engineering teams to create intuitive and visually appealing user interfaces. You'll be involved in the entire product development lifecycle, from concept to implementation.",
+        requirements: "3+ years of experience in product design, Proficiency in Figma, Experience in UX research and user testing",
+        type: "full-time",
+        location: "hybrid",
+        city: "Austin",
+        state: "Texas",
+        salaryRange: "$90,000 - $120,000",
+        status: "active",
+        postedDate: new Date(),
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      },
+      {
+        title: "Marketing Intern",
+        department: "Marketing",
+        categoryId: categoryIndex.get("Marketing")?.id || 2,
+        employeeId: employeeId,
+        shortDescription: "Join our marketing team for a summer internship opportunity.",
+        fullDescription: "We're looking for enthusiastic marketing interns to join our team for a 3-month period. You'll gain hands-on experience in digital marketing, content creation, and campaign management.",
+        requirements: "Currently pursuing a degree in Marketing or a related field, Strong written and verbal communication skills, Familiarity with social media platforms",
+        type: "internship",
+        location: "onsite",
+        city: "Chicago",
+        state: "Illinois",
+        salaryRange: "$20-25/hour",
+        status: "active",
+        postedDate: new Date(),
+        expiryDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+      }
+    ];
+    
+    // Create jobs directly without promises
+    sampleJobs.forEach(jobData => {
+      const jobId = this.jobIdCounter++;
+      const job: Job = {
+        id: jobId,
+        title: jobData.title,
+        department: jobData.department,
+        categoryId: jobData.categoryId,
+        employeeId: jobData.employeeId,
+        shortDescription: jobData.shortDescription,
+        fullDescription: jobData.fullDescription,
+        requirements: jobData.requirements,
+        type: jobData.type as "full-time" | "part-time" | "contract" | "internship",
+        location: jobData.location as "remote" | "onsite" | "hybrid",
+        city: jobData.city,
+        state: jobData.state,
+        salaryRange: jobData.salaryRange,
+        status: jobData.status as "active" | "draft" | "paused" | "closed",
+        postedDate: jobData.postedDate,
+        expiryDate: jobData.expiryDate
+      };
+      this.jobs.set(jobId, job);
       
-      // Create jobs and add tags
-      sampleJobs.forEach(async (jobData) => {
-        const job = await this.createJob(jobData);
-        
-        // Add tags based on job type
-        if (job.title.includes("Developer")) {
-          await this.addJobTag({ jobId: job.id, tag: "React" });
-          await this.addJobTag({ jobId: job.id, tag: "TypeScript" });
-          await this.addJobTag({ jobId: job.id, tag: "Frontend" });
-        } else if (job.title.includes("Designer")) {
-          await this.addJobTag({ jobId: job.id, tag: "UI/UX" });
-          await this.addJobTag({ jobId: job.id, tag: "Figma" });
-          await this.addJobTag({ jobId: job.id, tag: "Design" });
-        } else if (job.title.includes("Marketing")) {
-          await this.addJobTag({ jobId: job.id, tag: "Social Media" });
-          await this.addJobTag({ jobId: job.id, tag: "Content" });
-          await this.addJobTag({ jobId: job.id, tag: "Digital Marketing" });
-        }
-      });
+      // Add tags based on job title directly
+      if (job.title.includes("Developer")) {
+        const tags = ["React", "TypeScript", "Frontend"];
+        tags.forEach(tag => {
+          const tagId = this.jobTagIdCounter++;
+          this.jobTags.set(tagId, { id: tagId, jobId, tag });
+        });
+      } else if (job.title.includes("Designer")) {
+        const tags = ["UI/UX", "Figma", "Design"];
+        tags.forEach(tag => {
+          const tagId = this.jobTagIdCounter++;
+          this.jobTags.set(tagId, { id: tagId, jobId, tag });
+        });
+      } else if (job.title.includes("Marketing")) {
+        const tags = ["Social Media", "Content", "Digital Marketing"];
+        tags.forEach(tag => {
+          const tagId = this.jobTagIdCounter++;
+          this.jobTags.set(tagId, { id: tagId, jobId, tag });
+        });
+      }
     });
+    
+    console.log('Initialized jobs:', this.jobs.size);
+    console.log('Initialized job tags:', this.jobTags.size);
   }
   
   // User operations
