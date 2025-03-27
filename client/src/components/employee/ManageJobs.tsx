@@ -36,17 +36,17 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
 
   // Query to get all of employee's jobs regardless of status
   const { 
-    data: jobs, 
+    data: jobs = [] as JobWithTags[], 
     isLoading,
     refetch
-  } = useQuery({
-    queryKey: ['/api/jobs', { employeeId: user.id }],
+  } = useQuery<JobWithTags[]>({
+    queryKey: ['/api/jobs', { employeeId: user.id, includeAllStatuses: true }],
   });
 
   // Query to get all categories
   const { 
-    data: categories = [],
-  } = useQuery({
+    data: categories = [] as Category[],
+  } = useQuery<Category[]>({
     queryKey: ['/api/categories'],
   });
 
@@ -140,7 +140,7 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   };
 
   // Filter jobs based on search query
-  const filteredJobs = jobs ? jobs.filter((job: JobWithTags) => {
+  const filteredJobs = jobs.filter((job: JobWithTags) => {
     if (!searchQuery) return true;
     
     const query = searchQuery.toLowerCase();
@@ -148,7 +148,7 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
     // Search by job title or department
     return job.title.toLowerCase().includes(query) || 
            job.department.toLowerCase().includes(query);
-  }) : [];
+  });
 
   // Function to render status badge
   const renderStatusBadge = (status: string) => {

@@ -426,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Job routes
   app.get("/api/jobs", async (req, res) => {
-    const { employeeId, status, categoryId, search, department, location, city, state } = req.query;
+    const { employeeId, status, categoryId, search, department, location, city, state, includeAllStatuses } = req.query;
     const filters: {
       employeeId?: number;
       status?: string;
@@ -440,12 +440,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     if (employeeId) filters.employeeId = parseInt(employeeId.toString());
     
+    // Special flag to include all job statuses when viewing employee's own jobs
+    const showAllStatuses = includeAllStatuses === 'true';
+    
     // Only apply status filter if:
     // 1. Status is explicitly provided in the query OR
-    // 2. For public access (no logged-in user)
+    // 2. For public access (no logged-in user) OR
+    // 3. Not specifically requested to show all statuses
     if (status) {
       filters.status = status.toString();
-    } else if (!req.user) {
+    } else if (!req.user || (!showAllStatuses)) {
       // For public access, only show active jobs
       filters.status = "active";
     }
