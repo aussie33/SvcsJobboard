@@ -24,8 +24,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Facebook, Loader2 } from 'lucide-react';
-import { FaLinkedin } from 'react-icons/fa';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { FaLinkedin, FaGoogle } from 'react-icons/fa';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
@@ -186,7 +186,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
                         type="button"
                         className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors"
                       >
-                        <Facebook className="h-5 w-5 text-blue-600" />
+                        <FaGoogle className="h-5 w-5 text-red-500" />
                       </button>
                       <button
                         type="button"

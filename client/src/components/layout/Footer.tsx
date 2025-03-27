@@ -1,6 +1,6 @@
 import { Link } from 'wouter';
-import { Facebook, Linkedin } from 'lucide-react';
-import { FaTwitter } from 'react-icons/fa';
+import { Linkedin } from 'lucide-react';
+import { FaTwitter, FaGoogle } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -47,8 +47,8 @@ const Footer = () => {
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-300 text-sm">© {new Date().getFullYear()} The Resource Consultants. All rights reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <a href="#" aria-label="Facebook" className="text-gray-300 hover:text-white">
-              <Facebook className="h-6 w-6" />
+            <a href="#" aria-label="Google" className="text-gray-300 hover:text-white">
+              <FaGoogle className="h-6 w-6" />
             </a>
             <a href="#" aria-label="Twitter" className="text-gray-300 hover:text-white">
               <FaTwitter className="h-6 w-6" />
