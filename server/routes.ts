@@ -443,15 +443,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Special flag to include all job statuses when viewing employee's own jobs
     const showAllStatuses = includeAllStatuses === 'true';
     
-    // Only apply status filter if:
-    // 1. Status is explicitly provided in the query OR
-    // 2. For public access (no logged-in user) OR
-    // 3. Not specifically requested to show all statuses
+    // Logic for filtering by status:
+    // 1. If status is explicitly provided in query params, use that (e.g., status=active)
+    // 2. If no status is provided but includeAllStatuses=true, don't add status filter (return all)
+    // 3. Otherwise for public access or normal employee views, only show active jobs
     if (status) {
+      // Case 1: Explicit status filter provided
       filters.status = status.toString();
-    } else if (!req.user || (!showAllStatuses)) {
-      // For public access, only show active jobs
+      console.log(`Using explicit status filter: ${filters.status}`);
+    } else if (!showAllStatuses) {
+      // Case 3: Default behavior - show only active jobs for most views
       filters.status = "active";
+      console.log(`No status specified and showAllStatuses=false, defaulting to active only`);
+    } else {
+      // Case 2: showAllStatuses is true, we don't add a status filter to see all statuses
+      console.log(`showAllStatuses=true, showing all job statuses (no status filter applied)`);
     }
     
     if (categoryId && categoryId !== '' && categoryId !== 'all') filters.categoryId = parseInt(categoryId.toString());

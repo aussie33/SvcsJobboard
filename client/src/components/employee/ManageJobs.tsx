@@ -35,12 +35,15 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
   const { toast } = useToast();
 
   // Query to get all of employee's jobs regardless of status
+  const jobsQueryParams = { employeeId: user.id, includeAllStatuses: true };
+  console.log('Job query params:', jobsQueryParams);
+  
   const { 
     data: jobs = [] as JobWithTags[], 
     isLoading,
     refetch
   } = useQuery<JobWithTags[]>({
-    queryKey: ['/api/jobs', { employeeId: user.id, includeAllStatuses: true }],
+    queryKey: ['/api/jobs', jobsQueryParams],
   });
 
   // Query to get all categories
