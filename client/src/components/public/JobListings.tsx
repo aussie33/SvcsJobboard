@@ -77,11 +77,14 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
 
   // Track jobs the user has already applied to
   useEffect(() => {
-    if (applications.length > 0) {
+    if (!user) {
+      // Clear applied jobs when user logs out
+      setAppliedJobs([]);
+    } else if (applications.length > 0) {
       const appliedJobIds = applications.map(app => app.jobId);
       setAppliedJobs(appliedJobIds);
     }
-  }, [applications]);
+  }, [applications, user]);
 
   // Filter jobs based on search term, categories, location, city, and state
   useEffect(() => {
@@ -308,7 +311,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                 <div className="text-lg font-medium">
                   {job.salaryRange || 'Salary negotiable'}
                 </div>
-                {appliedJobs.includes(job.id) ? (
+                {user && appliedJobs.includes(job.id) ? (
                   <Button 
                     variant="outline"
                     className="bg-green-50 text-green-600 border-green-200 hover:bg-green-50 cursor-default flex items-center gap-2"
@@ -354,7 +357,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
           onClose={handleCloseJobDetail}
           onApplyClick={() => onApplyClick(selectedJob)}
           categories={categories}
-          hasApplied={appliedJobs.includes(selectedJob.id)}
+          hasApplied={user ? appliedJobs.includes(selectedJob.id) : false}
         />
       )}
     </div>

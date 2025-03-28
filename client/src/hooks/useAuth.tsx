@@ -65,8 +65,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return response.json();
     },
     onSuccess: () => {
+      // Clear user data
       queryClient.setQueryData(['/api/auth/me'], null);
+      // Clear application data
+      queryClient.setQueryData(['/api/my-applications'], []);
+      
+      // Invalidate all relevant queries
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/my-applications'] });
+      
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",
