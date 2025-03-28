@@ -70,7 +70,8 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
       phone: '',
       coverLetter: '',
       resumeUrl: '',
-      resume: undefined
+      resume: undefined,
+      status: 'new' // Set default status to 'new'
     }
   });
   
@@ -117,6 +118,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ job, isOpen, onClose, onSubmit 
     formData.append('email', data.email);
     formData.append('phone', data.phone || '');
     formData.append('coverLetter', data.coverLetter || '');
+    formData.append('status', 'new'); // Explicitly set status to 'new'
     formData.append('resume', resumeFile);
 
     await mutation.mutateAsync(formData);

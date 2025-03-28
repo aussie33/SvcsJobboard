@@ -562,7 +562,8 @@ export class MemStorage implements IStorage {
       ...application, 
       id, 
       appliedDate: timestamp,
-      lastUpdated: timestamp
+      lastUpdated: timestamp,
+      status: application.status || 'new' // Ensure status is set to 'new' if not provided
     };
     this.applications.set(id, newApplication);
     return newApplication;
