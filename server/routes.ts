@@ -64,12 +64,18 @@ const handleZodError = (err: unknown, res: Response) => {
 
 // Simple auth middleware
 const requireAuth = async (req: Request, res: Response, next: Function) => {
+  console.log('requireAuth - Session ID:', req.sessionID);
+  console.log('requireAuth - Session exists:', !!req.session);
+  console.log('requireAuth - Session userId:', req.session?.userId);
+  
   if (!req.session || !req.session.userId) {
+    console.log('requireAuth - No session or userId, returning 401');
     return res.status(401).json({ message: "Unauthorized" });
   }
   
   const user = await storage.getUser(req.session.userId);
   if (!user) {
+    console.log('requireAuth - User not found for userId:', req.session.userId);
     req.session.destroy((err) => {
       if (err) console.error('Session destroy error:', err);
     });
@@ -77,12 +83,14 @@ const requireAuth = async (req: Request, res: Response, next: Function) => {
   }
   
   if (!user.isActive) {
+    console.log('requireAuth - User account disabled:', user.username);
     req.session.destroy((err) => {
       if (err) console.error('Session destroy error:', err);
     });
     return res.status(403).json({ message: "Account is disabled" });
   }
   
+  console.log('requireAuth - Success for user:', user.username);
   req.user = user;
   next();
 };
@@ -148,10 +156,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set user session
       req.session.userId = user.id;
+      console.log('Login successful - Setting session userId:', user.id);
+      console.log('Session ID:', req.sessionID);
       
-      // Return user without password
-      const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
+      // Save session explicitly
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ message: "Session save failed" });
+        }
+        
+        console.log('Session saved successfully');
+        
+        // Return user without password
+        const { password, ...userWithoutPassword } = user;
+        res.json(userWithoutPassword);
+      });
     } catch (err) {
       handleZodError(err, res);
     }

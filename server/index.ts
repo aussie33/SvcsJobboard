@@ -16,16 +16,17 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Set up session middleware
 app.use(session({
-  secret: 'career-portal-secret-key',
+  secret: process.env.SESSION_SECRET || 'career-portal-secret-key-dev',
   resave: false,
   saveUninitialized: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: false,
-    path: '/',
-    httpOnly: true,
-    sameSite: 'lax'
-  }
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: false, // Allow client-side access for debugging
+    sameSite: 'lax',
+    path: '/'
+  },
+  name: 'sessionId' // Simple session name
 }));
 
 app.use((req, res, next) => {
