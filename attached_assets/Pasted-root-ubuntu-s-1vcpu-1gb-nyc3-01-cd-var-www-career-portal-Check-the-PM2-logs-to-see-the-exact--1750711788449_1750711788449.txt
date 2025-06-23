@@ -1,0 +1,80 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+
+# Check the PM2 logs to see the exact error
+pm2 logs career-portal --lines 10
+
+# Restore from backup
+ls -la server/index.cjs.*
+cp server/index.cjs.backup server/index.cjs
+
+# Check if the backup file is valid
+head -10 server/index.cjs
+
+# Let's create a proper working server file based on the original structure
+cat > server/index.cjs << 'EOF'
+const express = require('express');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const path = require('path');
+const fs = require('fs');
+
+console.log('Starting Career Portal server...');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.set('trust proxy', 1);
+
+// Session configuration with better CORS support
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000
+  }),
+  secret: 'career-portal-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+    secure: false
+  }
+}));
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Enhanced CORS headers
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+echo "Try the job creation button again!"p://64.225.6.33";, Authorization, Content-Length, X-Requested-With');
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/var/www/career-portal/logs/out-0.log last 10 lines:
+0|career-p | 2025-06-23T20:30:32: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:45: API Request: POST /api/auth/login
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:46: API Request: GET /api/users
+0|career-p | 2025-06-23T20:30:48: API Request: GET /api/jobs
+0|career-p | 2025-06-23T20:30:48: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:50: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:50: API Request: GET /api/jobs
+
+/var/www/career-portal/logs/err-0.log last 10 lines:
+0|career-p |     at Module._load (node:internal/modules/cjs/loader:1024:12)
+0|career-p |     at cjsLoader (node:internal/modules/esm/translators:348:17)
+0|career-p |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:297:7)
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+0|career-p | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+0|career-p | Error [ERR_REQUIRE_ESM]: require() of ES Module /var/www/career-portal/server/routes.js from /var/www/career-portal/server/index.cjs not supported.
+0|career-p | Instead change the require of routes.js in /var/www/career-portal/server/index.cjs to a dynamic import() which is available in all CommonJS modules.
+0|career-p |     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+0|career-p |     at Object.<anonymous> (/var/www/career-portal/server/index.cjs:5:28)

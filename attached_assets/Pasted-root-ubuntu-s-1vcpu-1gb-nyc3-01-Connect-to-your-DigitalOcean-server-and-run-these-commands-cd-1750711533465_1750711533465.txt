@@ -1,0 +1,121 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Connect to your DigitalOcean server and run these commands:
+
+cd /var/www/career-portal
+
+# The issue is likely with session storage or CORS headers
+# Let's check the current server configuration
+cat server/index.cjs | grep -A 20 "session"
+
+# Update the session configuration to work with your domain
+cat > server/session-fix.cjs << 'EOF'
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+
+// Configure session middleware with proper settings for production
+const sessionConfig = {
+  secret: 'your-secret-key-here-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  store: new MemoryStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    ttl: 86400000, // 24 hours
+    max: 500,
+    stale: false
+  }),
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax' // Important for cross-origin requests
+  },
+  name: 'career-portal-session'
+};
+
+module.exports = sessionConfig;
+EOF
+
+# Update the main server file to use the proper session configuration
+cp server/index.cjs server/index.cjs.backup
+
+# Create a new server file with fixed session handling
+cat > server/index.cjs << 'EOF'
+const express = require('express');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const { createServer } = require('http');
+const { registerRoutes } = require('./routes.js');
+const { setupVite, serveStatic, log } = require('./vite.js');
+
+const app = express();
+const server = createServer(app);
+
+// Configure session middleware
+app.use(session({
+  secret: 'your-secret-key-here-change-in-production',
+  resave: false,
+echo "Session fix applied. Please test job creation at http://64.225.6.33" Content-Length, X-Requested-With');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const path = require('path');
+const fs = require('fs');
+
+console.log('Starting Career Portal server...');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.set('trust proxy', 1);
+
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000
+  }),
+  secret: 'career-portal-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax'
+  }
+}));
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Static files
+const staticPath = path.join(__dirname, '../dist/public');
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1380574  │ 0s     │ 8    │ online    │ 0%       │ 48.5mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 39944 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* connect to 127.0.0.1 port 5000 from 127.0.0.1 port 52474 failed: Connection refused
+* Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+* closing connection #0
+curl: (7) Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+Note: Unnecessary use of -X or --request, GET is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 39954 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* connect to 127.0.0.1 port 5000 from 127.0.0.1 port 52480 failed: Connection refused
+* Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+* closing connection #0
+curl: (7) Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+Session fix applied. Please test job creation at http://64.225.6.33
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# 
