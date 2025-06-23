@@ -549,12 +549,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/jobs", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
     try {
+      // Parse request body using schema that doesn't expect employeeId
       const { job: jobData, tags } = jobWithTagsSchema.parse(req.body);
       
       // Set the employee ID to the current user
-      jobData.employeeId = req.user.id;
+      const jobWithEmployee = { ...jobData, employeeId: req.user!.id };
       
-      const newJob = await storage.createJob(jobData);
+      const newJob = await storage.createJob(jobWithEmployee);
       
       // Add tags
       if (tags && tags.length > 0) {

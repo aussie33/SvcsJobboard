@@ -118,9 +118,9 @@ export const loginSchema = z.object({
 
 export type LoginCredentials = z.infer<typeof loginSchema>;
 
-// This schema is used when creating or updating a job with tags
+// This schema is used when creating or updating a job with tags (without employeeId since server sets it)
 export const jobWithTagsSchema = z.object({
-  job: z.object(createInsertSchema(jobs).shape),
+  job: insertJobSchema.omit({ employeeId: true }),
   tags: z.array(z.string()),
 });
 
