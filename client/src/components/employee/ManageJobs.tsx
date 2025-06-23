@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { JobWithTags, User, Category } from '@shared/schema';
-import JobPostingModal from './JobPostingModal';
+import { SimpleJobForm } from './SimpleJobForm';
 import JobDetailModal from '@/components/shared/JobDetailModal';
 import PaginationControls from '@/components/shared/PaginationControls';
 import { apiRequest } from '@/lib/queryClient';
@@ -336,11 +336,10 @@ const ManageJobs: React.FC<ManageJobsProps> = ({ user }) => {
         </CardContent>
       </Card>
 
-      <JobPostingModal 
+      <SimpleJobForm 
         isOpen={isModalOpen} 
         onClose={handleModalClose} 
         onSave={handleJobSaved}
-        editJob={editingJob}
       />
 
       {/* Job Detail Modal */}
