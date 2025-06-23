@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import MemoryStore from 'memorystore';
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -29,14 +30,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-// Set up session middleware
+// Set up session middleware with proper production configuration
+const MemoryStoreSession = MemoryStore(session);
 app.use(session({
   secret: process.env.SESSION_SECRET || 'career-portal-secret-key-dev',
   resave: false,
   saveUninitialized: false,
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    secure: false, // Set to true in production with HTTPS
+    secure: false, // Keep false for HTTP in production
     httpOnly: true,
     sameSite: 'lax'
   },
