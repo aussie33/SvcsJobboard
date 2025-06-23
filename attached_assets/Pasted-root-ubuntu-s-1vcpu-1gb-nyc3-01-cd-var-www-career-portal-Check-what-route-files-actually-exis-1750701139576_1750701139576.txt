@@ -1,0 +1,100 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+
+# Check what route files actually exist
+ls -la server/
+
+# Check if we have .ts files that need to be compiled or .js files
+find server/ -name "*.ts" -o -name "*.js"
+
+# Create a working route loader that handles the actual file structure
+cat > server/load-routes.cjs << 'EOF'
+async function loadFullRoutes(app) {
+  try {
+    console.log('Loading full application routes...');
+    
+    // Check what files exist
+    const fs = require('fs');
+    const path = require('path');
+    
+    const routesPath = path.join(__dirname, 'routes.js');
+    const routesTsPath = path.join(__dirname, 'routes.ts');
+    const storagePath = path.join(__dirname, 'storage.js');
+    const storageTsPath = path.join(__dirname, 'storage.ts');
+    
+    console.log('Routes.js exists:', fs.existsSync(routesPath));
+    console.log('Routes.ts exists:', fs.existsSync(routesTsPath));
+    console.log('Storage.js exists:', fs.existsSync(storagePath));
+    console.log('Storage.ts exists:', fs.existsSync(storageTsPath));
+    
+    // Try different import strategies
+    let storage, registerRoutes;
+    
+    if (fs.existsSync(routesPath) && fs.existsSync(storagePath)) {
+      // Try ES module import
+      const storageModule = await import('./storage.js');
+      const routesModule = await import('./routes.js');
+      storage = storageModule.storage;
+      registerRoutes = routesModule.registerRoutes;
+    } else {
+      // Compile TypeScript files first if they exist
+      if (fs.existsSync(routesTsPath)) {
+        console.log('TypeScript files found, need compilation');
+        return false;
+      }
+    }
+    
+    if (storage && registerRoutes) {
+      await registerRoutes(app);
+      console.log('✅ All API routes registered successfully');
+      return true;
+    } else {
+      console.log('❌ Could not load storage or routes modules');
+      return false;
+    }
+    
+  } catch (error) {
+    console.error('Failed to load full routes:', error.message);
+    return false;
+curl -s http://localhost:5000/api/categories
+total 104
+drwxr-xr-x  2 deploy deploy  4096 Jun 23 17:48 .
+drwxr-xr-x 12 deploy deploy  4096 Jun 23 17:00 ..
+-rw-r--r--  1 root   root    3517 Jun 23 17:19 index.cjs
+-rw-r--r--  1 deploy deploy  3255 Jun 23 16:21 index.ts
+-rw-r--r--  1 root   root    1727 Jun 23 17:48 load-routes.cjs
+-rw-r--r--  1 deploy deploy 12129 Jun 23 04:45 migrate.ts
+-rw-r--r--  1 deploy deploy 11690 Jun 23 04:45 postgres-storage.ts
+-rw-r--r--  1 deploy deploy 27476 Jun 23 04:45 routes.ts
+-rw-r--r--  1 deploy deploy 20957 Jun 23 04:45 storage.ts
+-rw-r--r--  1 deploy deploy   455 Jun 23 04:45 types.d.ts
+-rw-r--r--  1 deploy deploy  2374 Jun 23 04:45 vite.ts
+server/storage.ts
+server/postgres-storage.ts
+server/types.d.ts
+server/index.ts
+server/migrate.ts
+server/routes.ts
+server/vite.ts
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1251605  │ 0s     │ 2    │ online    │ 0%       │ 48.3mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴─────���────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [career-portal] process (change the value with --lines option)
+/var/www/career-portal/logs/err-0.log last 5 lines:
+0|career-p | ReferenceError: require is not defined in ES module scope, you can use import instead
+0|career-p | This file is being treated as an ES module because it has a '.js' file extension and '/var/www/career-portal/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+0|career-p |     at file:///var/www/career-portal/server/index.js:1:17
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+
+/var/www/career-portal/logs/out-0.log last 5 lines:
+0|career-p | 2025-06-23T17:51:52: ✅ Career Portal server running on port 5000
+0|career-p | 2025-06-23T17:51:52: 📁 Static path: /var/www/career-portal/dist/public
+0|career-p | 2025-06-23T17:51:52: 🌐 Health check: http://localhost:5000/health
+0|career-p | 2025-06-23T17:51:52: ES modules failed, using basic routes: Cannot find module '/var/www/career-portal/server/routes.js' imported from /var/www/career-portal/server/index.cjs
+0|career-p | 2025-06-23T17:51:52: Route loading completed
+

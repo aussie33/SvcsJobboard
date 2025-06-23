@@ -1,0 +1,81 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # On your DigitalOcean server, run these commands:
+
+# Check if Nginx is properly configured and running
+systemctl status nginx
+
+# Check the current Nginx configuration
+cat /etc/nginx/sites-available/career-portal
+
+# Update Nginx configuration to properly proxy API requests
+cat > /etc/nginx/sites-available/career-portal << 'EOF'
+server {
+    listen 80;
+    server_name _;
+    
+    client_max_body_size 50M;
+    
+    # API routes - proxy to Node.js server
+    location /api/ {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400;
+    }
+    
+    # Health check
+    location /health {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    
+    # Static files and SPA
+    location / {
+        try_files $uri $uri/ @fallback;
+        root /var/www/career-portal/dist/public;
+        index index.html;
+        
+        # Cache static assets
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+    }
+    
+    # Fallback to Node.js for SPA routing
+    location @fallback {
+        proxy_pass http://localhost:5000;
+pm2 logs career-portal --lines 20any CORS or connection issuesd_for;
+● nginx.service - A high performance web server and a reverse proxy server
+     Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2025-06-19 05:23:31 UTC; 4 days ago
+ Invocation: c30acaf3a9b74be1a6fed924ac2f623f
+       Docs: man:nginx(8)
+    Process: 907187 ExecReload=/usr/sbin/nginx -g daemon on; master_process on; -s reload (code=exited, status=0/SUCCESS)
+   Main PID: 793089 (nginx)
+      Tasks: 2 (limit: 1110)
+     Memory: 1.9M (peak: 5.4M swap: 2M swap peak: 2.1M)
+        CPU: 3.421s
+     CGroup: /system.slice/nginx.service
+             ├─793089 "nginx: master process /usr/sbin/nginx -g daemon on; master_process on;"
+             └─907189 "nginx: worker process"
+
+Jun 23 05:13:18 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloading nginx.service - A high performance web server and a reverse proxy server...
+Jun 23 05:13:18 ubuntu-s-1vcpu-1gb-nyc3-01 nginx[903072]: 2025/06/23 05:13:18 [warn] 903072#903072: conflicting server name "_" on 0.0.0.0:80>
+Jun 23 05:13:18 ubuntu-s-1vcpu-1gb-nyc3-01 nginx[903072]: 2025/06/23 05:13:18 [notice] 903072#903072: signal process started
+Jun 23 05:13:18 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloaded nginx.service - A high performance web server and a reverse proxy server.
+Jun 23 05:15:18 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloading nginx.service - A high performance web server and a reverse proxy server...
+Jun 23 05:15:18 ubuntu-s-1vcpu-1gb-nyc3-01 nginx[904189]: 2025/06/23 05:15:18 [notice] 904189#904189: signal process started
+Jun 23 05:15:18 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloaded nginx.service - A high performance web server and a reverse proxy server.
+Jun 23 05:20:49 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloading nginx.service - A high performance web server and a reverse proxy server...
+Jun 23 05:20:49 ubuntu-s-1vcpu-1gb-nyc3-01 nginx[907187]: 2025/06/23 05:20:49 [notice] 907187#907187: signal process started
+Jun 23 05:20:49 ubuntu-s-1vcpu-1gb-nyc3-01 systemd[1]: Reloaded nginx.service - A high performance web server and a reverse proxy server.
+lines 1-24/24 (END)

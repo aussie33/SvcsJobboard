@@ -1,0 +1,47 @@
+Last login: Mon Jun 23 19:43:35 2025 from 162.243.190.66
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # The correct public IP is 64.225.6.33, not 162.243.190.66
+# Let's test with the correct IP
+curl -I http://64.225.6.33
+
+# If that works, test the API
+curl http://64.225.6.33/api/categories
+
+# Test authentication flow with correct IP
+curl -X POST http://64.225.6.33/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' \
+  -c /tmp/test_cookies.txt
+
+# Test job creation with the session
+curl -X POST http://64.225.6.33/api/jobs \
+  -H "Content-Type: application/json" \
+  -b /tmp/test_cookies.txt \
+  -d '{"job":{"title":"External Test Job","department":"Engineering","categoryId":1,"shortDescription":"Testing from browser","fullDescription":"Full test","requirements":"Test req","type":"full-time","location":"remote","status":"active"},"tags":[]}'
+
+# Verify the job was created
+curl http://64.225.6.33/api/jobs
+
+# Clean up test cookies
+rm -f /tmp/test_cookies.txt
+
+echo "✅ Career Portal is now fully functional!"
+echo "🌐 Access your application at: http://64.225.6.33"
+echo "👤 Login credentials:"
+echo "   Admin: admin / admin123"
+echo "   Employee: employee / employee123"
+HTTP/1.1 200 OK
+Server: nginx/1.26.0 (Ubuntu)
+Date: Mon, 23 Jun 2025 20:30:19 GMT
+Content-Type: text/html
+Content-Length: 1926
+Last-Modified: Mon, 23 Jun 2025 16:23:49 GMT
+Connection: keep-alive
+ETag: "68597f95-786"
+Accept-Ranges: bytes
+
+[{"id":1,"name":"Engineering","description":"Engineering jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"},{"id":2,"name":"Marketing","description":"Marketing jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"},{"id":3,"name":"Sales","description":"Sales jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"}]{"id":1,"username":"admin","email":"admin@theresourceconsultants.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true,"isSuperAdmin":true,"department":"Management","createdAt":"2025-06-23T19:38:42.229Z","lastLogin":null}{"title":"External Test Job","department":"Engineering","categoryId":1,"shortDescription":"Testing from browser","fullDescription":"Full test","requirements":"Test req","type":"full-time","location":"remote","status":"active","employeeId":1,"id":1,"postedDate":"2025-06-23T20:30:19.264Z","expiryDate":null,"tags":[]}[{"title":"External Test Job","department":"Engineering","categoryId":1,"shortDescription":"Testing from browser","fullDescription":"Full test","requirements":"Test req","type":"full-time","location":"remote","status":"active","employeeId":1,"id":1,"postedDate":"2025-06-23T20:30:19.264Z","expiryDate":null,"tags":[]}]✅ Career Portal is now fully functional!
+🌐 Access your application at: http://64.225.6.33
+👤 Login credentials:
+   Admin: admin / admin123
+   Employee: employee / employee123
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# 

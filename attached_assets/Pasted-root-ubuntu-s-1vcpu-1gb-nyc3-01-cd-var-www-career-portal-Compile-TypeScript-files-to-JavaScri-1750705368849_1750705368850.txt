@@ -1,0 +1,167 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+
+# Compile TypeScript files to JavaScript
+npx tsc server/storage.ts --target es2020 --module es2020 --outDir server/compiled --declaration
+npx tsc server/routes.ts --target es2020 --module es2020 --outDir server/compiled --declaration
+
+# Or use the existing build process if configured
+npm run build
+
+# Check if JavaScript files were created
+ls -la server/compiled/ 2>/dev/null || echo "Compiled directory not created"
+
+# Alternative: Create JavaScript versions directly
+# Convert storage.ts to storage.js
+npx tsc server/storage.ts --outFile server/storage.js --target es2020 --module es2020
+
+# Convert routes.ts to routes.js  
+npx tsc server/routes.ts --outFile server/routes.js --target es2020 --module es2020
+
+# Check what was created
+ls -la server/*.js
+
+# Update the route loader to use the correct paths
+cat > server/load-routes.cjs << 'EOF'
+async function loadFullRoutes(app) {
+  try {
+    console.log('Loading full application routes...');
+    
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Check for compiled JavaScript files
+    const routesJs = path.join(__dirname, 'routes.js');
+    const storageJs = path.join(__dirname, 'storage.js');
+    
+    console.log('Checking for compiled files...');
+    console.log('Routes.js exists:', fs.existsSync(routesJs));
+    console.log('Storage.js exists:', fs.existsSync(storageJs));
+    
+    if (fs.existsSync(routesJs) && fs.existsSync(storageJs)) {
+      // Import the compiled ES modules
+      const storageModule = await import('./storage.js');
+      const routesModule = await import('./routes.js');
+      
+      const storage = storageModule.storage;
+      const registerRoutes = routesModule.registerRoutes;
+      
+      console.log('Modules imported successfully');
+      
+      // Register all routes
+      await registerRoutes(app);
+      console.log('✅ All API routes registered - job creation enabled');
+      return true;
+    } else {
+      console.log('❌ Compiled JavaScript files not found');
+      console.log('Run: npx tsc server/storage.ts --outFile server/storage.js --target es2020 --module es2020');
+      console.log('Run: npx tsc server/routes.ts --outFile server/routes.js --target es2020 --module es2020');
+curl -s http://localhost:5000/api/categories | head -100;
+node_modules/@types/node/globals.d.ts:6:76 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+6 type _Request = typeof globalThis extends { onmessage: any } ? {} : import("undici-types").Request;
+                                                                             ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:7:77 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+7 type _Response = typeof globalThis extends { onmessage: any } ? {} : import("undici-types").Response;
+                                                                              ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:8:77 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+8 type _FormData = typeof globalThis extends { onmessage: any } ? {} : import("undici-types").FormData;
+                                                                              ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:9:76 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+9 type _Headers = typeof globalThis extends { onmessage: any } ? {} : import("undici-types").Headers;
+                                                                             ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:10:81 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+10 type _MessageEvent = typeof globalThis extends { onmessage: any } ? {} : import("undici-types").MessageEvent;
+                                                                                   ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:12:14 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+12     : import("undici-types").RequestInit;
+                ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:14:14 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+14     : import("undici-types").ResponseInit;
+                ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:467:25 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+467         : typeof import("undici-types").Request;
+                            ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:476:25 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+476         : typeof import("undici-types").Response;
+                            ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:483:25 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+483         : typeof import("undici-types").FormData;
+                            ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:490:25 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+490         : typeof import("undici-types").Headers;
+                            ~~~~~~~~~~~~~~
+
+node_modules/@types/node/globals.d.ts:500:25 - error TS2792: Cannot find module 'undici-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+500         : typeof import("undici-types").MessageEvent;
+                            ~~~~~~~~~~~~~~
+
+node_modules/@types/pg/index.d.ts:5:26 - error TS2792: Cannot find module 'pg-types'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+5 import pgTypes = require("pg-types");
+                           ~~~~~~~~~~
+
+node_modules/@types/pg/index.d.ts:325:21 - error TS2792: Cannot find module '.'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+325 import * as Pg from ".";
+                        ~~~
+
+node_modules/@types/pg/index.d.ts:329:31 - error TS2792: Cannot find module 'pg-protocol'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+329 export { DatabaseError } from "pg-protocol";
+                                  ~~~~~~~~~~~~~
+
+node_modules/@types/pg/lib/type-overrides.d.ts:1:35 - error TS2792: Cannot find module '..'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+1 import { CustomTypesConfig } from "..";
+                                    ~~~~
+
+server/storage.ts:8:8 - error TS2792: Cannot find module '@shared/schema'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+8 } from "@shared/schema";
+         ~~~~~~~~~~~~~~~~
+
+shared/schema.ts:1:76 - error TS2792: Cannot find module 'drizzle-orm/pg-core'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+1 import { pgTable, text, serial, integer, boolean, timestamp, pgEnum } from "drizzle-orm/pg-core";
+                                                                             ~~~~~~~~~~~~~~~~~~~~~
+
+shared/schema.ts:2:36 - error TS2792: Cannot find module 'drizzle-zod'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+2 import { createInsertSchema } from "drizzle-zod";
+                                     ~~~~~~~~~~~~~
+
+shared/schema.ts:3:19 - error TS2792: Cannot find module 'zod'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+
+3 import { z } from "zod";
+                    ~~~~~
+
+
+Found 20 errors in 5 files.
+
+Errors  Files
+    12  node_modules/@types/node/globals.d.ts:6
+     3  node_modules/@types/pg/index.d.ts:5
+     1  node_modules/@types/pg/lib/type-overrides.d.ts:1
+     1  server/storage.ts:8
+     3  shared/schema.ts:1

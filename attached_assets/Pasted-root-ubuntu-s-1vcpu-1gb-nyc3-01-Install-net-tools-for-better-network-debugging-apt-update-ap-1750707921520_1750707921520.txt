@@ -1,0 +1,184 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Install net-tools for better network debugging
+apt update && apt install net-tools -y
+
+# Check what's listening on port 80
+netstat -tlnp | grep :80
+ss -tlnp | grep :80
+
+# Test if Nginx is responding locally
+curl -I http://localhost
+curl -v http://localhost/api/categories
+
+# Check if there's a conflict with the default Nginx site
+ls -la /etc/nginx/sites-enabled/
+
+# Remove the default site if it exists and conflicts
+rm -f /etc/nginx/sites-enabled/default
+
+# Ensure our career-portal site is enabled
+ln -sf /etc/nginx/sites-available/career-portal /etc/nginx/sites-enabled/
+
+# Test Nginx configuration
+nginx -t
+
+# Reload Nginx
+systemctl reload nginx
+
+# Test again
+curl -I http://localhost
+
+# If still not working, check Nginx error logs
+tail -20 /var/log/nginx/error.log
+
+# Also test if the Node.js server is accessible
+curl -I http://localhost:5000/health
+Hit:1 http://mirrors.digitalocean.com/ubuntu oracular InRelease
+Get:2 http://mirrors.digitalocean.com/ubuntu oracular-updates InRelease [126 kB]                                                         
+Get:3 http://mirrors.digitalocean.com/ubuntu oracular-backports InRelease [126 kB]                                                       
+Get:4 http://security.ubuntu.com/ubuntu oracular-security InRelease [126 kB]                                                             
+Hit:5 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease                                                            
+Get:6 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 Packages [445 kB]
+Get:7 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 Components [61.2 kB]
+Get:8 http://mirrors.digitalocean.com/ubuntu oracular-updates/universe amd64 Packages [289 kB]
+Get:9 http://mirrors.digitalocean.com/ubuntu oracular-updates/universe Translation-en [97.5 kB]
+Get:10 http://mirrors.digitalocean.com/ubuntu oracular-updates/universe amd64 Components [61.1 kB]
+Get:11 http://mirrors.digitalocean.com/ubuntu oracular-updates/restricted amd64 Components [216 B]
+Get:12 http://mirrors.digitalocean.com/ubuntu oracular-updates/multiverse amd64 Components [212 B]
+Get:13 http://mirrors.digitalocean.com/ubuntu oracular-backports/main amd64 Components [212 B]
+Get:14 http://mirrors.digitalocean.com/ubuntu oracular-backports/universe amd64 Components [9696 B]
+Get:15 http://mirrors.digitalocean.com/ubuntu oracular-backports/restricted amd64 Components [216 B]
+Get:16 http://mirrors.digitalocean.com/ubuntu oracular-backports/multiverse amd64 Components [216 B]
+Get:17 http://security.ubuntu.com/ubuntu oracular-security/main amd64 Components [21.6 kB]
+Get:18 http://security.ubuntu.com/ubuntu oracular-security/universe amd64 Components [7608 B]
+Get:19 http://security.ubuntu.com/ubuntu oracular-security/restricted amd64 Components [212 B]
+Get:20 http://security.ubuntu.com/ubuntu oracular-security/multiverse amd64 Components [212 B]
+Fetched 1373 kB in 2s (555 kB/s)                                     
+All packages are up to date.    
+Installing:                     
+  net-tools
+
+Summary:
+  Upgrading: 0, Installing: 1, Removing: 0, Not Upgrading: 0
+  Download size: 202 kB
+  Space needed: 807 kB / 16.7 GB available
+
+Get:1 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 net-tools amd64 2.10-1.1ubuntu1.24.10.4 [202 kB]
+Fetched 202 kB in 0s (1757 kB/s)   
+Selecting previously unselected package net-tools.
+(Reading database ... 145442 files and directories currently installed.)
+Preparing to unpack .../net-tools_2.10-1.1ubuntu1.24.10.4_amd64.deb ...
+Unpacking net-tools (2.10-1.1ubuntu1.24.10.4) ...
+Setting up net-tools (2.10-1.1ubuntu1.24.10.4) ...
+Processing triggers for man-db (2.12.1-3) ...
+Scanning processes...                                                                                                                           
+Scanning candidates...                                                                                                                          
+Scanning linux images...                                                                                                                        
+
+Pending kernel upgrade!
+Running kernel version:
+  6.11.0-9-generic
+Diagnostics:
+  The currently running kernel version is not the expected kernel version 6.11.0-26-generic.
+
+Restarting the system to load the new kernel will not be handled automatically, so you should consider rebooting.
+
+Restarting services...
+
+Service restarts being deferred:
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart getty@tty1.service
+ systemctl restart serial-getty@ttyS0.service
+ systemctl restart systemd-logind.service
+ systemctl restart unattended-upgrades.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ root @ user manager service: systemd[787230]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      793089/nginx: maste 
+LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("nginx",pid=907189,fd=5),("nginx",pid=793089,fd=5))
+HTTP/1.1 200 OK
+Server: nginx/1.26.0 (Ubuntu)
+Date: Mon, 23 Jun 2025 19:44:15 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1926
+Connection: keep-alive
+X-Powered-By: Express
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Mon, 23 Jun 2025 16:23:49 GMT
+ETag: W/"786-1979d9a5ede"
+
+* Host localhost:80 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:80...
+* connect to ::1 port 80 from ::1 port 57778 failed: Connection refused
+*   Trying 127.0.0.1:80...
+* Connected to localhost (127.0.0.1) port 80
+> GET /api/categories HTTP/1.1
+> Host: localhost
+> User-Agent: curl/8.9.1
+> Accept: */*
+> 
+* Request completely sent off
+< HTTP/1.1 200 OK
+< Server: nginx/1.26.0 (Ubuntu)
+< Date: Mon, 23 Jun 2025 19:44:15 GMT
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 345
+< Connection: keep-alive
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Methods: GET,PUT,POST,DELETE,OPTIONS
+< Access-Control-Allow-Headers: Content-Type, Authorization, Content-Length, X-Requested-With
+< ETag: W/"159-4zjjiwoOS747W1I8M52BvuWeAc4"
+< 
+* Connection #0 to host localhost left intact
+[{"id":1,"name":"Engineering","description":"Engineering jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"},{"id":2,"name":"Marketing","description":"Marketing jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"},{"id":3,"name":"Sales","description":"Sales jobs","status":"active","createdAt":"2025-06-23T19:38:42.230Z"}]total 8
+drwxr-xr-x 2 root root 4096 Jun 23 05:15 .
+drwxr-xr-x 8 root root 4096 Jun 19 04:58 ..
+lrwxrwxrwx 1 root root   40 Jun 23 05:15 career-portal -> /etc/nginx/sites-available/career-portal
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+HTTP/1.1 200 OK
+Server: nginx/1.26.0 (Ubuntu)
+Date: Mon, 23 Jun 2025 19:44:15 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1926
+Connection: keep-alive
+X-Powered-By: Express
+Accept-Ranges: bytes
+Cache-Control: public, max-age=0
+Last-Modified: Mon, 23 Jun 2025 16:23:49 GMT
+ETag: W/"786-1979d9a5ede"
+
+2025/06/23 17:18:39 [error] 907189#907189: *5540 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /assets/index-Dm_e3IT3.css HTTP/1.1", upstream: "http://[::1]:5000/assets/index-Dm_e3IT3.css", host: "64.225.6.33", referrer: "http://64.225.6.33/employee"
+2025/06/23 17:20:00 [error] 907189#907189: *5549 connect() failed (111: Connection refused) while connecting to upstream, client: 43.130.150.80, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33"
+2025/06/23 17:20:00 [error] 907189#907189: *5549 connect() failed (111: Connection refused) while connecting to upstream, client: 43.130.150.80, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "64.225.6.33"
+2025/06/23 17:20:16 [error] 907189#907189: *5554 connect() failed (111: Connection refused) while connecting to upstream, client: 78.153.140.147, server: _, request: "POST / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33"
+2025/06/23 17:20:45 [error] 907189#907189: *5558 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 17:30:17 [error] 907189#907189: *5575 connect() failed (111: Connection refused) while connecting to upstream, client: 128.199.173.116, server: _, request: "GET http://ifconfig.me/ HTTP/1.1", upstream: "http://[::1]:5000/", host: "ifconfig.me"
+2025/06/23 17:49:18 [error] 907189#907189: *5582 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 17:54:03 [error] 907189#907189: *5598 connect() failed (111: Connection refused) while connecting to upstream, client: 78.153.140.147, server: _, request: "GET /.env HTTP/1.1", upstream: "http://[::1]:5000/.env", host: "64.225.6.33"
+2025/06/23 18:07:32 [error] 907189#907189: *5608 connect() failed (111: Connection refused) while connecting to upstream, client: 213.209.143.71, server: _, request: "POST / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33"
+2025/06/23 18:45:42 [error] 907189#907189: *5616 connect() failed (111: Connection refused) while connecting to upstream, client: 185.209.196.231, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33"
+2025/06/23 19:20:14 [error] 907189#907189: *5623 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:20:25 [error] 907189#907189: *5627 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /api/auth/me HTTP/1.1", upstream: "http://[::1]:5000/api/auth/me", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:25:35 [error] 907189#907189: *5648 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:25:35 [error] 907189#907189: *5648 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://[::1]:5000/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:25:36 [error] 907189#907189: *5648 no live upstreams while connecting to upstream, client: 73.145.245.219, server: _, request: "GET / HTTP/1.1", upstream: "http://localhost/", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:25:39 [error] 907189#907189: *5648 no live upstreams while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /employee HTTP/1.1", upstream: "http://localhost/employee", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:25:40 [error] 907189#907189: *5648 no live upstreams while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /employee HTTP/1.1", upstream: "http://localhost/employee", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:27:36 [error] 907189#907189: *5655 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /assets/index-BiDWT6-L.js HTTP/1.1", upstream: "http://[::1]:5000/assets/index-BiDWT6-L.js", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:27:48 [error] 907189#907189: *5652 connect() failed (111: Connection refused) while connecting to upstream, client: 73.145.245.219, server: _, request: "GET /api/auth/me HTTP/1.1", upstream: "http://[::1]:5000/api/auth/me", host: "64.225.6.33", referrer: "http://64.225.6.33/"
+2025/06/23 19:44:15 [error] 907189#907189: *5683 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "HEAD / HTTP/1.1", upstream: "http://[::1]:5000/", host: "localhost"
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 122
+ETag: W/"7a-Q7u3a0VIaaybZNVzRhnoaanrl5E"
+Date: Mon, 23 Jun 2025 19:44:15 GMT
+Connection: keep-alive

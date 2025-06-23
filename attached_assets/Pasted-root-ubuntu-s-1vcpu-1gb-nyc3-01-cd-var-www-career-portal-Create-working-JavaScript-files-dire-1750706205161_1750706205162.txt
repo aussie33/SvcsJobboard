@@ -1,0 +1,84 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+
+# Create working JavaScript files directly
+# First, create a simplified storage.js
+cat > server/storage.js << 'EOF'
+import { Pool } from 'pg';
+
+// Simple in-memory storage for production
+class MemStorage {
+  constructor() {
+    this.users = new Map();
+    this.categories = new Map();
+    this.jobs = new Map();
+    this.jobTags = new Map();
+    this.applications = new Map();
+    this.userIdCounter = 1;
+    this.categoryIdCounter = 1;
+    this.jobIdCounter = 1;
+    this.jobTagIdCounter = 1;
+    this.applicationIdCounter = 1;
+    this.initializeData();
+  }
+
+  initializeData() {
+    // Add admin user
+    const adminUser = {
+      id: 1,
+      username: 'admin',
+      email: 'admin@theresourceconsultants.com',
+      firstName: 'Admin',
+      lastName: 'User',
+      fullName: 'Admin User',
+      role: 'admin',
+      isActive: true,
+      isSuperAdmin: true,
+      department: 'Management',
+      createdAt: new Date(),
+      lastLogin: null
+    };
+    this.users.set(1, adminUser);
+    this.userIdCounter = 2;
+
+    // Add employee user
+    const employeeUser = {
+      id: 2,
+      username: 'employee',
+      email: 'employee@theresourceconsultants.com',
+      firstName: 'Employee',
+      lastName: 'User',
+      fullName: 'Employee User',
+      role: 'employee',
+      isActive: true,
+      isSuperAdmin: false,
+      department: 'HR',
+      createdAt: new Date(),
+      lastLogin: null
+    };
+pm2 logs career-portal --lines 5i/jobsgoriesror.message);on enabled');); jobId);edAt: new Date() }Date() },) },
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1314182  │ 0s     │ 4    │ online    │ 0%       │ 48.5mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴─────���────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Testing API endpoints:
+{"status":"healthy","timestamp":"2025-06-23T19:16:28.490Z","uptime":5,"staticPath":"/var/www/career-portal/dist/public"}
+{"error":"API endpoint not found"}
+{"error":"API endpoint not found"}[TAILING] Tailing last 5 lines for [career-portal] process (change the value with --lines option)
+/var/www/career-portal/logs/err-0.log last 5 lines:
+0|career-p | ReferenceError: require is not defined in ES module scope, you can use import instead
+0|career-p | This file is being treated as an ES module because it has a '.js' file extension and '/var/www/career-portal/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+0|career-p |     at file:///var/www/career-portal/server/index.js:1:17
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+
+/var/www/career-portal/logs/out-0.log last 5 lines:
+0|career-p | 2025-06-23T19:16:25: Initialized categories: 3
+0|career-p | 2025-06-23T19:16:25: Registering API routes...
+0|career-p | 2025-06-23T19:16:25: ✅ API routes registered successfully
+0|career-p | 2025-06-23T19:16:25: ES module routes loaded successfully
+0|career-p | 2025-06-23T19:16:25: Route loading completed
+

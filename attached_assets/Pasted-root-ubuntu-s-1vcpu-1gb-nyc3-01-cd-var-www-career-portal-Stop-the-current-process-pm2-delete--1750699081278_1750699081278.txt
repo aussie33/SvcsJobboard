@@ -1,0 +1,76 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+
+# Stop the current process
+pm2 delete career-portal
+
+# Rename the server file to .cjs to force CommonJS treatment
+mv server/index.js server/index.cjs
+
+# Update the PM2 config to point to the .cjs file
+cat > ecosystem.config.cjs << 'EOF'
+module.exports = {
+  apps: [{
+    name: 'career-portal',
+    script: './server/index.cjs',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 5000,
+      SESSION_SECRET: 'career-portal-secret-2024'
+    },
+    error_file: './logs/err.log',
+    out_file: './logs/out.log',
+    log_file: './logs/combined.log',
+    time: true
+  }]
+};
+EOF
+
+# Create a proper CommonJS server file
+cat > server/index.cjs << 'EOF'
+const express = require('express');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const path = require('path');
+const fs = require('fs');
+
+console.log('Starting Career Portal server...');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Basic middleware setup
+app.set('trust proxy', 1);
+
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000
+  }),
+  secret: 'career-portal-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+pm2 statusatuscalhost:5000/api/testcomplete'););;`);RT}/health`); });;e);
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2][WARN] Applications career-portal not running, starting...
+[PM2] App [career-portal] launched (1 instances)
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1226094  │ 0s     │ 0    │ online    │ 0%       │ 48.5mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+{"status":"healthy","timestamp":"2025-06-23T17:17:36.215Z","uptime":5,"staticPath":"/var/www/career-portal/dist/public"}
+{"message":"API is working"}┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1226094  │ 7s     │ 0    │ online    │ 0%       │ 73.9mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴

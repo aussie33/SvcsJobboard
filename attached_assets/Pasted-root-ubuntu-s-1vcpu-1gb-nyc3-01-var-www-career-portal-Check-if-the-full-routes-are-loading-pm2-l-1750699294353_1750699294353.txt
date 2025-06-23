@@ -1,0 +1,79 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# # Check if the full routes are loading
+pm2 logs career-portal --lines 10
+
+# Test if the application is accessible via web browser
+curl -I http://localhost:5000
+
+# Now let's load the complete routes by creating a proper route loader
+cat > server/load-routes.cjs << 'EOF'
+// Route loader for ES modules in CommonJS environment
+async function loadFullRoutes(app) {
+  try {
+    console.log('Loading full application routes...');
+    
+    // Import ES modules
+    const { storage } = await import('./storage.js');
+    const { registerRoutes } = await import('./routes.js');
+    
+    console.log('Storage and routes modules imported successfully');
+    
+    // Register all routes
+    await registerRoutes(app);
+    console.log('All API routes registered successfully');
+    
+    return true;
+  } catch (error) {
+    console.error('Failed to load full routes:', error.message);
+    return false;
+  }
+}
+
+module.exports = { loadFullRoutes };
+EOF
+
+# Update the main server to use the route loader
+cat > server/index.cjs << 'EOF'
+const express = require('express');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const path = require('path');
+const fs = require('fs');
+
+console.log('Starting Career Portal server...');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.set('trust proxy', 1);
+
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000
+  }),
+  secret: 'career-portal-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+curl http://localhost:5000/api/categorieste');.66`);t ${PORT}`);' });{ message: 'Routes loading failed' }));
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/var/www/career-portal/logs/err-0.log last 10 lines:
+0|career-p | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+0|career-p | ReferenceError: require is not defined in ES module scope, you can use import instead
+0|career-p | This file is being treated as an ES module because it has a '.js' file extension and '/var/www/career-portal/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+0|career-p |     at file:///var/www/career-portal/server/index.js:1:17
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+
+/var/www/career-portal/logs/out-0.log last 10 lines:
+0|career-p | 2025-06-23T17:17:32: Route loading completed
+0|career-p | 2025-06-23T17:19:59: SIGINT received, shutting down
+0|career-p | 2025-06-23T17:20:03: Starting Career Portal server...
+0|career-p | 2025-06-23T17:20:03: Serving static files from: /var/www/career-portal/dist/public
+0|career-p | 2025-06-23T17:20:03: Server initialization complete
+0|career-p | 2025-06-23T17:20:03: ✅ Career Portal server running on port 5000
+0|career-p | 2025-06-23T17:20:03: 📁 Static path: /var/www/career-portal/dist/public
+0|career-p | 2025-06-23T17:20:04: 🌐 Health check: http://localhost:5000/health
+0|career-p | 2025-06-23T17:20:04: ES modules failed, using basic routes: Cannot find module '/var/www/career-portal/server/routes.js' imported from /var/www/career-portal/server/index.cjs
+0|career-p | 2025-06-23T17:20:04: Route loading completed
+
