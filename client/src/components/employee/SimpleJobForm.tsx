@@ -34,10 +34,15 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
   const queryClient = useQueryClient();
 
   // Fetch categories
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ['/api/categories'],
     staleTime: 1000 * 60 * 5,
   });
+
+  console.log('Categories data:', categories);
+  
+  // Ensure categories is always an array
+  const categoriesList = Array.isArray(categories) ? categories : [];
 
   // Create job mutation
   const mutation = useMutation({
@@ -163,7 +168,7 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(categories || []).map((category: any) => (
+                  {categoriesList.map((category: any) => (
                     <SelectItem key={category.id} value={category.id.toString()}>
                       {category.name}
                     </SelectItem>
