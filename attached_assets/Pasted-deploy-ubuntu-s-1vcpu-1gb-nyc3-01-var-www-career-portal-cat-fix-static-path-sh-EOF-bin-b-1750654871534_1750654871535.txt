@@ -1,0 +1,59 @@
+deploy@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal$ cat > fix-static-path.sh << 'EOF'
+#!/bin/bash
+
+cd /var/www/career-portal
+
+# Stop the application
+pm2 stop career-portal
+
+# The issue is the server is looking for dist/dist/client/index.html
+# But files are in dist/index.html
+# Let's create the expected directory structure
+
+echo "Creating expected directory structure..."
+mkdir -p dist/dist/client
+cp dist/index.html dist/dist/client/
+cp -r dist/assets dist/dist/client/ 2>/dev/null || echo "No assets folder to copy"
+cp dist/*.png dist/dist/client/ 2>/dev/null || echo "No PNG files to copy"
+cp dist/*.js dist/dist/client/ 2>/dev/null || echo "No JS files to copy"
+cp dist/*.css dist/dist/client/ 2>/dev/null || echo "No CSS files to copy"
+
+# Copy all other files from dist/ to the expected location
+find dist/ -maxdepth 1 -type f -exec cp {} dist/dist/client/ \;
+
+echo "Files copied to expected location:"
+ls -la dist/dist/client/
+
+# Restart the application
+pm2 start npm --name "career-portal" -- start
+
+echo "Application restarted. Check http://64.225.6.33"
+EOF
+
+chmod +x fix-static-path.sh
+./fix-static-path.sh
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 0        │ 0      │ 61   │ stopped   │ 0%       │ 0b       │ deploy   │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Creating expected directory structure...
+No PNG files to copy
+No CSS files to copy
+Files copied to expected location:
+total 76
+drwxrwxr-x 3 deploy deploy  4096 Jun 23 05:00 .
+drwxrwxr-x 3 deploy deploy  4096 Jun 23 05:00 ..
+drwxrwxr-x 2 deploy deploy  4096 Jun 23 05:00 assets
+-rw-rw-r-- 1 deploy deploy  1926 Jun 23 05:00 index.html
+-rw-rw-r-- 1 deploy deploy 58097 Jun 23 05:00 index.js
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 0        │ 0      │ 61   │ stopped   │ 0%       │ 0b       │ deploy   │ disabled │
+│ 1  │ career-portal    │ default     │ N/A     │ fork    │ 896280   │ 0s     │ 0    │ online    │ 0%       │ 11.6mb   │ deploy   │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴──

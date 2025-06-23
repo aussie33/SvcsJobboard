@@ -1,0 +1,76 @@
+Last login: Mon Jun 23 05:33:24 2025 from 162.243.188.66
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Stop the current server
+pm2 stop career-portal
+
+# Create the directory structure the server expects
+mkdir -p /var/www/career-portal/dist/public
+cp -r /var/www/career-portal/dist/dist/client/* /var/www/career-portal/dist/public/
+
+# Start the server again
+pm2 start career-portal
+
+# Check the logs to confirm it's working
+pm2 logs career-portal --lines 5
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 0        │ 0      │ 4    │ stopped   │ 0%       │ 0b       │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+[PM2] Process successfully started
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 913910   │ 0s     │ 4    │ online    │ 0%       │ 9.8mb    │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-out.log last 5 lines:
+0|career-p | Initialized job tags: 9
+0|career-p | 
+0|career-p | > rest-express@1.0.0 start
+0|career-p | > NODE_ENV=production node dist/index.js
+0|career-p | 
+
+/root/.pm2/logs/career-portal-error.log last 5 lines:
+0|career-p | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-p | npm ERR! enoent 
+0|career-p | 
+0|career-p | npm ERR! A complete log of this run can be found in:
+0|career-p | npm ERR!     /root/.npm/_logs/2025-06-23T05_33_57_923Z-debug-0.log
+
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! code ENOENT
+0|career-portal  | npm ERR! syscall
+0|career-portal  |  open
+0|career-portal  | npm
+0|career-portal  |  ERR! path /root/package.json
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! errno -2
+0|career-portal  | npm
+0|career-portal  |  ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_34_07_073Z-debug-0.log
+0|career-portal  | npm
+0|career-portal  |  ERR! code ENOENT
+0|career-portal  | npm ERR! syscall
+0|career-portal  |  open
+0|career-portal  | npm ERR! path /root/package.json
+0|career-portal  | npm
+0|career-portal  |  ERR! errno -2
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_34_11_265Z-debug-0.log
+0|career-portal  | npm

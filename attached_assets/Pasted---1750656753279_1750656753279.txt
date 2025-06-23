@@ -1,0 +1,74 @@
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# cd /var/www/career-portal
+
+# Delete all PM2 processes
+pm2 delete all
+
+# Start fresh with the original server
+pm2 start npm --name "career-portal" -- start
+
+# Check status
+pm2 status
+[PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 912887   │ 0s     │ 0    │ online    │ 0%       │ 10.3mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 912887   │ 2s     │ 0    │ online    │ 0%       │ 64.5mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# # Check PM2 logs to see what's failing
+pm2 logs career-portal --lines 10
+
+# Also check if the original server starts manually
+npm start
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error.log last 10 lines:
+0|career-p | Error: Could not find the build directory: /var/www/career-portal/dist/public, make sure to build the client first
+0|career-p |     at serveStatic (file:///var/www/career-portal/dist/index.js:1542:11)
+0|career-p |     at file:///var/www/career-portal/dist/index.js:1625:5
+0|career-p | 
+0|career-p | Node.js v20.16.0
+0|career-p | ReferenceError: require is not defined in ES module scope, you can use import instead
+0|career-p | This file is being treated as an ES module because it has a '.js' file extension and '/var/www/career-portal/package.json' contains "type": "module". To treat it as a CommonJS script, rename it to use the '.cjs' file extension.
+0|career-p |     at file:///var/www/career-portal/simple-server.js:1:17
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)
+
+/root/.pm2/logs/career-portal-out.log last 10 lines:
+0|career-p | > NODE_ENV=production node dist/index.js
+0|career-p | 
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | 
+0|career-p | > rest-express@1.0.0 start
+0|career-p | > NODE_ENV=production node dist/index.js
+0|career-p | 
+
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | Warning: connect.session() MemoryStore is not
+0|career-portal  | designed for a production environment, as it will leak
+0|career-portal  | memory, and will not scale past a single process.
+0|career-portal  | file:///var/www/career-portal/dist/index.js:1542
+0|career-portal  |     throw new Error(
+0|career-portal  |           ^
+0|career-portal  | Error: Could not find the build directory: /var/www/career-portal/dist/public, make sure to build the client first
+0|career-portal  |     at serveStatic (file:///var/www/career-portal/dist/index.js:1542:11)
+0|career-portal  |     at file:///var/www/career-portal/dist/index.js:1625:5
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | > rest-express@1.0.0 start
+0|career-portal  | > NODE_ENV=production node dist/index.js

@@ -1,0 +1,90 @@
+areer-portal  | Node.js v20.16.0
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | node:events:497
+0|career-portal  |       throw er; // Unhandled 'error' event
+0|career-portal  |       ^
+0|career-portal  | Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+0|career-portal  |     at Server.setupListenHandle [as _listen2] (node:net:1898:16)
+0|career-portal  |     at listenInCluster (node:net:1955:12)
+0|career-portal  |     at doListen (node:net:2129:7)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+0|career-portal  | Emitted 'error' event on Server instance at:
+0|career-portal  |     at emitErrorNT (node:net:1934:8)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+0|career-portal  |   code: 'EADDRINUSE',
+0|career-portal  |   errno: -98,
+0|career-portal  |   syscall: 'listen',
+0|career-portal  |   address: '0.0.0.0',
+0|career-portal  |   port: 5000
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | node:events:497
+0|career-portal  |       throw er; // Unhandled 'error' event
+0|career-portal  |       ^
+0|career-portal  | Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+0|career-portal  |     at Server.setupListenHandle [as _listen2] (node:net:1898:16)
+0|career-portal  |     at listenInCluster (node:net:1955:12)
+0|career-portal  |     at doListen (node:net:2129:7)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+0|career-portal  | Emitted 'error' event on Server instance at:
+0|career-portal  |     at emitErrorNT (node:net:1934:8)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+0|career-portal  |   code: 'EADDRINUSE',
+0|career-portal  |   errno: -98,
+0|career-portal  |   syscall: 'listen',
+0|career-portal  |   address: '0.0.0.0',
+0|career-portal  |   port: 5000
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | node:events:497
+0|career-portal  |       throw er; // Unhandled 'error' event
+0|career-portal  |       ^
+0|career-portal  | Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+0|career-portal  |     at Server.setupListenHandle [as _listen2] (node:net:1898:16)
+0|career-portal  |     at listenInCluster (node:net:1955:12)
+0|career-portal  |     at doListen (node:net:2129:7)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+0|career-portal  | Emitted 'error' event on Server instance at:
+0|career-portal  |     at emitErrorNT (node:net:1934:8)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+0|career-portal  |   code: 'EADDRINUSE',
+0|career-portal  |   errno: -98,
+0|career-portal  |   syscall: 'listen',
+0|career-portal  |   address: '0.0.0.0',
+0|career-portal  |   port: 5000
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | node:events:497
+0|career-portal  |       throw er; // Unhandled 'error' event
+0|career-portal  |       ^
+0|career-portal  | Error: listen EADDRINUSE: address already in use 0.0.0.0:5000
+0|career-portal  |     at Server.setupListenHandle [as _listen2] (node:net:1898:16)
+0|career-portal  |     at listenInCluster (node:net:1955:12)
+0|career-portal  |     at doListen (node:net:2129:7)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+0|career-portal  | Emitted 'error' event on Server instance at:
+0|career-portal  |     at emitErrorNT (node:net:1934:8)
+0|career-portal  |     at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+0|career-portal  |   code: 'EADDRINUSE',
+0|career-portal  |   errno: -98,
+0|career-portal  |   syscall: 'listen',
+0|career-portal  |   address: '0.0.0.0',
+0|career-portal  |   port: 5000
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | Initialized users: 3

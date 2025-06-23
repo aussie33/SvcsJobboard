@@ -1,0 +1,96 @@
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  A complete log of this run can be found in:
+0|career-portal  | npm
+0|career-portal  |  ERR!     /root/.npm/_logs/2025-06-23T05_37_33_008Z-debug-0.log
+0|career-portal  | npm ERR! code ENOENT
+0|career-portal  | npm
+0|career-portal  |  ERR! syscall open
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  
+0|career-portal  | path /root/package.json
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  errno -2
+0|career-portal  | npm
+0|career-portal  |  ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_37_36_620Z-debug-0.log
+0|career-portal  | npm ERR! code ENOENT
+0|career-portal  | npm ERR! syscall open
+0|career-portal  | npm ERR! path
+0|career-portal  |  /root/package.json
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! errno -2
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_37_40_051Z-debug-0.log
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! code ENOENT
+0|career-portal  | npm ERR! syscall
+0|career-portal  |  open
+0|career-portal  | npm ERR! path /root/package.json
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  errno -2
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_37_43_684Z-debug-0.log
+0|career-portal  | npm
+0|career-portal  |  ERR! code ENOENT
+0|career-portal  | npm ERR! syscall open
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! path /root/package.json
+0|career-portal  | npm
+0|career-portal  |  ERR! 
+0|career-portal  | errno
+0|career-portal  |  -2
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_37_47_638Z-debug-0.log
+0|career-portal  | npm
+0|career-portal  |  ERR! code ENOENT
+0|career-portal  | npm ERR!
+0|career-portal  |  
+0|career-portal  | syscall open
+0|career-portal  | npm 
+0|career-portal  | ERR! path /root/package.json
+0|career-portal  | npm ERR! 
+0|career-portal  | errno -2
+0|career-portal  | npm
+0|career-portal  |  
+0|career-portal  | ERR!
+0|career-portal  |  enoent ENOENT: no such file or directory, open '/root/package.json'
+0|career-portal  | npm ERR! enoent This is related to npm not being able to find a file.
+0|career-portal  | npm ERR! enoent 
+0|career-portal  | npm
+0|career-portal  |  ERR! A complete log of this run can be found in:
+0|career-portal  | npm ERR!     /root/.npm/_logs/2025-06-23T05_37_50_989Z-debug-0.log
+0|career-portal  | npm
