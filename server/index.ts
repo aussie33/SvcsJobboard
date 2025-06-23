@@ -37,11 +37,10 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     secure: false, // Set to true in production with HTTPS
-    httpOnly: false, // Allow client-side access for debugging
-    sameSite: 'lax',
-    path: '/'
+    httpOnly: true,
+    sameSite: 'lax'
   },
-  name: 'sessionId' // Simple session name
+  name: 'connect.sid'
 }));
 
 app.use((req, res, next) => {
