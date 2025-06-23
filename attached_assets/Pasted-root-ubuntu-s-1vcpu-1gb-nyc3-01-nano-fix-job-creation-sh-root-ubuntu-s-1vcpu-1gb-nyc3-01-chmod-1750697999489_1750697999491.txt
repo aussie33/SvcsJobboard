@@ -1,0 +1,54 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# nano fix-job-creation.sh
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# chmod +x fix-job-creation.sh
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# ./fix-job-creation.sh
+Applying job creation fix for DigitalOcean environment...
+Stopping existing processes...
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+ 920558Backing up current files...
+Updating server configuration...
+Creating PM2 configuration...
+Setting up directory structure...
+Setting up environment...
+Installing dependencies...
+npm WARN config production Use `--omit=dev` instead.
+npm WARN config optional Use `--omit=optional` to exclude optional dependencies, or
+npm WARN config `--include=optional` to include them.
+npm WARN config 
+npm WARN config     Default value does install optional deps unless otherwise omitted.
+
+up to date, audited 435 packages in 16s
+
+56 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+Running database migration...
+Migration skipped or failed
+Starting application...
+[PM2][ERROR] File ecosystem.config.js malformated
+Error [ERR_REQUIRE_ESM]: require() of ES Module /var/www/career-portal/ecosystem.config.js from /usr/local/lib/node_modules/pm2/lib/Common.js not supported.
+ecosystem.config.js is treated as an ES module file as it is a .js file whose nearest parent package.json contains "type": "module" which declares all .js files in that package scope as ES modules.
+Instead either rename ecosystem.config.js to end in .cjs, change the requiring code to use dynamic import() which is available in all CommonJS modules, or change "type": "module" to "type": "commonjs" in /var/www/career-portal/package.json to treat all .js files as CommonJS (using .mjs for all ES modules instead).
+
+    at Common.parseConfig (/usr/local/lib/node_modules/pm2/lib/Common.js:331:12)
+    at API._startJson (/usr/local/lib/node_modules/pm2/lib/API.js:934:25)
+    at API.start (/usr/local/lib/node_modules/pm2/lib/API.js:329:12)
+    at /usr/local/lib/node_modules/pm2/lib/binaries/CLI.js:297:13
+    at /usr/local/lib/node_modules/pm2/node_modules/async/internal/withoutIndex.js:8:40 {
+  code: 'ERR_REQUIRE_ESM'
+}
+[PM2] Saving current process list...
+[PM2][WARN] PM2 is not managing any process, skipping save...
+[PM2][WARN] To force saving use: pm2 save --force
+Checking application status...
+❌ Career Portal failed to start
+📊 Error logs:
