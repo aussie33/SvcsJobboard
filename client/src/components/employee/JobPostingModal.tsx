@@ -24,31 +24,14 @@ interface JobPostingModalProps {
   editJob?: JobWithTags | null;
 }
 
-const formSchema = jobWithTagsSchema.extend({
+const formSchema = z.object({
   job: insertJobSchema.extend({
     status: z.enum(['draft', 'active']),
     publishOption: z.enum(['publish-now', 'save-draft']),
-    city: z.string().optional()
-      .refine((city, ctx) => {
-        // If location is hybrid, city is required
-        if (ctx.parent.location === 'hybrid' && !city) {
-          return false;
-        }
-        return true;
-      }, {
-        message: "City is required for hybrid positions",
-      }),
+    city: z.string().optional(),
     state: z.string().optional()
-      .refine((state, ctx) => {
-        // If location is hybrid, state is required
-        if (ctx.parent.location === 'hybrid' && !state) {
-          return false;
-        }
-        return true;
-      }, {
-        message: "State is required for hybrid positions",
-      })
-  })
+  }),
+  tags: z.array(z.string()).default([])
 });
 
 type JobFormData = z.infer<typeof formSchema>;
@@ -61,7 +44,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
 }) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState('');
-  const [locationType, setLocationType] = useState(editJob?.job?.location || 'remote');
+  const [locationType, setLocationType] = useState(editJob?.location || 'remote');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -78,7 +61,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
       job: {
         title: '',
         department: '',
-        categoryId: '',
+        categoryId: 1,
         employeeId: 0, // Will be set by the server
         shortDescription: '',
         fullDescription: '',
@@ -113,7 +96,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
         job: {
           title: '',
           department: '',
-          categoryId: '',
+          categoryId: 1,
           employeeId: 0,
           shortDescription: '',
           fullDescription: '',
@@ -135,6 +118,7 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
   // Create/update job mutation
   const mutation = useMutation({
     mutationFn: async (data: JobFormData) => {
+      console.log('Mutation started with data:', data);
       const { job, tags } = data;
       
       // Set status based on publish option
@@ -144,8 +128,18 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
       const url = editJob ? `/api/jobs/${editJob.id}` : '/api/jobs';
       const method = editJob ? 'PATCH' : 'POST';
       
-      const response = await apiRequest(method, url, { job, tags });
-      return response.json();
+      console.log('Making API request:', { method, url, payload: { job, tags } });
+      
+      try {
+        const response = await apiRequest(method, url, { job, tags });
+        console.log('API response status:', response.status);
+        const result = await response.json();
+        console.log('API response data:', result);
+        return result;
+      } catch (error) {
+        console.error('API request failed:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
@@ -189,8 +183,13 @@ const JobPostingModal: React.FC<JobPostingModalProps> = ({
   };
 
   const onSubmit = (data: JobFormData) => {
+    console.log('Form submission data:', data);
+    console.log('Form errors:', form.formState.errors);
+    console.log('Form is valid:', form.formState.isValid);
+    
     // Ensure tags are also submitted
     data.tags = tags;
+    console.log('Final data being sent:', data);
     mutation.mutate(data);
   };
 

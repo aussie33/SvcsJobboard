@@ -1,0 +1,78 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal && cat > apply-session-fix.sh << 'EOF'
+#!/bin/bash
+echo "Fixing session authentication..."
+
+# Backup current version
+tar -czf /var/backups/career-portal/session-backup-$(date +%Y%m%d_%H%M%S).tar.gz server/
+
+# Update server/index.ts with proper session store
+sed -i '/import session from/a import MemoryStore from '\''memorystore'\'';' server/index.ts
+
+# Replace session configuration
+sed -i '/Set up session middleware/,/}));/c\
+// Set up session middleware with proper production configuration\
+const MemoryStoreSession = MemoryStore(session);\
+app.use(session({\
+  secret: process.env.SESSION_SECRET || '\''career-portal-secret-key-dev'\'',\
+  resave: false,\
+  saveUninitialized: false,\
+  store: new MemoryStoreSession({\
+    checkPeriod: 86400000\
+  }),\
+  cookie: {\
+    maxAge: 24 * 60 * 60 * 1000,\
+    secure: false,\
+    httpOnly: true,\
+    sameSite: '\''lax'\''\
+  },\
+  name: '\''connect.sid'\''\
+}));' server/index.ts
+
+# Rebuild and restart
+npm run build
+mkdir -p dist/public
+cp -r dist/dist/client/* dist/public/
+pm2 restart career-portal
+
+echo "Session fix applied - test login functionality"
+EOF
+
+chmod +x apply-session-fix.sh && ./apply-session-fix.sh
+Fixing session authentication...
+tar (child): /var/backups/career-portal/session-backup-20250623_131827.tar.gz: Cannot open: No such file or directory
+tar (child): Error is not recoverable: exiting now
+tar: /var/backups/career-portal/session-backup-20250623_131827.tar.gz: Wrote only 4096 of 10240 bytes
+tar: Child returned status 2
+tar: Error is not recoverable: exiting now
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (4) src/App.tsxBrowserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1867 modules transformed.
+../dist/public/index.html                          1.93 kB │ gzip:   0.81 kB
+../dist/public/assets/cropped-logo-BTJp_xEo.png   86.41 kB
+../dist/public/assets/index-Dm_e3IT3.css          84.19 kB │ gzip:  13.56 kB
+../dist/public/assets/index-BiDWT6-L.js          561.01 kB │ gzip: 165.57 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1m 37s
+
+  dist/index.js  56.7kb
+
+⚡ Done in 130ms
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 1121887  │ 0s     │ 5664 │ online    │ 0%       │ 8.7mb    │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Session fix applied - test login functionality
