@@ -85,7 +85,8 @@ export const insertCategorySchema = createInsertSchema(categories)
   .omit({ id: true, createdAt: true });
 
 export const insertJobSchema = createInsertSchema(jobs)
-  .omit({ id: true, postedDate: true, expiryDate: true });
+  .omit({ id: true, postedDate: true, expiryDate: true })
+  .partial({ employeeId: true });
 
 export const insertJobTagSchema = createInsertSchema(jobTags)
   .omit({ id: true });

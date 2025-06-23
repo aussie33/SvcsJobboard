@@ -43,8 +43,10 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
   const mutation = useMutation({
     mutationFn: async (data: any) => {
       console.log('Creating job with data:', data);
+      // Remove employeeId from data since server sets it automatically
+      const { employeeId, ...jobData } = data;
       const response = await apiRequest('POST', '/api/jobs', { 
-        job: data, 
+        job: jobData, 
         tags: [] 
       });
       
@@ -89,6 +91,25 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted with data:', formData);
+    console.log('Required fields check:', {
+      title: formData.title,
+      department: formData.department,
+      shortDescription: formData.shortDescription,
+      fullDescription: formData.fullDescription,
+      requirements: formData.requirements
+    });
+    
+    // Check if required fields are filled
+    if (!formData.title || !formData.department || !formData.shortDescription || !formData.fullDescription || !formData.requirements) {
+      console.log('Missing required fields');
+      toast({
+        title: "Missing Fields",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     mutation.mutate(formData);
   };
 
@@ -239,7 +260,10 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
             <Button 
               type="button" 
               variant="outline" 
-              onClick={onClose}
+              onClick={() => {
+                console.log('Cancel button clicked');
+                onClose();
+              }}
               disabled={mutation.isPending}
             >
               Cancel
@@ -247,6 +271,7 @@ export const SimpleJobForm: React.FC<SimpleJobFormProps> = ({ isOpen, onClose, o
             <Button 
               type="submit"
               disabled={mutation.isPending}
+              onClick={() => console.log('Create Job button clicked')}
             >
               {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Job
