@@ -1,0 +1,54 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# chmod +x check-docker-status.sh
+./check-docker-status.sh
+Checking Docker container status and fixing login issues...
+=== Container Status ===
+CONTAINER ID   IMAGE                  COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+4fabfd9816eb   career-portal-simple   "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   0.0.0.0:8080->5000/tcp, [::]:8080->5000/tcp   career-portal
+
+=== Container Logs (last 20 lines) ===
+=== Career Portal Server Started ===
+Port: 5000
+URL: http://64.225.6.33
+Users available: [ 'admin/admin123', 'employee/employee123' ]
+=====================================
+
+=== Testing Container Health ===
+{"status":"ok","timestamp":"2025-06-24T04:15:55.166Z","jobsCount":0,"usersCount":2,"sessionId":"4AQf94TMGGgMEPDv01r7vIz_SVK768ur"}
+=== Testing Login Endpoint ===
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:8080 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:8080...
+* Connected to localhost (::1) port 8080
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/8.9.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 42
+> 
+* upload completely sent off: 42 bytes
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+< Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 153
+< ETag: W/"99-DOJACrPMGF+n3UBE3N3QEefOBwk"
+< Set-Cookie: career-session-id=s%3ARe6PAxOUqKKq9JrLX4hwD1y3gwfH4oXw.vLRh7qNv9CBEwQwrev01ZTEVNQFWsYEq6d077wMcciM; Path=/; Expires=Wed, 25 Jun 2025 04:15:55 GMT; HttpOnly; SameSite=Lax
+< Date: Tue, 24 Jun 2025 04:15:55 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"id":1,"username":"admin","email":"admin@theresonance.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true}
+=== Final Status ===
+Container running: 1
+Health check: "status":"ok"
+
+Access your portal at:
+• http://64.225.6.33:8080
+• Login: admin/admin123
