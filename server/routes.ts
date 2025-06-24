@@ -589,7 +589,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Ensure the user is the job owner or an admin
-      if (job.employeeId !== req.user.id && req.user.role !== "admin") {
+      if (job.employeeId !== req.user!.id && req.user!.role !== "admin") {
         return res.status(403).json({ message: "Forbidden" });
       }
       
@@ -606,7 +606,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const filteredUpdates: Partial<typeof job> = {};
         for (const key of allowedUpdates) {
           if (jobUpdates[key] !== undefined) {
-            filteredUpdates[key] = jobUpdates[key];
+            (filteredUpdates as any)[key] = jobUpdates[key];
           }
         }
         
@@ -662,8 +662,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (status && status !== 'all') filters.status = status.toString();
     
     // If employee, only show applications for their jobs
-    if (req.user.role === "employee") {
-      const employeeJobs = await storage.getJobs({ employeeId: req.user.id });
+    if (req.user!.role === "employee") {
+      const employeeJobs = await storage.getJobs({ employeeId: req.user!.id });
       const employeeJobIds = employeeJobs.map(job => job.id);
       
       // No jobs, return empty array
@@ -784,9 +784,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // If employee, ensure they own the job
-      if (req.user.role === "employee") {
+      if (req.user!.role === "employee") {
         const job = await storage.getJob(application.jobId);
-        if (!job || job.employeeId !== req.user.id) {
+        if (!job || job.employeeId !== req.user!.id) {
           return res.status(403).json({ message: "Forbidden" });
         }
       }
