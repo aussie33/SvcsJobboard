@@ -1,0 +1,71 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Check if there are any existing server processes
+ps aux | grep node
+
+# Check PM2 status
+pm2 list
+
+# Look at the project structure to understand what files we have
+ls -la server/
+
+# Check if package.json has the right module type
+cat package.json | grep -E "(type|main|scripts)"
+
+# The issue might be that we need to ensure ES modules are properly configured
+# Let's check the current server files
+if [ -f server/index.ts ]; then
+  echo "Found TypeScript server file"
+  head -20 server/index.ts
+elif [ -f server/index.js ]; then
+  echo "Found JavaScript server file"  
+  head -20 server/index.js
+else
+  echo "No server file found"
+fi
+
+# Check if there are any build/dist files
+ls -la dist/ 2>/dev/null || echo "No dist directory"
+
+# Force stop any running processes and restart properly
+pm2 kill
+pkill -f node 2>/dev/null || true
+
+# Start fresh with the correct setup
+if [ -f server/index.ts ]; then
+  # Use tsx to run TypeScript directly
+  pm2 start server/index.ts --interpreter tsx --name career-portal
+elif [ -f server/index.js ]; then
+  # Use the JavaScript file
+  pm2 start server/index.js --name career-portal
+fi
+
+# Wait and check status
+sleep 3
+pm2 status
+pm2 logs --lines 5
+root     1399060  0.3  5.9 11497588 58696 ?      Sl   21:10   0:01 node /var/www/career-portal/server/index.cjs
+root     1402574  0.0  0.2   7152  2180 pts/0    S+   21:15   0:00 grep --color=auto node
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1399060  │ 5m     │ 12   │ online    │ 0%       │ 57.4mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+ls: cannot access 'server/': No such file or directory
+cat: package.json: No such file or directory
+No server file found
+No dist directory
+[PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+[PM2] [v] All Applications Stopped
+[PM2] [v] PM2 Daemon Stopped
+[PM2] Spawning PM2 daemon with pm2_home=/root/.pm2
+[PM2] PM2 Successfully daemonized
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [all] processes (change the value with --lines option)
+/root/.pm2/pm2.log last 5 lines:
+PM2        | 2025-06-23T21:15:57: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+PM2        | 2025-06-23T21:15:57: PM2 log: Concurrent actions   : 2
+PM2        | 2025-06-23T21:15:57: PM2 log: SIGTERM timeout      : 1600
+PM2        | 2025-06-23T21:15:57: PM2 log: Runtime Binary       : /usr/bin/node
+PM2        | 2025-06-23T21:15:57: PM2 log: ===============================================================================

@@ -1,0 +1,99 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# # Check the server logs to see what crashed
+pm2 logs career-portal --lines 20
+
+# Check if the server is actually running
+pm2 status career-portal
+
+# The sed commands might have corrupted the server file
+# Let's restore from backup and create a clean working version
+ls -la server/index.cjs.backup*
+
+# Use the most recent backup
+LATEST_BACKUP=$(ls -t server/index.cjs.backup* | head -1)
+cp "$LATEST_BACKUP" server/index.cjs
+
+# Create a clean server file with proper session configuration
+cat > server/index.cjs << 'EOF'
+const express = require('express');
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const path = require('path');
+const fs = require('fs');
+
+console.log('Starting Career Portal server...');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+app.set('trust proxy', 1);
+
+// Enhanced session configuration for login persistence
+app.use(session({
+  store: new MemoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000 * 7,  // 7 days
+    max: 1000,
+    stale: false
+  }),
+  secret: 'career-portal-production-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: false,  // Don't reset on each request
+  cookie: {
+    httpOnly: true,
+    maxAge: 86400000 * 7,  // 7 days
+    sameSite: 'lax',
+    secure: false,
+    path: '/',
+    domain: undefined
+  },
+  name: 'career-portal-session',
+  proxy: true
+}));
+
+app.use(express.json({ limit: '50mb' }));
+curl -I http://64.225.6.33 2>/dev/null | head -1 || echo "❌ Login failed", Content-Length, X-Requested-With');
+[TAILING] Tailing last 20 lines for [career-portal] process (change the value with --lines option)
+/var/www/career-portal/logs/out-0.log last 20 lines:
+0|career-p | 2025-06-23T20:30:32: API Request: GET /api/jobs
+0|career-p | 2025-06-23T20:30:32: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:45: API Request: POST /api/auth/login
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:45: API Request: GET /api/auth/me
+0|career-p | 2025-06-23T20:30:46: API Request: GET /api/users
+0|career-p | 2025-06-23T20:30:48: API Request: GET /api/jobs
+0|career-p | 2025-06-23T20:30:48: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:50: API Request: GET /api/categories
+0|career-p | 2025-06-23T20:30:50: API Request: GET /api/jobs
+0|career-p | 2025-06-23T20:54:05: Starting Career Portal server...
+0|career-p | 2025-06-23T20:54:05: Static path: /var/www/career-portal/dist/public
+0|career-p | 2025-06-23T20:54:05: Serving static files from: /var/www/career-portal/dist/public
+0|career-p | 2025-06-23T20:54:06: Initialized users: 2
+0|career-p | 2025-06-23T20:54:06: Initialized categories: 3
+0|career-p | 2025-06-23T20:54:06: Registering API routes...
+0|career-p | 2025-06-23T20:54:06: ✅ API routes registered successfully
+0|career-p | 2025-06-23T20:54:06: Routes loaded successfully
+0|career-p | 2025-06-23T20:54:06: Server running on port 5000
+
+/var/www/career-portal/logs/err-0.log last 20 lines:
+0|career-p | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+0|career-p | Error [ERR_REQUIRE_ESM]: require() of ES Module /var/www/career-portal/server/routes.js from /var/www/career-portal/server/index.cjs not supported.
+0|career-p | Instead change the require of routes.js in /var/www/career-portal/server/index.cjs to a dynamic import() which is available in all CommonJS modules.
+0|career-p |     at Hook._require.Module.require (/usr/local/lib/node_modules/pm2/node_modules/require-in-the-middle/index.js:101:39)
+0|career-p |     at Object.<anonymous> (/var/www/career-portal/server/index.cjs:5:28)
+0|career-p | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+0|career-p | /var/www/career-portal/server/index.cjs:30
+0|career-p |     secure: false
+0|career-p |     ^^^^^^
+0|career-p | 
+0|career-p | SyntaxError: Unexpected identifier 'secure'
+0|career-p |     at wrapSafe (node:internal/modules/cjs/loader:1281:20)
+0|career-p |     at Module._compile (node:internal/modules/cjs/loader:1321:27)
+0|career-p |     at Module._extensions..js (node:internal/modules/cjs/loader:1416:10)
+0|career-p |     at Module.load (node:internal/modules/cjs/loader:1208:32)
+0|career-p |     at Module._load (node:internal/modules/cjs/loader:1024:12)
+0|career-p |     at cjsLoader (node:internal/modules/esm/translators:348:17)
+0|career-p |     at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:297:7)
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:316:24)

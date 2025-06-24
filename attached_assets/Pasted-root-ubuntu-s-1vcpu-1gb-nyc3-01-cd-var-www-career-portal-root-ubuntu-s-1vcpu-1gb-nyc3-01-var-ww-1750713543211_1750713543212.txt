@@ -1,0 +1,175 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# # Navigate to the project directory
+cd /var/www/career-portal
+
+# Check what's actually in the project
+ls -la
+
+# Look at the server directory structure
+ls -la server/
+
+# Check if we have the right files
+if [ -f server/index.ts ]; then
+  echo "Starting with TypeScript server..."
+  pm2 start server/index.ts --interpreter tsx --name career-portal
+elif [ -f server/index.js ]; then
+  echo "Starting with JavaScript server..."
+  pm2 start server/index.js --name career-portal
+elif [ -f server/index.cjs ]; then
+  echo "Starting with CommonJS server (temporary)..."
+  pm2 start server/index.cjs --name career-portal
+else
+  echo "Creating a working server file..."
+  # Create a simple working server based on the Replit version
+  cat > server/index.js << 'EOF'
+import express from 'express';
+import session from 'express-session';
+import MemoryStore from 'memorystore';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { registerRoutes } from './routes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+const memoryStore = MemoryStore(session);
+
+app.use(session({
+  store: new memoryStore({
+    checkPeriod: 86400000,
+    ttl: 86400000 * 7
+  }),
+  secret: 'career-portal-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    maxAge: 86400000 * 7,
+    sameSite: 'lax',
+    secure: false
+  }
+}));
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+curl -I http://64.225.6.33 && echo "✅ External access working" || echo "❌ External access not working"-With');
+total 1976
+drwxr-xr-x  12 deploy deploy    4096 Jun 23 21:11 .
+drwxr-xr-x   6 root   root      4096 Jun 23 04:45 ..
+-rw-rw-r--   1 deploy deploy      88 Jun 23 16:59 .env
+drwxr-xr-x   8 deploy deploy    4096 Jun 23 04:45 .git
+-rw-r--r--   1 deploy deploy      71 Jun 23 04:45 .gitignore
+-rw-r--r--   1 deploy deploy     794 Jun 23 04:45 .replit
+-rw-r--r--   1 deploy deploy      34 Jun 23 04:45 README.md
+-rwxr-xr-x   1 root   root      1070 Jun 23 13:18 apply-session-fix.sh
+drwxr-xr-x   2 deploy deploy    4096 Jun 23 04:45 attached_assets
+drwxr-xr-x   3 deploy deploy    4096 Jun 23 04:45 client
+-rw-r--r--   1 deploy deploy     279 Jun 23 04:45 cookies.txt
+-rw-r--r--   1 deploy deploy    3887 Jun 23 04:45 deploy-guide.md
+drwxrwxr-x   5 deploy deploy    4096 Jun 23 05:34 dist
+-rw-r--r--   1 deploy deploy     325 Jun 23 04:45 drizzle.config.ts
+-rw-r--r--   1 root   root       422 Jun 23 17:19 ecosystem.config.cjs
+-rw-r--r--   1 root   root       383 Jun 23 21:14 ecosystem.config.js
+-rwxrwxr-x   1 deploy deploy     978 Jun 23 05:00 fix-static-path.sh
+-rw-r--r--   1 deploy deploy 1549281 Jun 23 04:45 generated-icon.png
+drwxr-xr-x   2 root   root      4096 Jun 23 17:00 logs
+-rw-r--r--   1 deploy deploy     593 Jun 23 04:45 migrate.js
+drwxrwxr-x 319 deploy deploy   12288 Jun 23 16:59 node_modules
+-rw-r--r--   1 deploy deploy  329973 Jun 23 16:59 package-lock.json
+-rw-r--r--   1 deploy deploy    3691 Jun 23 05:29 package.json
+-rw-r--r--   1 deploy deploy      80 Jun 23 04:45 postcss.config.js
+drwxr-xr-x   4 root   root      4096 Jun 23 05:30 public
+drwxr-xr-x   3 deploy deploy    4096 Jun 23 21:11 server
+-rw-r--r--   1 root   root       866 Jun 23 05:29 server-fix.js
+drwxr-xr-x   2 deploy deploy    4096 Jun 23 04:45 shared
+-rw-r--r--   1 root   root       632 Jun 23 05:30 simple-server.js
+-rw-r--r--   1 deploy deploy    2787 Jun 23 04:45 tailwind.config.ts
+-rw-r--r--   1 deploy deploy     113 Jun 23 04:45 theme.json
+-rw-r--r--   1 deploy deploy     657 Jun 23 04:45 tsconfig.json
+drwxr-xr-x   2 deploy deploy    4096 Jun 23 04:45 uploads
+-rw-r--r--   1 deploy deploy    1008 Jun 23 04:45 vite.config.ts
+total 128
+drwxr-xr-x  3 deploy deploy  4096 Jun 23 21:11 .
+drwxr-xr-x 12 deploy deploy  4096 Jun 23 21:11 ..
+drwxr-xr-x  4 root   root    4096 Jun 23 19:02 compiled
+-rw-r--r--  1 root   root    1689 Jun 23 20:47 index.cjs.backup
+-rw-r--r--  1 root   root    2483 Jun 23 21:00 index.cjs.backup-1750712448
+-rw-r--r--  1 deploy deploy  3255 Jun 23 16:21 index.ts
+-rw-r--r--  1 root   root     626 Jun 23 19:16 load-routes.cjs
+-rw-r--r--  1 deploy deploy 12129 Jun 23 04:45 migrate.ts
+-rw-r--r--  1 deploy deploy 11690 Jun 23 04:45 postgres-storage.ts
+-rw-r--r--  1 root   root    3974 Jun 23 19:16 routes.js
+-rw-r--r--  1 deploy deploy 27476 Jun 23 04:45 routes.ts
+-rw-r--r--  1 root   root     705 Jun 23 20:47 session-fix.cjs
+-rw-r--r--  1 root   root     999 Jun 23 21:00 session-persistence-fix.cjs
+-rw-r--r--  1 root   root    3734 Jun 23 19:16 storage.js
+-rw-r--r--  1 deploy deploy 20957 Jun 23 04:45 storage.ts
+-rw-r--r--  1 deploy deploy   455 Jun 23 04:45 types.d.ts
+-rw-r--r--  1 deploy deploy  2374 Jun 23 04:45 vite.ts
+Starting with TypeScript server...
+[PM2] Starting /var/www/career-portal/server/index.ts in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ fork    │ 1404690  │ 0s     │ 0    │ online    │ 0%       │ 15.4mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ fork    │ 1404753  │ 1s     │ 1    │ online    │ 0%       │ 60.9mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-out.log last 5 lines:
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+
+/root/.pm2/logs/career-portal-error.log last 5 lines:
+0|career-p |     at async Hooks.resolve (node:internal/modules/esm/hooks:304:24) {
+0|career-p |   code: 'ERR_MODULE_NOT_FOUND'
+0|career-p | }
+0|career-p | 
+0|career-p | Node.js v20.16.0
+
+0|career-portal  | node:internal/modules/run_main:129
+0|career-portal  |     triggerUncaughtException(
+0|career-portal  |     ^
+0|career-portal  | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /var/www/career-portal/server/vite.ts
+0|career-portal  |     at packageResolve (node:internal/modules/esm/resolve:854:9)
+0|career-portal  |     at moduleResolve (node:internal/modules/esm/resolve:927:18)
+0|career-portal  |     at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+0|career-portal  |     at nextResolve (node:internal/modules/esm/hooks:866:28)
+0|career-portal  |     at resolveBase (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713521926:2:3811)
+0|career-portal  |     at resolveDirectory (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713521926:2:4310)
+0|career-portal  |     at resolveTsPaths (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713521926:2:5051)
+0|career-portal  |     at async resolve (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713521926:2:5422)
+0|career-portal  |     at async nextResolve (node:internal/modules/esm/hooks:866:22)
+0|career-portal  |     at async Hooks.resolve (node:internal/modules/esm/hooks:304:24) {
+0|career-portal  |   code: 'ERR_MODULE_NOT_FOUND'
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | node:internal/modules/run_main:129
+0|career-portal  |     triggerUncaughtException(
+0|career-portal  |     ^
+0|career-portal  | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /var/www/career-portal/server/vite.ts
+0|career-portal  |     at packageResolve (node:internal/modules/esm/resolve:854:9)
+0|career-portal  |     at moduleResolve (node:internal/modules/esm/resolve:927:18)
+0|career-portal  |     at defaultResolve (node:internal/modules/esm/resolve:1169:11)
+0|career-portal  |     at nextResolve (node:internal/modules/esm/hooks:866:28)
+0|career-portal  |     at resolveBase (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713525838:2:3811)
+0|career-portal  |     at resolveDirectory (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713525838:2:4310)
+0|career-portal  |     at resolveTsPaths (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713525838:2:5051)
+0|career-portal  |     at async resolve (file:///usr/local/lib/node_modules/tsx/dist/esm/index.mjs?1750713525838:2:5422)
+0|career-portal  |     at async nextResolve (node:internal/modules/esm/hooks:866:22)
+0|career-portal  |     at async Hooks.resolve (node:internal/modules/esm/hooks:304:24) {
+0|career-portal  |   code: 'ERR_MODULE_NOT_FOUND'
+0|career-portal  | }
+0|career-portal  | Node.js v20.16.0
+0|career-portal  | node:internal/modules/run_

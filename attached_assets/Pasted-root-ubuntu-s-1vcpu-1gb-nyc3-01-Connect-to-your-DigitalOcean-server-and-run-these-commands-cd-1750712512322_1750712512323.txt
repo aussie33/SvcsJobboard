@@ -1,0 +1,77 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Connect to your DigitalOcean server and run these commands:
+
+cd /var/www/career-portal
+
+# The issue is likely that sessions aren't persisting across browser refreshes
+# Let's update the session configuration to fix this
+
+cat > server/session-persistence-fix.cjs << 'EOF'
+// Enhanced session configuration for persistent login
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+
+const sessionConfig = {
+  secret: 'career-portal-production-secret-2024',
+  resave: false,
+  saveUninitialized: false,
+  rolling: false,  // Don't reset expiry on each request
+  store: new MemoryStore({
+    checkPeriod: 86400000, // Check for expired sessions every 24h
+    ttl: 86400000 * 7,     // Keep sessions for 7 days
+    max: 1000,
+    stale: false
+  }),
+  cookie: {
+    secure: false,           // Set to true when using HTTPS
+    httpOnly: true,          // Prevent XSS attacks
+    maxAge: 86400000 * 7,    // 7 days
+    sameSite: 'lax',         // Allow cross-origin requests
+    domain: undefined,       // Let browser set domain automatically
+    path: '/'               // Cookie available for entire site
+  },
+  name: 'career-portal-session',
+  proxy: true                // Trust proxy headers
+};
+
+module.exports = sessionConfig;
+EOF
+
+# Update the main server file to use the enhanced session config
+cp server/index.cjs server/index.cjs.backup-$(date +%s)
+
+# Apply the session fix
+sed -i 's/rolling: true,/rolling: false,/' server/index.cjs
+sed -i 's/maxAge: 24 \* 60 \* 60 \* 1000,/maxAge: 86400000 * 7,/' server/index.cjs
+sed -i 's/ttl: 86400000/ttl: 86400000 * 7/' server/index.cjs
+
+# Also add domain and path explicitly
+sed -i '/sameSite: '\''lax'\''/a\    domain: undefined,\n    path: '\''\/'\''' server/index.cjs
+
+# Restart the server
+pm2 restart career-portal
+
+# Wait for restart
+sleep 5
+
+echo "The login should now stay active across browser refreshes at http://64.225.6.33"t after delay""
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ cluster │ 1392327  │ 0s     │ 11   │ online    │ 0%       │ 48.4mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Testing login and session persistence...
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.26.0 (Ubuntu)</center>
+</body>
+</html>
+❌ Session failed immediately
+❌ Session lost after delay
+
+Session persistence fix applied!
+The login should now stay active across browser refreshes a
