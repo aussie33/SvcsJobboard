@@ -1,0 +1,290 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# chmod +x final-auth-fix.sh
+./final-auth-fix.sh
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /var/www/career-portal/server/final-auth-fix.js in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ fork    │ 2622     │ 0s     │ 0    │ online    │ 0%       │ 11.5mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Testing the enhanced authentication...
+{"id":1,"username":"admin","email":"admin@theresonance.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true}
+Testing session persistence...
+{"id":1,"username":"admin","email":"admin@theresonance.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true}
+Testing job creation...
+{"id":1,"title":"Final Test Job","department":"Engineering","categoryId":1,"shortDescription":"Test job","fullDescription":"Test job","requirements":"","type":"full-time","location":"remote","status":"active","employeeId":1,"postedDate":"2025-06-24T03:33:19.117Z","expiryDate":null}
+Check detailed logs with: pm2 logs career-portal
+Enhanced authentication server deployed at http://64.225.6.33
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# cd /var/www/career-portal
+# Stop PM2 processes
+pm2 delete all
+# Install Docker if not already installed
+apt update && apt install docker.io docker-compose -y
+# Build and run with Docker
+docker-compose up -d
+[PM2] Applying action deleteProcessId on app [all](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+Hit:1 http://mirrors.digitalocean.com/ubuntu oracular InRelease
+Get:2 http://mirrors.digitalocean.com/ubuntu oracular-updates InRelease [126 kB]                            
+Get:3 http://mirrors.digitalocean.com/ubuntu oracular-backports InRelease [126 kB]                                     
+Hit:4 https://repos-droplet.digitalocean.com/apt/droplet-agent main InRelease         
+Get:5 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 Components [61.0 kB]
+Get:6 http://mirrors.digitalocean.com/ubuntu oracular-updates/universe amd64 Components [61.2 kB]
+Get:7 http://mirrors.digitalocean.com/ubuntu oracular-updates/restricted amd64 Components [216 B]
+Get:8 http://mirrors.digitalocean.com/ubuntu oracular-updates/multiverse amd64 Components [212 B]
+Get:9 http://mirrors.digitalocean.com/ubuntu oracular-backports/main amd64 Components [212 B]
+Get:10 http://mirrors.digitalocean.com/ubuntu oracular-backports/universe amd64 Components [9696 B]
+Get:11 http://mirrors.digitalocean.com/ubuntu oracular-backports/restricted amd64 Components [216 B]
+Get:12 http://mirrors.digitalocean.com/ubuntu oracular-backports/multiverse amd64 Components [216 B]
+Get:13 http://security.ubuntu.com/ubuntu oracular-security InRelease [126 kB]
+Get:14 http://security.ubuntu.com/ubuntu oracular-security/main amd64 Components [21.6 kB]
+Get:15 http://security.ubuntu.com/ubuntu oracular-security/universe amd64 Components [7608 B]
+Get:16 http://security.ubuntu.com/ubuntu oracular-security/restricted amd64 Components [212 B]
+Get:17 http://security.ubuntu.com/ubuntu oracular-security/multiverse amd64 Components [212 B]
+Fetched 541 kB in 7s (74.9 kB/s)                                          
+All packages are up to date.    
+Installing:                     
+  docker-compose  docker.io
+
+Installing dependencies:
+  bridge-utils  dns-root-data  pigz             python3-docker     python3-docopt  python3-texttable  runc
+  containerd    dnsmasq-base   python3-compose  python3-dockerpty  python3-dotenv  python3-websocket  ubuntu-fan
+
+Suggested packages:
+  ifupdown    cgroupfs-mount  debootstrap    docker-compose-v2  rinse     | zfsutils
+  aufs-tools  | cgroup-lite   docker-buildx  docker-doc         zfs-fuse  python3-paramiko
+
+Summary:
+  Upgrading: 0, Installing: 16, Removing: 0, Not Upgrading: 0
+  Download size: 71.1 MB
+  Space needed: 269 MB / 16.7 GB available
+
+Get:1 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 pigz amd64 2.8-1 [65.6 kB]
+Get:2 http://mirrors.digitalocean.com/ubuntu oracular/main amd64 bridge-utils amd64 1.7.1-2ubuntu1 [34.1 kB]
+Get:3 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 runc amd64 1.2.5-0ubuntu1~24.10.1 [8030 kB]
+Get:4 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 containerd amd64 2.0.5-0ubuntu1~24.10.1 [29.4 MB]
+Get:5 http://mirrors.digitalocean.com/ubuntu oracular-updates/main amd64 dns-root-data all 2024071801~ubuntu0.24.10.1 [5928 B]
+Get:6 http://mirrors.digitalocean.com/ubuntu oracular/main amd64 dnsmasq-base amd64 2.90-4 [375 kB]
+Get:7 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-docker all 7.1.0-1ubuntu1 [90.9 kB]
+Get:8 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-dockerpty all 0.4.1-5 [11.4 kB]
+Get:9 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-docopt all 0.6.2-6 [26.1 kB]
+Get:10 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-dotenv all 1.0.1-1 [22.3 kB]
+Get:11 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-texttable all 1.7.0-1 [11.2 kB]
+Get:12 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-websocket all 1.7.0-1 [38.1 kB]
+Get:13 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 python3-compose all 1.29.2-6.3 [84.8 kB]
+Get:14 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 docker-compose all 1.29.2-6.3 [14.0 kB]
+Get:15 http://mirrors.digitalocean.com/ubuntu oracular-updates/universe amd64 docker.io amd64 27.5.1-0ubuntu3~24.10.1 [32.9 MB]
+Get:16 http://mirrors.digitalocean.com/ubuntu oracular/universe amd64 ubuntu-fan all 0.12.16 [35.2 kB]
+Fetched 71.1 MB in 1s (60.4 MB/s) 
+Preconfiguring packages ...
+Selecting previously unselected package pigz.
+(Reading database ... 145490 files and directories currently installed.)
+Preparing to unpack .../00-pigz_2.8-1_amd64.deb ...
+Unpacking pigz (2.8-1) ...
+Selecting previously unselected package bridge-utils.
+Preparing to unpack .../01-bridge-utils_1.7.1-2ubuntu1_amd64.deb ...
+Unpacking bridge-utils (1.7.1-2ubuntu1) ...
+Selecting previously unselected package runc.
+Preparing to unpack .../02-runc_1.2.5-0ubuntu1~24.10.1_amd64.deb ...
+Unpacking runc (1.2.5-0ubuntu1~24.10.1) ...
+Selecting previously unselected package containerd.
+Preparing to unpack .../03-containerd_2.0.5-0ubuntu1~24.10.1_amd64.deb ...
+Unpacking containerd (2.0.5-0ubuntu1~24.10.1) ...
+Selecting previously unselected package dns-root-data.
+Preparing to unpack .../04-dns-root-data_2024071801~ubuntu0.24.10.1_all.deb ...
+Unpacking dns-root-data (2024071801~ubuntu0.24.10.1) ...
+Selecting previously unselected package dnsmasq-base.
+Preparing to unpack .../05-dnsmasq-base_2.90-4_amd64.deb ...
+Unpacking dnsmasq-base (2.90-4) ...
+Selecting previously unselected package python3-docker.
+Preparing to unpack .../06-python3-docker_7.1.0-1ubuntu1_all.deb ...
+Unpacking python3-docker (7.1.0-1ubuntu1) ...
+Selecting previously unselected package python3-dockerpty.
+Preparing to unpack .../07-python3-dockerpty_0.4.1-5_all.deb ...
+Unpacking python3-dockerpty (0.4.1-5) ...
+Selecting previously unselected package python3-docopt.
+Preparing to unpack .../08-python3-docopt_0.6.2-6_all.deb ...
+Unpacking python3-docopt (0.6.2-6) ...
+Selecting previously unselected package python3-dotenv.
+Preparing to unpack .../09-python3-dotenv_1.0.1-1_all.deb ...
+Unpacking python3-dotenv (1.0.1-1) ...
+Selecting previously unselected package python3-texttable.
+Preparing to unpack .../10-python3-texttable_1.7.0-1_all.deb ...
+Unpacking python3-texttable (1.7.0-1) ...
+Selecting previously unselected package python3-websocket.
+Preparing to unpack .../11-python3-websocket_1.7.0-1_all.deb ...
+Unpacking python3-websocket (1.7.0-1) ...
+Selecting previously unselected package python3-compose.
+Preparing to unpack .../12-python3-compose_1.29.2-6.3_all.deb ...
+Unpacking python3-compose (1.29.2-6.3) ...
+Selecting previously unselected package docker-compose.
+Preparing to unpack .../13-docker-compose_1.29.2-6.3_all.deb ...
+Unpacking docker-compose (1.29.2-6.3) ...
+Selecting previously unselected package docker.io.
+Preparing to unpack .../14-docker.io_27.5.1-0ubuntu3~24.10.1_amd64.deb ...
+Unpacking docker.io (27.5.1-0ubuntu3~24.10.1) ...
+Selecting previously unselected package ubuntu-fan.
+Preparing to unpack .../15-ubuntu-fan_0.12.16_all.deb ...
+Unpacking ubuntu-fan (0.12.16) ...
+Setting up python3-dotenv (1.0.1-1) ...
+Setting up python3-texttable (1.7.0-1) ...
+Setting up python3-docopt (0.6.2-6) ...
+Setting up python3-docker (7.1.0-1ubuntu1) ...
+Setting up dnsmasq-base (2.90-4) ...
+Setting up runc (1.2.5-0ubuntu1~24.10.1) ...
+Setting up dns-root-data (2024071801~ubuntu0.24.10.1) ...
+Setting up bridge-utils (1.7.1-2ubuntu1) ...
+Setting up pigz (2.8-1) ...
+Setting up containerd (2.0.5-0ubuntu1~24.10.1) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/containerd.service' → '/usr/lib/systemd/system/containerd.service'.
+Setting up python3-websocket (1.7.0-1) ...
+Setting up python3-dockerpty (0.4.1-5) ...
+Setting up ubuntu-fan (0.12.16) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/ubuntu-fan.service' → '/usr/lib/systemd/system/ubuntu-fan.service'.
+Setting up docker.io (27.5.1-0ubuntu3~24.10.1) ...
+info: Selecting GID from range 100 to 999 ...
+info: Adding group `docker' (GID 114) ...
+Created symlink '/etc/systemd/system/multi-user.target.wants/docker.service' → '/usr/lib/systemd/system/docker.service'.
+Created symlink '/etc/systemd/system/sockets.target.wants/docker.socket' → '/usr/lib/systemd/system/docker.socket'.
+Setting up python3-compose (1.29.2-6.3) ...
+Setting up docker-compose (1.29.2-6.3) ...
+Processing triggers for dbus (1.14.10-4ubuntu5) ...
+Processing triggers for man-db (2.12.1-3) ...
+Scanning processes...                                                                                                                           
+Scanning linux images...                                                                                                                        
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+ERROR: 
+        Can't find a suitable configuration file in this directory or any
+        parent. Are you in the right directory?
+
+        Supported filenames: docker-compose.yml, docker-compose.yaml, compose.yml, compose.yaml
+        
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# chmod +x docker-deploy.sh
+./docker-deploy.sh
+🐳 Starting Docker deployment for Career Portal...
+🔨 Building and starting containers...
+nginx uses an image, skipping
+Building career-portal
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  367.5MB
+Step 1/12 : FROM node:20-alpine
+20-alpine: Pulling from library/node
+fe07684b16b8: Pull complete 
+5432aa916e08: Pull complete 
+2506673f5536: Pull complete 
+98c4889b578e: Pull complete 
+Digest: sha256:674181320f4f94582c6182eaa151bf92c6744d478be0f1d12db804b7d59b2d11
+Status: Downloaded newer image for node:20-alpine
+ ---> bfd94ebedbda
+Step 2/12 : WORKDIR /app
+ ---> Running in adf4c328930e
+ ---> Removed intermediate container adf4c328930e
+ ---> 5e8dd9426f13
+Step 3/12 : COPY package*.json ./
+ ---> d5b996e41abe
+Step 4/12 : RUN npm ci --only=production
+ ---> Running in 8a7bbf1585c7
+npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+,^[   
+added 441 packages, and audited 442 packages in 29s
+
+56 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.4.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+npm notice To update run: npm install -g npm@11.4.2
+npm notice
+ ---> Removed intermediate container 8a7bbf1585c7
+ ---> d136a09907eb
+Step 5/12 : COPY client ./client
+ ---> 831a2dea0cc5
+Step 6/12 : COPY server ./server
+ ---> 44450b785a34
+Step 7/12 : COPY shared ./shared
+ ---> c91d2184a272
+Step 8/12 : COPY public ./public
+ ---> 8f6681c552d5
+Step 9/12 : COPY dist ./dist
+ ---> 2ed6b0f54746
+Step 10/12 : COPY *.ts *.js *.json ./
+ ---> 9c27de30f145
+Step 11/12 : EXPOSE 5000
+ ---> Running in 70a42a6d1291
+ ---> Removed intermediate container 70a42a6d1291
+ ---> 05a3b3b33070
+Step 12/12 : CMD ["node", "dist/index.js"]
+ ---> Running in c81b462c0870
+ ---> Removed intermediate container c81b462c0870
+ ---> 35c89b9116d3
+Successfully built 35c89b9116d3
+Successfully tagged career-portal_career-portal:latest
+Creating network "career-portal_default" with the default driver
+Pulling nginx (nginx:alpine)...
+alpine: Pulling from library/nginx
+f18232174bc9: Pull complete
+61ca4f733c80: Pull complete
+b464cfdf2a63: Pull complete
+d7e507024086: Pull complete
+81bd8ed7ec67: Pull complete
+197eb75867ef: Pull complete
+34a64644b756: Pull complete
+39c2ddfd6010: Pull complete
+Digest: sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+Status: Downloaded newer image for nginx:alpine
+Creating career-portal_career-portal_1 ... 
+Creating career-portal_career-portal_1 ... error
+
+ERROR: for career-portal_career-portal_1  Cannot start service career-portal: driver failed programming external connectivity on endpoint career-portal_career-portal_1 (71a6ef4317c13c0425e8d34f67e00216973a8ec7a6411f7dc2fa2c784a5a57cc): failed to bind port 0.0.0.0:80/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:80: bind: address already in use
+
+ERROR: for career-portal  Cannot start service career-portal: driver failed programming external connectivity on endpoint career-portal_career-portal_1 (71a6ef4317c13c0425e8d34f67e00216973a8ec7a6411f7dc2fa2c784a5a57cc): failed to bind port 0.0.0.0:80/tcp: Error starting userland proxy: listen tcp4 0.0.0.0:80: bind: address already in use
+ERROR: Encountered errors while bringing up the project.
+⏳ Waiting for services to start...
+📊 Container status:
+            Name                           Command                State     Ports
+---------------------------------------------------------------------------------
+career-portal_career-portal_1   docker-entrypoint.sh node  ...   Exit 128        
+🧪 Testing deployment...
+❌ Health check failed
+📋 Container logs:
+ERROR: No such service: --tail
+✅ Web server responding
+
+🎉 Docker deployment complete!
+📋 Access your Career Portal at: http://64.225.6.33
+
+🔧 Management commands:
+• View logs: docker-compose logs -f career-portal
+• Restart: docker-compose restart
+• Stop: docker-compose down
+• Update: docker-compose build --no-cache && docker-compose up -d
+
+📊 Check status: docker-compose ps
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# 
