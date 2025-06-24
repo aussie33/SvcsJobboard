@@ -1,0 +1,28 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# chmod +x quick-fix.sh
+./quick-fix.sh
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /var/www/career-portal/server/simple-fix.js in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ fork    │ 2380     │ 0s     │ 0    │ online    │ 0%       │ 11.9mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 5 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error.log last 5 lines:
+0|career-p |     at async Hooks.resolve (node:internal/modules/esm/hooks:304:24) {
+0|career-p |   code: 'ERR_MODULE_NOT_FOUND'
+0|career-p | }
+0|career-p | 
+0|career-p | Node.js v20.16.0
+
+/root/.pm2/logs/career-portal-out.log last 5 lines:
+0|career-p | Fetching categories
+0|career-p | 2025-06-24T03:19:05.891Z - GET /api/auth/me
+0|career-p | Auth check - SessionID: iHT3GFdo1lDZQ-Yi8uQ8Kyi5DycZV_5g, UserID: undefined
+0|career-p | Auth failed - redirecting to login
+0|career-p | Server running on port 5000
