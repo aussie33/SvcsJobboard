@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: career-portal-db
+    environment:
+      POSTGRES_DB: career_portal
+      POSTGRES_USER: career_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-career_secure_password_2024}
+      POSTGRES_HOST_AUTH_METHOD: md5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - career-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U career_user -d career_portal"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Career Portal Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    container_name: career-portal-app
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DATABASE_URL: postgresql://career_user:${POSTGRES_PASSWORD:-career_secure_password_2024}@postgres:5432/career_portal
+      SESSION_SECRET: ${SESSION_SECRET:-career-portal-super-secret-key-production-2024}
+    ports:
+      - "80:5000"
+    networks:
+      - career-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - uploads_data:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: career-portal-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - career-network
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  career-network:
+    driver: bridge
