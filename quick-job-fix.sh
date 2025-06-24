@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# Copy the fix to the server and run it
-echo "Deploying job creation fix to DigitalOcean server..."
-
-# Create the complete server with job creation functionality
+# Create a simple deployment script that runs on the server
 cat > complete-server.js << 'EOF'
 import express from 'express';
 import session from 'express-session';
@@ -30,7 +27,6 @@ const categories = [
   { id: 6, name: 'Operations', description: 'Operations and logistics', status: 'active', createdAt: new Date() }
 ];
 
-// Jobs storage
 const jobs = [];
 let jobCounter = 1;
 
@@ -63,7 +59,6 @@ const requireAuth = (req, res, next) => {
   res.status(401).json({ message: 'Unauthorized' });
 };
 
-// Auth routes
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   console.log(`Login attempt: ${username}`);
@@ -90,13 +85,11 @@ app.post('/api/auth/logout', (req, res) => {
   });
 });
 
-// Categories
 app.get('/api/categories', (req, res) => {
   console.log('Categories requested');
   res.json(categories);
 });
 
-// Jobs
 app.get('/api/jobs', (req, res) => {
   console.log(`Jobs requested: ${jobs.length} available`);
   res.json(jobs);
@@ -108,10 +101,8 @@ app.post('/api/jobs', requireAuth, (req, res) => {
   console.log('User:', req.user.username);
   
   try {
-    // Handle both direct job data and nested job object
     const jobData = req.body.job || req.body;
     
-    // Validate required fields
     if (!jobData.title || !jobData.department) {
       return res.status(400).json({ 
         message: 'Missing required fields: title and department are required' 
@@ -171,7 +162,6 @@ app.put('/api/jobs/:id', requireAuth, (req, res) => {
   res.json(updatedJob);
 });
 
-// Applications
 app.get('/api/applications', requireAuth, (req, res) => {
   res.json([]);
 });
@@ -181,7 +171,6 @@ app.post('/api/applications', (req, res) => {
   res.status(201).json({ id: 1, message: 'Application submitted successfully' });
 });
 
-// Health check
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
@@ -193,7 +182,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve React app for all other routes
 app.get('*', (req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'API endpoint not found' });
@@ -213,10 +201,9 @@ app.listen(PORT, '0.0.0.0', () => {
 });
 EOF
 
-# Use sshpass to copy and run the fix
-sshpass -p "TheResonance2024!@#" scp complete-server.js root@64.225.6.33:/var/www/career-portal/server/
-
-sshpass -p "TheResonance2024!@#" ssh root@64.225.6.33 << 'REMOTE_COMMANDS'
+# Create deployment script for server
+cat > deploy-on-server.sh << 'EOF'
+#!/bin/bash
 cd /var/www/career-portal
 
 # Build new Docker image with the complete server
@@ -252,12 +239,8 @@ LOGIN_RESPONSE=$(curl -X POST http://localhost:8080/api/auth/login \
 
 echo "Login response: $LOGIN_RESPONSE"
 
-# Test categories
-CATEGORIES_RESPONSE=$(curl -b /tmp/session.txt -s http://localhost:8080/api/categories | head -200)
-echo "Categories loaded: $CATEGORIES_RESPONSE"
-
 # Create a test job
-JOB_DATA='{"job":{"title":"Senior Software Engineer","department":"Engineering","categoryId":1,"shortDescription":"Join our team as a Senior Software Engineer","fullDescription":"We are looking for a skilled Senior Software Engineer to join our dynamic team.","requirements":"5+ years of experience in software development, proficiency in JavaScript, React, Node.js","type":"full-time","location":"Remote","salaryRange":"$80,000 - $120,000","status":"active"}}'
+JOB_DATA='{"job":{"title":"Test Job Creation","department":"Engineering","categoryId":1,"shortDescription":"Testing job creation functionality","fullDescription":"This is a test to verify job creation works","requirements":"Testing requirements","type":"full-time","location":"Remote","status":"active"}}'
 
 echo ""
 echo "Creating test job..."
@@ -270,27 +253,21 @@ JOB_RESPONSE=$(curl -b /tmp/session.txt \
 echo "Job creation response: $JOB_RESPONSE"
 
 # Verify job was created
-JOBS_COUNT=$(curl -b /tmp/session.txt -s http://localhost:8080/api/jobs | jq -r 'length' 2>/dev/null || echo "1")
-echo "Total jobs after creation: $JOBS_COUNT"
-
-# Health check
-HEALTH_RESPONSE=$(curl -s http://localhost:8080/health)
-echo "Health check: $HEALTH_RESPONSE"
+JOBS_LIST=$(curl -b /tmp/session.txt -s http://localhost:8080/api/jobs)
+echo "Jobs list: $JOBS_LIST"
 
 rm -f /tmp/session.txt
 
 echo ""
 echo "=== Job Creation Fix Complete ==="
-echo "✓ Server restarted with enhanced job creation"
-echo "✓ Authentication working"
-echo "✓ Categories loaded"
-echo "✓ Job creation API tested"
-echo ""
 echo "Access your portal at: http://64.225.6.33:8080"
 echo "Login: employee/employee123"
-echo "The 'Create Job' button should now work properly!"
-REMOTE_COMMANDS
+echo "The 'Create Job' button should now work!"
+EOF
 
-rm -f complete-server.js
-
-echo "Job creation fix deployed successfully!"
+echo "Files created. Copy these to your server:"
+echo "1. complete-server.js -> server/complete-server.js"
+echo "2. deploy-on-server.sh -> deploy-on-server.sh"
+echo ""
+echo "Then run on your server:"
+echo "chmod +x deploy-on-server.sh && ./deploy-on-server.sh"
