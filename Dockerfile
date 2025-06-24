@@ -7,24 +7,37 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm ci
 
-# Copy source code
+# Copy application code
 COPY . .
+
+# Create uploads directory
+RUN mkdir -p uploads
 
 # Build the application
 RUN npm run build
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
+# Copy production server
+COPY server-production.js ./
 
-# Change ownership of the app directory
-RUN chown -R nextjs:nodejs /app
-USER nextjs
+# Remove dev dependencies
+RUN npm ci --only=production && npm cache clean --force
 
 # Expose port
-EXPOSE 5000
+EXPOSE 8080
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=8080
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
+# Change ownership of app directory
+RUN chown -R nodejs:nodejs /app
+USER nodejs
 
 # Start the application
-CMD ["node", "dist/index.js"]
+CMD ["node", "server-production.js"]
