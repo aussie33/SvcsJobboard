@@ -549,13 +549,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/jobs", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
     try {
+      console.log('Job creation request received');
+      console.log('Request body:', JSON.stringify(req.body, null, 2));
+      console.log('User:', req.user?.username, 'Role:', req.user?.role);
+      
       // Parse request body using schema that doesn't expect employeeId
       const { job: jobData, tags } = jobWithTagsSchema.parse(req.body);
       
       // Set the employee ID to the current user
       const jobWithEmployee = { ...jobData, employeeId: req.user!.id };
       
+      console.log('Creating job with data:', jobWithEmployee);
       const newJob = await storage.createJob(jobWithEmployee);
+      console.log('Job created successfully:', newJob);
       
       // Add tags
       if (tags && tags.length > 0) {
@@ -570,11 +576,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get the tags we just created
       const jobTags = await storage.getJobTags(newJob.id);
       
-      res.status(201).json({
+      const result = {
         ...newJob,
         tags: jobTags.map(tag => tag.tag)
-      });
+      };
+      
+      console.log('Job creation completed, returning:', result);
+      res.status(201).json(result);
     } catch (err) {
+      console.error('Job creation error:', err);
       handleZodError(err, res);
     }
   });
