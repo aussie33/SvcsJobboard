@@ -1,0 +1,69 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# chmod +x docker-fix-port.sh
+./docker-fix-port.sh
+Fixing port conflict and deploying on port 8080...
+0303ac3c9285
+76194b37a32b
+0303ac3c9285
+76194b37a32b
+41eb4804225d7e0a9a776d60bd6141e2355825cc06148ae0c24dc61ffe8fd4eb
+Testing container on port 8080...
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Content-Type: application/json; charset=utf-8
+Content-Length: 130
+ETag: W/"82-M3Jh0O7ZJMYeS907hrn3qcBISVk"
+Date: Tue, 24 Jun 2025 04:11:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+Rule added
+Rule added (v6)
+career-portal
+career-portal
+08508ab4416dd78a8a39066f9edca5dbb7a19d4a9ad146d5d7662283457f5eef
+Final test on port 80...
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Content-Type: application/json; charset=utf-8
+Content-Length: 130
+ETag: W/"82-b/A57wcv4xNh1NyX1dTEaczTAYc"
+Date: Tue, 24 Jun 2025 04:11:16 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+✅ Working on port 80
+
+Testing alternative port 8080...
+career-portal
+career-portal
+4fabfd9816eb4fb8c01e77ae246d8293d7ca458f497769bc80b0b73f5d64c661
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+Content-Type: application/json; charset=utf-8
+Content-Length: 130
+ETag: W/"82-W2TX/3ZM6IiW9061J3yKnepZSYE"
+Date: Tue, 24 Jun 2025 04:11:30 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+✅ Working on port 8080
+
+Container status:
+CONTAINER ID   IMAGE                  COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+4fabfd9816eb   career-portal-simple   "docker-entrypoint.s…"   4 seconds ago   Up 3 seconds   0.0.0.0:8080->5000/tcp, [::]:8080->5000/tcp   career-portal
+
+Try accessing:
+• http://64.225.6.33 (if port 80 works)
+• http://64.225.6.33:8080 (alternative port)
