@@ -1,0 +1,58 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# cd /var/www/career-portal
+chmod +x fix-white-screen.sh
+./fix-white-screen.sh
+🔧 Fixing white screen and authentication issues...
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+📁 Checking static file locations...
+total 84
+drwxrwxr-x  5 deploy deploy  4096 Jun 23 05:34 .
+drwxr-xr-x 12 deploy deploy  4096 Jun 24 03:03 ..
+drwxrwxr-x  2 deploy deploy  4096 Jun 23 04:56 assets
+drwxrwxr-x  3 deploy deploy  4096 Jun 23 05:00 dist
+-rw-rw-r--  1 deploy deploy  1926 Jun 23 04:56 index.html
+-rw-rw-r--  1 deploy deploy 58101 Jun 23 16:23 index.js
+drwxr-xr-x  3 root   root    4096 Jun 23 16:23 public
+total 76
+drwxr-xr-x 3 root   root    4096 Jun 23 16:23 .
+drwxrwxr-x 5 deploy deploy  4096 Jun 23 05:34 ..
+drwxr-xr-x 2 root   root    4096 Jun 23 16:23 assets
+-rw-r--r-- 1 root   root    1926 Jun 23 16:23 index.html
+-rw-r--r-- 1 root   root   58097 Jun 23 16:23 index.js
+No client/dist/ directory
+✅ Enhanced server created with static file detection and minimal HTML fallback
+[PM2] Starting /var/www/career-portal/server/white-screen-fix.js in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ 1.0.0   │ fork    │ 1889     │ 0s     │ 0    │ online    │ 0%       │ 12.6mb   │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+🧪 Testing server...
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization
+Content-Type: application/json; charset=utf-8
+Content-Length: 118
+ETag: W/"76-jYJx81drhYhYKz4SkFmMoLCcMHs"
+Date: Tue, 24 Jun 2025 03:07:53 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+
+🔐 Testing authentication...
+✅ Authentication working
+✅ Job creation working
+
+🎉 White screen fix deployed!
+📋 Access your portal at: http://64.225.6.33
+👤 Login: admin/admin123 or employee/employee123
+
+📊 Monitor with: pm2 logs career-portal
+root@ubuntu-s-1vcpu-1gb-nyc3-01:/var/www/career-portal# 
