@@ -25,17 +25,17 @@ export class PostgreSQLStorage implements IStorage {
   // User operations
   async getUser(id: number): Promise<User | undefined> {
     const result = await this.pool.query('SELECT * FROM users WHERE id = $1', [id]);
-    return result.rows[0];
+    return result.rows[0] ? this.mapUserFromDb(result.rows[0]) : undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const result = await this.pool.query('SELECT * FROM users WHERE username = $1', [username]);
-    return result.rows[0];
+    return result.rows[0] ? this.mapUserFromDb(result.rows[0]) : undefined;
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     const result = await this.pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    return result.rows[0];
+    return result.rows[0] ? this.mapUserFromDb(result.rows[0]) : undefined;
   }
 
   async getUsers(filters?: { role?: string, isActive?: boolean }): Promise<User[]> {
@@ -57,7 +57,7 @@ export class PostgreSQLStorage implements IStorage {
 
     query += ' ORDER BY created_at DESC';
     const result = await this.pool.query(query, params);
-    return result.rows;
+    return result.rows.map(row => this.mapUserFromDb(row));
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -106,7 +106,27 @@ export class PostgreSQLStorage implements IStorage {
     values.push(id);
 
     const result = await this.pool.query(query, values);
-    return result.rows[0];
+    return this.mapUserFromDb(result.rows[0]);
+  }
+
+  private mapUserFromDb(row: any): User {
+    return {
+      id: row.id,
+      username: row.username,
+      password: row.password,
+      email: row.email,
+      firstName: row.first_name,
+      lastName: row.last_name,
+      middleName: row.middle_name,
+      preferredName: row.preferred_name,
+      fullName: row.full_name,
+      role: row.role,
+      department: row.department,
+      isActive: row.is_active,
+      isSuperAdmin: row.is_super_admin,
+      createdAt: row.created_at,
+      lastLogin: row.last_login
+    };
   }
 
   // Category operations
