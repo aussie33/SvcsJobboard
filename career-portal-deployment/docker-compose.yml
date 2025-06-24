@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  career-portal:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/career_portal
+    depends_on:
+      - db
+    volumes:
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=career_portal
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
