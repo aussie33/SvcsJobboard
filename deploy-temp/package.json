@@ -1,0 +1,16 @@
+{
+  "name": "career-portal",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "memorystore": "^1.6.7",
+    "pg": "^8.11.3",
+    "vite": "^4.4.0"
+  }
+}
