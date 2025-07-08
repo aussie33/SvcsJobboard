@@ -139,6 +139,7 @@ The Career Portal is a comprehensive job board application built with modern web
 - June 25, 2025. Successfully deployed working Career Portal to DigitalOcean production - Application now live at http://64.225.6.33 with exact Replit functionality including authentication system, job creation, React components, and PostgreSQL database. Deployment verified with working API endpoints and identical UI elements
 - June 25, 2025. Fixed deployment to match exact Replit branding - Deployed correct React application with purple gradient navbar, "The Resource Consultants" logo, and modal login screen. Production now matches Replit preview exactly with proper authentication and job creation functionality
 - July 8, 2025. Created Ubuntu deployment package for native Linux deployment - Built production-ready Career Portal for Ubuntu server deployment without Docker containers, includes PM2 configuration, PostgreSQL setup, and complete React application with exact Replit branding
+- July 8, 2025. Successfully deployed Career Portal to Ubuntu server on port 80 - Fixed connectivity issues by switching from port 3000 to standard HTTP port 80, server now accessible at http://64.225.6.33 with working React application and purple branding
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
