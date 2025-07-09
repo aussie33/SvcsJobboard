@@ -8,9 +8,7 @@ import {
   MapPin, 
   Clock, 
   Calendar, 
-  CheckCircle,
-  Building2,
-  Tag
+  CheckCircle
 } from 'lucide-react';
 import {
   Select,
@@ -26,9 +24,6 @@ import JobDetailModal from '@/components/shared/JobDetailModal';
 import { type Job, type Category, type Application } from '@shared/schema';
 import { formatDate } from '@/lib/formatters';
 import { useAuth } from '@/hooks/useAuth';
-
-// Import the logo
-import logoImage from '../../cropped-logo.png';
 
 interface JobListingsProps {
   onApplyClick: (job: Job & { tags: string[] }) => void;
@@ -261,83 +256,59 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
         ) : (
           // Job listings
           paginatedJobs.map((job) => (
-            <Card key={job.id} className="overflow-hidden transition-all duration-200 hover:shadow-xl border-0 shadow-lg rounded-lg">
-              {/* Header with logo and purple gradient - similar to login modal */}
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 text-white">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center p-2">
-                      <img 
-                        src={logoImage} 
-                        alt="The Resource Consultants" 
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                    <div>
-                      <CardTitle 
-                        className="text-xl mb-1 text-white hover:text-purple-100 cursor-pointer transition-colors"
-                        onClick={() => handleOpenJobDetail(job)}
-                      >
-                        {job.title}
-                      </CardTitle>
-                      <div className="text-sm text-purple-100">
-                        {job.department}
-                      </div>
+            <Card key={job.id} className="overflow-hidden transition-all duration-200 hover:shadow-md border-2 border-gray-300">
+              <CardHeader className="pb-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle 
+                      className="text-xl mb-1 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors"
+                      onClick={() => handleOpenJobDetail(job)}
+                    >
+                      {job.title}
+                    </CardTitle>
+                    <div className="text-sm text-gray-500">
+                      {job.department}
                     </div>
                   </div>
-                  <Badge 
-                    variant="secondary" 
-                    className="bg-white/20 text-white border-white/30 hover:bg-white/30"
-                  >
+                  <Badge variant={job.type === 'full-time' ? "default" : "outline"}>
                     {job.type.replace('-', ' ')}
                   </Badge>
                 </div>
-              </div>
-              
-              <CardContent className="p-6">
+              </CardHeader>
+              <CardContent className="pb-4">
                 <p className="text-gray-700 mb-4 line-clamp-3">{job.shortDescription}</p>
                 
-                {/* Enhanced information grid */}
-                <div className="grid grid-cols-2 gap-y-3 text-sm mb-4">
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-2 text-purple-600" />
-                    <span className="capitalize font-medium">{job.location}</span>
-                    {job.city && job.state && job.location !== 'remote' && (
-                      <span className="text-gray-500 ml-1">({job.city}, {job.state})</span>
-                    )}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-2 text-purple-600" />
-                    <span className="capitalize font-medium">{job.type.replace('-', ' ')}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Tag className="h-4 w-4 mr-2 text-purple-600" />
-                    <span className="font-medium">
-                      {categories.find(c => c.id === job.categoryId)?.name || 'Uncategorized'}
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2 text-purple-600" />
-                    <span>Posted {job.postedDate ? formatDate(new Date(job.postedDate)) : 'Recently'}</span>
-                  </div>
-                </div>
-                
-                {/* Tags with enhanced styling */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {job.tags.map((tag, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="secondary" 
-                      className="bg-purple-100 text-purple-800 hover:bg-purple-200 border border-purple-200"
-                    >
+                    <Badge key={index} variant="secondary" className="bg-gray-100 text-gray-800 hover:bg-gray-200">
                       {tag}
                     </Badge>
                   ))}
                 </div>
+                
+                <div className="grid grid-cols-2 gap-y-2 text-sm text-gray-500">
+                  <div className="flex items-center">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    <span className="capitalize">{job.location}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="h-4 w-4 mr-2" />
+                    <span className="capitalize">{job.type.replace('-', ' ')}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Briefcase className="h-4 w-4 mr-2" />
+                    <span>
+                      {categories.find(c => c.id === job.categoryId)?.name || 'Uncategorized'}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span>Posted {job.postedDate ? formatDate(new Date(job.postedDate)) : 'Recently'}</span>
+                  </div>
+                </div>
               </CardContent>
-              
-              <CardFooter className="flex justify-between items-center pt-4 border-t bg-gray-50">
-                <div className="text-lg font-medium text-gray-900">
+              <CardFooter className="flex justify-between items-center pt-4 border-t">
+                <div className="text-lg font-medium">
                   {job.salaryRange || 'Salary negotiable'}
                 </div>
                 {user && appliedJobs.includes(job.id) ? (
@@ -352,7 +323,7 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
                 ) : (
                   <Button 
                     onClick={() => onApplyClick(job)}
-                    className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+                    className="transition-all duration-200"
                   >
                     Apply Now
                   </Button>
