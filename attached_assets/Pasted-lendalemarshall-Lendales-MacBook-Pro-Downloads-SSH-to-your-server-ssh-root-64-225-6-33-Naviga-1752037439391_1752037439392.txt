@@ -1,0 +1,56 @@
+lendalemarshall@Lendales-MacBook-Pro Downloads % # SSH to your server
+ssh root@64.225.6.33
+
+# Navigate to the deployment files
+cd /root
+
+# Run the complete deployment script
+bash complete-deployment.sh
+zsh: command not found: #
+root@64.225.6.33's password: 
+Permission denied, please try again.
+root@64.225.6.33's password: 
+Connection closed by 64.225.6.33 port 22
+zsh: command not found: #
+cd: no such file or directory: /root
+zsh: command not found: #
+🚀 Starting complete production deployment...
+complete-deployment.sh: line 13: cd: /var/www/MarshallLF: No such file or directory
+📦 Installing PostgreSQL...
+Password:
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+The operation couldn’t be completed. Unable to locate a Java Runtime.
+Please visit http://www.java.com for information on installing Java.
+
+sudo: systemctl: command not found
+sudo: systemctl: command not found
+🔧 Configuring PostgreSQL authentication...
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+cp: /etc/postgresql//main/pg_hba.conf: No such file or directory
+tee: /etc/postgresql//main/pg_hba.conf: No such file or directory
+sudo: systemctl: command not found
+🧪 Testing database connection...
+❌ Database connection failed - attempting to fix...
+sudo: unknown user postgres
+sudo: error initializing audit plugin sudoers_audit
+❌ Database setup failed - please check PostgreSQL installation
+lendalemarshall@Lendales-MacBook-Pro Downloads % 
