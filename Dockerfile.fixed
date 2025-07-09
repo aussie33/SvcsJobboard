@@ -1,0 +1,48 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    git \
+    curl \
+    bash
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY vite.config.ts ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+COPY drizzle.config.ts ./
+COPY theme.json ./
+
+# Install ALL dependencies (including dev dependencies for build)
+RUN npm ci
+
+# Copy source code
+COPY client ./client
+COPY server ./server
+COPY shared ./shared
+
+# Create uploads directory
+RUN mkdir -p uploads
+
+# Build the application
+RUN npm run build
+
+# Remove dev dependencies after build
+RUN npm prune --production
+
+# Expose port
+EXPOSE 80
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=80
+
+# Start the application
+CMD ["node", "dist/index.js"]

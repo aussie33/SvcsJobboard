@@ -1,0 +1,198 @@
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# # Stop existing services
+systemctl stop career-portal-production 2>/dev/null || true
+pkill -f "node.*server" 2>/dev/null || true
+
+# Build Docker containers
+docker-compose -f docker-compose.replit-env.yml build --no-cache
+
+# Start services
+docker-compose -f docker-compose.replit-env.yml up -d
+
+# Check status
+docker-compose -f docker-compose.replit-env.yml ps
+postgres uses an image, skipping
+Building career-portal
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+time="2025-07-09T05:04:51Z" level=error msg="Can't add file /root/.pm2/pub.sock to tar: archive/tar: sockets not supported"
+time="2025-07-09T05:04:51Z" level=error msg="Can't add file /root/.pm2/rpc.sock to tar: archive/tar: sockets not supported"
+Sending build context to Docker daemon  377.2MB
+Step 1/20 : FROM node:20-alpine
+ ---> bfd94ebedbda
+Step 2/20 : WORKDIR /app
+ ---> Running in 87746bb26c51
+ ---> Removed intermediate container 87746bb26c51
+ ---> 1b4880482446
+Step 3/20 : RUN apk add --no-cache     python3     make     g++     git     curl     bash
+ ---> Running in feae5f389ab4
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
+(1/41) Installing ncurses-terminfo-base (6.5_p20250503-r0)
+(2/41) Installing libncursesw (6.5_p20250503-r0)
+(3/41) Installing readline (8.2.13-r1)
+(4/41) Installing bash (5.2.37-r0)
+Executing bash-5.2.37-r0.post-install
+(5/41) Installing brotli-libs (1.1.0-r2)
+(6/41) Installing c-ares (1.34.5-r0)
+(7/41) Installing libunistring (1.3-r0)
+(8/41) Installing libidn2 (2.3.7-r0)
+(9/41) Installing nghttp2-libs (1.65.0-r0)
+(10/41) Installing libpsl (0.21.5-r3)
+(11/41) Installing zstd-libs (1.5.7-r0)
+(12/41) Installing libcurl (8.14.1-r1)
+(13/41) Installing curl (8.14.1-r1)
+(14/41) Installing libstdc++-dev (14.2.0-r6)
+(15/41) Installing jansson (2.14.1-r0)
+(16/41) Installing binutils (2.44-r0)
+(17/41) Installing libgomp (14.2.0-r6)
+(18/41) Installing libatomic (14.2.0-r6)
+(19/41) Installing gmp (6.3.0-r3)
+(20/41) Installing isl26 (0.26-r1)
+(21/41) Installing mpfr4 (4.2.1_p1-r0)
+(22/41) Installing mpc1 (1.3.1-r1)
+(23/41) Installing gcc (14.2.0-r6)
+(24/41) Installing musl-dev (1.2.5-r10)
+(25/41) Installing g++ (14.2.0-r6)
+(26/41) Installing libexpat (2.7.1-r0)
+(27/41) Installing pcre2 (10.43-r1)
+(28/41) Installing git (2.49.0-r0)
+(29/41) Installing git-init-template (2.49.0-r0)
+(30/41) Installing make (4.4.1-r3)
+(31/41) Installing libbz2 (1.0.8-r6)
+(32/41) Installing libffi (3.4.8-r0)
+(33/41) Installing gdbm (1.24-r0)
+(34/41) Installing xz-libs (5.8.1-r0)
+(35/41) Installing mpdecimal (4.0.1-r0)
+(36/41) Installing libpanelw (6.5_p20250503-r0)
+(37/41) Installing sqlite-libs (3.49.2-r0)
+(38/41) Installing python3 (3.12.11-r0)
+(39/41) Installing python3-pycache-pyc0 (3.12.11-r0)
+(40/41) Installing pyc (3.12.11-r0)
+(41/41) Installing python3-pyc (3.12.11-r0)
+Executing busybox-1.37.0-r18.trigger
+OK: 283 MiB in 59 packages
+ ---> Removed intermediate container feae5f389ab4
+ ---> d87736ca0f3d
+Step 4/20 : COPY package*.json ./
+ ---> c8c6b2cf94f7
+Step 5/20 : COPY tsconfig.json ./
+ ---> c88e40bf5a6a
+Step 6/20 : COPY vite.config.ts ./
+ ---> e1b4e3860363
+Step 7/20 : COPY tailwind.config.ts ./
+ ---> f4f3bb55a62b
+Step 8/20 : COPY postcss.config.js ./
+ ---> cdd17e5b9592
+Step 9/20 : COPY drizzle.config.ts ./
+ ---> c2ec1a298c5f
+Step 10/20 : COPY theme.json ./
+ ---> d3574dccbb9b
+Step 11/20 : RUN npm ci --only=production
+ ---> Running in 9cb7444e5e45
+npm warn config only Use `--omit=dev` to omit dev dependencies from the install.
+
+added 435 packages, and audited 436 packages in 35s
+
+55 packages are looking for funding
+  run `npm fund` for details
+
+2 vulnerabilities (1 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.4.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.4.2
+npm notice To update run: npm install -g npm@11.4.2
+npm notice
+ ---> Removed intermediate container 9cb7444e5e45
+ ---> 5c2767292ba9
+Step 12/20 : COPY client ./client
+ ---> 9440f1ff7c96
+Step 13/20 : COPY server ./server
+ ---> 79ed6dced271
+Step 14/20 : COPY shared ./shared
+ ---> 2ceb410295ce
+Step 15/20 : RUN mkdir -p uploads
+ ---> Running in 62f3e7f2a8c1
+ ---> Removed intermediate container 62f3e7f2a8c1
+ ---> f2d27ba240a3
+Step 16/20 : RUN npm run build
+ ---> Running in 54f5269240cc
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+sh: vite: not found
+The command '/bin/sh -c npm run build' returned a non-zero code: 127
+ERROR: Service 'career-portal' failed to build : Build failed
+Creating network "root_default" with the default driver
+Creating volume "root_postgres_data" with default driver
+Building career-portal
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+time="2025-07-09T05:06:16Z" level=error msg="Can't add file /root/.pm2/pub.sock to tar: archive/tar: sockets not supported"
+time="2025-07-09T05:06:16Z" level=error msg="Can't add file /root/.pm2/rpc.sock to tar: archive/tar: sockets not supported"
+Sending build context to Docker daemon  377.2MB
+Step 1/20 : FROM node:20-alpine
+ ---> bfd94ebedbda
+Step 2/20 : WORKDIR /app
+ ---> Using cache
+ ---> 1b4880482446
+Step 3/20 : RUN apk add --no-cache     python3     make     g++     git     curl     bash
+ ---> Using cache
+ ---> d87736ca0f3d
+Step 4/20 : COPY package*.json ./
+ ---> Using cache
+ ---> c8c6b2cf94f7
+Step 5/20 : COPY tsconfig.json ./
+ ---> Using cache
+ ---> c88e40bf5a6a
+Step 6/20 : COPY vite.config.ts ./
+ ---> Using cache
+ ---> e1b4e3860363
+Step 7/20 : COPY tailwind.config.ts ./
+ ---> Using cache
+ ---> f4f3bb55a62b
+Step 8/20 : COPY postcss.config.js ./
+ ---> Using cache
+ ---> cdd17e5b9592
+Step 9/20 : COPY drizzle.config.ts ./
+ ---> Using cache
+ ---> c2ec1a298c5f
+Step 10/20 : COPY theme.json ./
+ ---> Using cache
+ ---> d3574dccbb9b
+Step 11/20 : RUN npm ci --only=production
+ ---> Using cache
+ ---> 5c2767292ba9
+Step 12/20 : COPY client ./client
+ ---> Using cache
+ ---> 9440f1ff7c96
+Step 13/20 : COPY server ./server
+ ---> Using cache
+ ---> 79ed6dced271
+Step 14/20 : COPY shared ./shared
+ ---> Using cache
+ ---> 2ceb410295ce
+Step 15/20 : RUN mkdir -p uploads
+ ---> Using cache
+ ---> f2d27ba240a3
+Step 16/20 : RUN npm run build
+ ---> Running in 394cc1b1e801
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+sh: vite: not found
+The command '/bin/sh -c npm run build' returned a non-zero code: 127
+ERROR: Service 'career-portal' failed to build : Build failed
+Name   Command   State   Ports
+------------------------------
+root@ubuntu-s-1vcpu-1gb-nyc3-01:~# 
