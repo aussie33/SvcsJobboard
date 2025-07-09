@@ -370,30 +370,67 @@ const htmlContent = `
 
     <!-- Login Modal -->
     <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close login-close">&times;</span>
-            <h2 class="text-2xl font-bold mb-6 text-center">Login to Career Portal</h2>
-            <form id="loginForm">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Role</label>
-                    <select id="roleSelect" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <option value="applicant">Applicant</option>
-                        <option value="employee">Employee</option>
-                        <option value="admin">Admin</option>
-                    </select>
+        <div class="modal-content" style="max-width: 450px; padding: 0; border-radius: 8px; overflow: hidden;">
+            <span class="close login-close" style="position: absolute; top: 10px; right: 20px; z-index: 1001; color: white;">&times;</span>
+            
+            <!-- Header with logo and gradient -->
+            <div class="bg-gradient-to-r from-purple-600 to-blue-600 pt-20 pb-10 px-4 text-white text-center">
+                <div class="flex justify-center mb-6 mt-8">
+                    <svg width="300" height="80" viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <text x="150" y="25" text-anchor="middle" fill="white" font-size="18" font-weight="bold">THE</text>
+                        <text x="150" y="45" text-anchor="middle" fill="white" font-size="18" font-weight="bold">RESOURCE CONSULTANTS</text>
+                        <circle cx="50" cy="35" r="20" fill="white" opacity="0.2"/>
+                        <text x="50" y="42" text-anchor="middle" fill="white" font-size="16" font-weight="bold">RC</text>
+                    </svg>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                    <input type="text" id="usernameInput" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                <h1 class="text-2xl font-bold">Login Now</h1>
+                <p class="text-sm text-white/90 mt-2">Please login or sign up to continue using our app</p>
+            </div>
+            
+            <!-- Account type selector -->
+            <div class="bg-gray-100 px-6 py-4">
+                <div class="flex flex-wrap justify-center gap-2">
+                    <button type="button" class="account-type-btn active" data-role="applicant" style="background: #9333ea; color: white; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
+                        Applicant
+                    </button>
+                    <button type="button" class="account-type-btn" data-role="employee" style="background: #f3f4f6; color: #6b7280; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
+                        Employee
+                    </button>
+                    <button type="button" class="account-type-btn" data-role="admin" style="background: #f3f4f6; color: #6b7280; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
+                        Admin
+                    </button>
                 </div>
-                <div class="mb-6">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                    <input type="password" id="passwordInput" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
-                    Login
-                </button>
-            </form>
+            </div>
+            
+            <!-- Login form -->
+            <div class="px-6 py-6 bg-white">
+                <form id="loginForm">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Username</label>
+                        <input type="text" id="usernameInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="passwordInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                    </div>
+                    <div class="flex justify-end mb-4">
+                        <button type="button" class="text-sm text-purple-600 font-medium hover:underline">
+                            Forgot Password?
+                        </button>
+                    </div>
+                    <button type="submit" class="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg mb-4">
+                        Login
+                    </button>
+                    
+                    <!-- Demo accounts section -->
+                    <div class="text-xs text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <p class="font-medium mb-1">Demo accounts:</p>
+                        <p><strong>Admin:</strong> admin / admin123</p>
+                        <p><strong>Employee:</strong> employee / employee123</p>
+                        <p><strong>Applicant:</strong> applicant / applicant123</p>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -431,10 +468,31 @@ const htmlContent = `
             }
         }
 
+        // Account type selector functionality
+        const accountTypeBtns = document.querySelectorAll('.account-type-btn');
+        let selectedRole = 'applicant';
+        
+        accountTypeBtns.forEach(btn => {
+            btn.onclick = function() {
+                accountTypeBtns.forEach(b => {
+                    b.style.background = '#f3f4f6';
+                    b.style.color = '#6b7280';
+                    b.classList.remove('active');
+                });
+                this.style.background = '#9333ea';
+                this.style.color = 'white';
+                this.classList.add('active');
+                selectedRole = this.dataset.role;
+            };
+        });
+
         // Form submissions
         document.getElementById('loginForm').onsubmit = function(e) {
             e.preventDefault();
-            showNotification('Login functionality will be implemented with backend integration');
+            const username = document.getElementById('usernameInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            showNotification(`Login attempt as ${selectedRole}: ${username}. Backend integration will authenticate user.`);
             loginModal.style.display = 'none';
         }
 
