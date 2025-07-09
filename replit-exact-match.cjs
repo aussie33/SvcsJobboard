@@ -492,7 +492,7 @@ const htmlContent = `
             const username = document.getElementById('usernameInput').value;
             const password = document.getElementById('passwordInput').value;
             
-            showNotification(`Login attempt as ${selectedRole}: ${username}. Backend integration will authenticate user.`);
+            showNotification('Login attempt as ' + selectedRole + ': ' + username + '. Backend integration will authenticate user.');
             loginModal.style.display = 'none';
         }
 
