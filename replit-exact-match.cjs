@@ -196,7 +196,20 @@ const htmlContent = `
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Hero Banner -->
+    <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-6">Find Your Dream Career</h1>
+            <p class="text-xl text-purple-100 mb-8">Explore opportunities that match your skills and ambitions. Your next career move starts here.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-12 bg-gray-50">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Explore Job Opportunities</h2>
+            <p class="text-lg text-gray-600 mb-8">Find your next career move from our latest job openings</p>
+        </div>
         <!-- Search Section -->
         <div class="search-section">
             <div class="flex items-center">
