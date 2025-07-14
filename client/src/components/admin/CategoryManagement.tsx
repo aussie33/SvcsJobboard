@@ -141,7 +141,7 @@ const CategoryManagement = () => {
                         <TableCell className="font-medium">{category.name}</TableCell>
                         <TableCell>{category.description || '-'}</TableCell>
                         <TableCell>{getCategoryJobCount(category.id)}</TableCell>
-                        <TableCell>{formatDate(new Date(category.createdAt))}</TableCell>
+                        <TableCell>{formatDate(category.createdAt)}</TableCell>
                         <TableCell>
                           {category.status === 'active' ? (
                             <Badge className="bg-green-100 text-green-800">Active</Badge>

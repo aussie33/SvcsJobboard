@@ -845,7 +845,7 @@ const server = http.createServer((req, res) => {
                     <div id="jobCategoriesSection" class="card" style="display: none;">
                         <div class="card-header">
                             <h2 class="card-title">Job Categories</h2>
-                            <button class="add-btn">Add New Category</button>
+                            <button class="add-btn" onclick="openAddCategoryModal()">Add New Category</button>
                         </div>
                         
                         <div class="table-controls">
@@ -1014,6 +1014,49 @@ const server = http.createServer((req, res) => {
                     </div>
                 </div>
                 
+                <!-- Add Category Modal -->
+                <div id="addCategoryModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Add New Category</h3>
+                            <span class="close" onclick="closeAddCategoryModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addCategoryForm">
+                                <div class="form-group">
+                                    <label>Category Name*</label>
+                                    <input type="text" name="name" placeholder="e.g. Engineering" required />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea name="description" placeholder="Brief description of this category" rows="3"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="status" value="active" checked />
+                                            <span class="radio-custom"></span>
+                                            Active
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="status" value="inactive" />
+                                            <span class="radio-custom"></span>
+                                            Inactive
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel" onclick="closeAddCategoryModal()">Cancel</button>
+                            <button type="button" class="btn-primary" onclick="submitAddCategory()">Add Category</button>
+                        </div>
+                    </div>
+                </div>
+                
                 <script>
                     function showUserManagement(event) {
                         event.preventDefault();
@@ -1064,11 +1107,41 @@ const server = http.createServer((req, res) => {
                         closeAddUserModal();
                     }
                     
+                    function openAddCategoryModal() {
+                        document.getElementById('addCategoryModal').style.display = 'block';
+                    }
+                    
+                    function closeAddCategoryModal() {
+                        document.getElementById('addCategoryModal').style.display = 'none';
+                        document.getElementById('addCategoryForm').reset();
+                    }
+                    
+                    function submitAddCategory() {
+                        const form = document.getElementById('addCategoryForm');
+                        const formData = new FormData(form);
+                        
+                        // Basic validation
+                        if (!formData.get('name')) {
+                            alert('Category Name is required');
+                            return;
+                        }
+                        
+                        // Here you would normally send the data to your server
+                        alert('Category creation functionality will be implemented in the next phase');
+                        closeAddCategoryModal();
+                    }
+                    
                     // Close modal when clicking outside
                     window.onclick = function(event) {
-                        const modal = document.getElementById('addUserModal');
-                        if (event.target === modal) {
+                        const userModal = document.getElementById('addUserModal');
+                        const categoryModal = document.getElementById('addCategoryModal');
+                        
+                        if (event.target === userModal) {
                             closeAddUserModal();
+                        }
+                        
+                        if (event.target === categoryModal) {
+                            closeAddCategoryModal();
                         }
                     }
                 </script>

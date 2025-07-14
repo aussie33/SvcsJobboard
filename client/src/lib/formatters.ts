@@ -3,12 +3,21 @@
  * @param date Date to format
  * @returns Formatted date string
  */
-export const formatDate = (date: Date): string => {
+export const formatDate = (date: Date | string | null | undefined): string => {
+  if (!date) return 'N/A';
+  
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'N/A';
+  }
+  
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
-  }).format(date);
+  }).format(dateObj);
 };
 
 /**
@@ -16,12 +25,21 @@ export const formatDate = (date: Date): string => {
  * @param date Date to format
  * @returns Formatted time string
  */
-export const formatTime = (date: Date): string => {
+export const formatTime = (date: Date | string | null | undefined): string => {
+  if (!date) return 'N/A';
+  
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'N/A';
+  }
+  
   return new Intl.DateTimeFormat('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true
-  }).format(date);
+  }).format(dateObj);
 };
 
 /**
@@ -29,7 +47,16 @@ export const formatTime = (date: Date): string => {
  * @param date Date to format
  * @returns Formatted date and time string
  */
-export const formatDateTime = (date: Date): string => {
+export const formatDateTime = (date: Date | string | null | undefined): string => {
+  if (!date) return 'N/A';
+  
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'N/A';
+  }
+  
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
@@ -37,7 +64,7 @@ export const formatDateTime = (date: Date): string => {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true
-  }).format(date);
+  }).format(dateObj);
 };
 
 /**
@@ -45,9 +72,18 @@ export const formatDateTime = (date: Date): string => {
  * @param date Date to compare with current time
  * @returns Relative time string
  */
-export const formatDistanceToNow = (date: Date): string => {
+export const formatDistanceToNow = (date: Date | string | null | undefined): string => {
+  if (!date) return 'N/A';
+  
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  
+  // Check if date is valid
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return 'N/A';
+  }
+  
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
   
   if (diffInSeconds < 60) {
     return diffInSeconds === 1 ? '1 second' : `${diffInSeconds} seconds`;
