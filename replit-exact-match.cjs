@@ -501,11 +501,17 @@ const htmlContent = `
                     loginModal.style.display = 'none';
                     
                     // Update UI based on role
-                    if (data.user.role === 'admin' || data.user.role === 'employee') {
-                        // Show admin/employee controls
-                        document.getElementById('loginBtn').textContent = 'Dashboard';
+                    if (data.user.role === 'admin') {
+                        // Show admin controls
+                        document.getElementById('loginBtn').textContent = 'Admin Portal';
                         document.getElementById('loginBtn').onclick = function() {
-                            window.location.href = '/dashboard';
+                            window.location.href = '/admin';
+                        };
+                    } else if (data.user.role === 'employee') {
+                        // Show employee controls
+                        document.getElementById('loginBtn').textContent = 'Employee Portal';
+                        document.getElementById('loginBtn').onclick = function() {
+                            window.location.href = '/employee';
                         };
                     } else {
                         // Show applicant view
@@ -625,38 +631,244 @@ const server = http.createServer((req, res) => {
                 posted: "Posted 1 week ago"
             }
         ]));
-    } else if (req.url === '/dashboard') {
-        // Simple dashboard page for admin/employee
+    } else if (req.url === '/dashboard' || req.url === '/admin') {
+        // Admin portal matching exact Replit design
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Admin Portal - The Resource Consultants</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #333; }
+                    
+                    .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
+                    .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+                    .logo { display: flex; align-items: center; gap: 8px; }
+                    .logo img { height: 32px; }
+                    .nav-tabs { display: flex; gap: 32px; }
+                    .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; }
+                    .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
+                    .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
+                    .logout-btn { color: #6b7280; text-decoration: none; }
+                    .logout-btn:hover { color: #9333ea; }
+                    
+                    .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+                    .page-header { margin-bottom: 32px; }
+                    .page-title { font-size: 24px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+                    .page-subtitle { color: #6b7280; font-size: 14px; }
+                    
+                    .section-tabs { display: flex; gap: 32px; margin-bottom: 32px; border-bottom: 1px solid #e5e7eb; }
+                    .section-tab { padding: 12px 0; color: #6b7280; text-decoration: none; border-bottom: 2px solid transparent; }
+                    .section-tab.active { color: #111827; border-bottom-color: #9333ea; font-weight: 500; }
+                    
+                    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+                    .card-header { padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+                    .card-title { font-size: 16px; font-weight: 600; color: #111827; }
+                    .add-btn { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+                    .add-btn:hover { background: #7c3aed; }
+                    
+                    .table-controls { padding: 20px 24px; display: flex; gap: 16px; align-items: center; }
+                    .search-box { flex: 1; max-width: 300px; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; }
+                    .filter-select { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; }
+                    
+                    .user-table { width: 100%; }
+                    .user-table th, .user-table td { text-align: left; padding: 12px 24px; border-bottom: 1px solid #e5e7eb; }
+                    .user-table th { background: #f9fafb; font-weight: 500; color: #6b7280; font-size: 12px; text-transform: uppercase; }
+                    .user-table td { color: #111827; font-size: 14px; }
+                    
+                    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: 500; color: #6b7280; font-size: 12px; }
+                    .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+                    .status-active { background: #dcfce7; color: #166534; }
+                    .admin-badge { background: #fef3c7; color: #92400e; }
+                    
+                    .action-btn { color: #9333ea; text-decoration: none; font-size: 14px; margin-right: 12px; }
+                    .action-btn:hover { text-decoration: underline; }
+                    .action-btn.danger { color: #dc2626; }
+                    
+                    .table-footer { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; }
+                    .results-info { color: #6b7280; font-size: 14px; }
+                    .pagination { display: flex; align-items: center; gap: 8px; }
+                    .page-select { padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; }
+                </style>
+            </head>
+            <body>
+                <header class="header">
+                    <div class="header-content">
+                        <div class="logo">
+                            <img src="/logo.png" alt="The Resource Consultants" />
+                        </div>
+                        <nav class="nav-tabs">
+                            <a href="/" class="nav-tab">Job Listings</a>
+                            <a href="/employee" class="nav-tab">Employee Portal</a>
+                            <a href="/admin" class="nav-tab active">Admin Portal</a>
+                        </nav>
+                        <div class="user-info">
+                            <span>Hello, Admin</span>
+                            <a href="/" class="logout-btn">Log out</a>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="container">
+                    <div class="page-header">
+                        <h1 class="page-title">Admin Portal</h1>
+                        <p class="page-subtitle">Manage user accounts and system settings</p>
+                    </div>
+                    
+                    <div class="section-tabs">
+                        <a href="#" class="section-tab active">User Management</a>
+                        <a href="#" class="section-tab">Job Categories</a>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Portal User Accounts</h2>
+                            <button class="add-btn">Add New User</button>
+                        </div>
+                        
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search users..." />
+                            <select class="filter-select">
+                                <option>All Roles</option>
+                                <option>Admin</option>
+                                <option>Employee</option>
+                                <option>Applicant</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>All Status</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
+                        
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Admin Type</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div class="user-avatar">TT</div>
+                                            <span>test testa</span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                    <td>Employee</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>N/A</td>
+                                    <td>Jun 24, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Disable</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div class="user-avatar">EU</div>
+                                            <span>Employee User</span>
+                                        </div>
+                                    </td>
+                                    <td>employee@theresourceconsultants.com</td>
+                                    <td>Employee</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>N/A</td>
+                                    <td>Jun 24, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Disable</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div class="user-avatar">JD</div>
+                                            <span>John Doe</span>
+                                        </div>
+                                    </td>
+                                    <td>applicant@example.com</td>
+                                    <td>Applicant</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>N/A</td>
+                                    <td>Jul 8, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Disable</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div class="user-avatar">AU</div>
+                                            <span>Admin User</span>
+                                        </div>
+                                    </td>
+                                    <td>admin@theresourceconsultants.com</td>
+                                    <td>Admin</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td><span class="status-badge admin-badge">Super Admin</span></td>
+                                    <td>Jul 14, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Disable</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="table-footer">
+                            <div class="results-info">Showing 1 to 4 of 4 results</div>
+                            <div class="pagination">
+                                <span>Show</span>
+                                <select class="page-select">
+                                    <option>20</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+    } else if (req.url === '/employee') {
+        // Employee portal placeholder
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(`
             <!DOCTYPE html>
             <html>
             <head>
-                <title>Dashboard - The Resource Consultants</title>
+                <title>Employee Portal - The Resource Consultants</title>
                 <style>
-                    body { font-family: Arial, sans-serif; margin: 20px; }
-                    .header { background: #9333ea; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-                    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-                    .btn { background: #9333ea; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+                    body { font-family: Arial, sans-serif; margin: 20px; text-align: center; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+                    .logo { height: 40px; margin-bottom: 20px; }
+                    h1 { color: #9333ea; margin-bottom: 20px; }
+                    p { color: #666; margin-bottom: 30px; }
+                    .btn { background: #9333ea; color: white; padding: 12px 24px; border: none; border-radius: 6px; text-decoration: none; display: inline-block; }
                     .btn:hover { background: #7c3aed; }
                 </style>
             </head>
             <body>
-                <div class="header">
-                    <h1>Dashboard</h1>
-                    <p>Welcome to The Resource Consultants Admin Panel</p>
-                </div>
-                <div class="card">
-                    <h2>Quick Actions</h2>
-                    <button class="btn" onclick="location.href='/'">Back to Job Portal</button>
-                    <button class="btn" onclick="alert('Create Job functionality coming soon!')">Create New Job</button>
-                    <button class="btn" onclick="alert('View Applications functionality coming soon!')">View Applications</button>
-                </div>
-                <div class="card">
-                    <h2>Recent Activity</h2>
-                    <p>• 2 new job applications received</p>
-                    <p>• 1 new job posting published</p>
-                    <p>• 5 active job listings</p>
+                <div class="container">
+                    <img src="/logo.png" alt="The Resource Consultants" class="logo" />
+                    <h1>Employee Portal</h1>
+                    <p>Employee portal features are coming soon. You can manage job postings and applications here.</p>
+                    <a href="/" class="btn">Back to Job Portal</a>
                 </div>
             </body>
             </html>
