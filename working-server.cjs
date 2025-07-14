@@ -4,6 +4,12 @@ const path = require('path');
 
 const PORT = 80;
 
+// Copy logo file to server directory
+const logoPath = path.join(__dirname, 'logo.png');
+if (fs.existsSync('./attached_assets/base_logo_transparent_background copy_1752513603240.png')) {
+    fs.copyFileSync('./attached_assets/base_logo_transparent_background copy_1752513603240.png', logoPath);
+}
+
 // Simple in-memory category storage
 let categories = [
     { id: 1, name: 'Administrative', description: 'Administrative and office support roles', status: 'active' },
@@ -25,10 +31,12 @@ const adminHTML = `
         
         .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
         .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
-        .logo { display: flex; align-items: center; gap: 8px; color: #9333ea; font-weight: 600; }
+        .logo { display: flex; align-items: center; gap: 8px; color: #9333ea; font-weight: 600; cursor: pointer; }
+        .logo img { height: 32px; width: auto; }
         .nav-tabs { display: flex; gap: 32px; }
-        .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; }
+        .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; }
         .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
+        .nav-tab:hover { color: #9333ea; }
         .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
         
         .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
@@ -79,17 +87,17 @@ const adminHTML = `
 <body>
     <div class="header">
         <div class="header-content">
-            <div class="logo">
-                🏢 The Resource Consultants
+            <div class="logo" onclick="navigateToHome()">
+                <img src="/logo.png" alt="The Resource Consultants" />
             </div>
             <div class="nav-tabs">
-                <a href="#" class="nav-tab">Job Listings</a>
-                <a href="#" class="nav-tab">Employee Portal</a>
+                <a href="#" class="nav-tab" onclick="navigateToJobListings()">Job Listings</a>
+                <a href="#" class="nav-tab" onclick="navigateToEmployeePortal()">Employee Portal</a>
                 <a href="#" class="nav-tab active">Admin Portal</a>
             </div>
             <div class="user-info">
                 <span>Hello, Admin</span>
-                <a href="#" class="logout-btn">Log off</a>
+                <a href="#" class="logout-btn" onclick="logout()">Log off</a>
             </div>
         </div>
     </div>
@@ -292,6 +300,267 @@ const adminHTML = `
                 closeAddCategoryModal();
             }
         }
+        
+        // Navigation functions
+        function navigateToHome() {
+            window.location.href = '/';
+        }
+        
+        function navigateToJobListings() {
+            window.location.href = '/';
+        }
+        
+        function navigateToEmployeePortal() {
+            window.location.href = '/employee';
+        }
+        
+        function logout() {
+            // Clear any session data
+            localStorage.clear();
+            sessionStorage.clear();
+            // Redirect to home page
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
+`;
+
+// Create main job listings page
+const homeHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Resource Consultants - Career Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; }
+        
+        .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo img { height: 32px; width: auto; }
+        .nav-tabs { display: flex; gap: 32px; }
+        .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; }
+        .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
+        .nav-tab:hover { color: #9333ea; }
+        .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
+        
+        .hero { background: linear-gradient(135deg, #9C27B0 0%, #8E24AA 100%); color: white; padding: 80px 24px; text-align: center; }
+        .hero h1 { font-size: 48px; font-weight: 700; margin-bottom: 16px; }
+        .hero p { font-size: 20px; margin-bottom: 32px; opacity: 0.9; }
+        .btn-primary { background: white; color: #9333ea; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+        .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; margin-top: 32px; }
+        .job-card { background: white; border-radius: 8px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .job-title { font-size: 20px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        .job-company { color: #6b7280; margin-bottom: 16px; }
+        .job-description { color: #4b5563; margin-bottom: 16px; line-height: 1.5; }
+        .job-badges { display: flex; gap: 8px; margin-bottom: 16px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .badge-type { background: #9333ea; color: white; }
+        .badge-location { background: #f3f4f6; color: #6b7280; }
+        .apply-btn { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
+        .apply-btn:hover { background: #7c3aed; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo" onclick="navigateToHome()">
+                <img src="/logo.png" alt="The Resource Consultants" />
+            </div>
+            <div class="nav-tabs">
+                <a href="#" class="nav-tab active">Job Listings</a>
+                <a href="#" class="nav-tab" onclick="navigateToEmployeePortal()">Employee Portal</a>
+                <a href="#" class="nav-tab" onclick="navigateToAdmin()">Admin Portal</a>
+            </div>
+            <div class="user-info">
+                <button class="btn-primary" onclick="showLogin()">Login</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero">
+        <h1>Find Your Dream Career</h1>
+        <p>Connect with top employers and discover opportunities that match your skills</p>
+        <button class="btn-primary" onclick="scrollToJobs()">Browse Jobs</button>
+    </div>
+    
+    <div class="container">
+        <div class="jobs-grid" id="jobsGrid">
+            <!-- Jobs will be populated here -->
+        </div>
+    </div>
+    
+    <script>
+        // Load jobs on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadJobs();
+        });
+        
+        function loadJobs() {
+            const jobsGrid = document.getElementById('jobsGrid');
+            const sampleJobs = [
+                {
+                    title: "Software Engineer",
+                    company: "Tech Solutions Inc.",
+                    description: "Join our dynamic team to build innovative software solutions. Work with cutting-edge technologies and collaborate with talented developers.",
+                    type: "Full Time",
+                    location: "Remote",
+                    salary: "$80,000 - $120,000"
+                },
+                {
+                    title: "Marketing Manager",
+                    company: "Creative Agency",
+                    description: "Lead marketing campaigns and drive brand awareness. Perfect opportunity for a creative professional to make an impact.",
+                    type: "Full Time",
+                    location: "New York, NY",
+                    salary: "$60,000 - $80,000"
+                },
+                {
+                    title: "UX Designer",
+                    company: "Design Studio",
+                    description: "Create beautiful and intuitive user experiences. Work with cross-functional teams to deliver exceptional digital products.",
+                    type: "Contract",
+                    location: "San Francisco, CA",
+                    salary: "$70,000 - $90,000"
+                }
+            ];
+            
+            jobsGrid.innerHTML = sampleJobs.map(job => 
+                '<div class="job-card">' +
+                    '<div class="job-title">' + job.title + '</div>' +
+                    '<div class="job-company">' + job.company + '</div>' +
+                    '<div class="job-description">' + job.description + '</div>' +
+                    '<div class="job-badges">' +
+                        '<span class="badge badge-type">' + job.type + '</span>' +
+                        '<span class="badge badge-location">' + job.location + '</span>' +
+                    '</div>' +
+                    '<button class="apply-btn" onclick="applyToJob(\'' + job.title + '\')">Apply Now</button>' +
+                '</div>'
+            ).join('');
+        }
+        
+        function navigateToHome() {
+            window.location.href = '/';
+        }
+        
+        function navigateToEmployeePortal() {
+            window.location.href = '/employee';
+        }
+        
+        function navigateToAdmin() {
+            window.location.href = '/admin';
+        }
+        
+        function showLogin() {
+            alert('Login functionality - redirect to login page');
+        }
+        
+        function scrollToJobs() {
+            document.getElementById('jobsGrid').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function applyToJob(jobTitle) {
+            alert('Apply to ' + jobTitle + ' - redirect to application form');
+        }
+    </script>
+</body>
+</html>
+`;
+
+// Employee portal page
+const employeeHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - The Resource Consultants</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; }
+        
+        .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .logo img { height: 32px; width: auto; }
+        .nav-tabs { display: flex; gap: 32px; }
+        .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; cursor: pointer; }
+        .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
+        .nav-tab:hover { color: #9333ea; }
+        .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+        .page-title { font-size: 24px; font-weight: 600; color: #111827; margin-bottom: 32px; }
+        .card { background: white; border-radius: 8px; padding: 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 24px; }
+        .card-title { font-size: 18px; font-weight: 600; color: #111827; margin-bottom: 16px; }
+        .btn-primary { background: #9333ea; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-primary:hover { background: #7c3aed; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo" onclick="navigateToHome()">
+                <img src="/logo.png" alt="The Resource Consultants" />
+            </div>
+            <div class="nav-tabs">
+                <a href="#" class="nav-tab" onclick="navigateToJobListings()">Job Listings</a>
+                <a href="#" class="nav-tab active">Employee Portal</a>
+                <a href="#" class="nav-tab" onclick="navigateToAdmin()">Admin Portal</a>
+            </div>
+            <div class="user-info">
+                <span>Hello, Employee</span>
+                <a href="#" onclick="logout()">Log off</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1 class="page-title">Employee Portal</h1>
+        
+        <div class="card">
+            <div class="card-title">Job Management</div>
+            <p>Create and manage job postings, review applications, and track hiring progress.</p>
+            <button class="btn-primary" style="margin-top: 16px;">Create New Job</button>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Applications</div>
+            <p>Review and manage job applications from candidates.</p>
+            <button class="btn-primary" style="margin-top: 16px;">View Applications</button>
+        </div>
+        
+        <div class="card">
+            <div class="card-title">Reports</div>
+            <p>Generate reports on hiring metrics and job performance.</p>
+            <button class="btn-primary" style="margin-top: 16px;">View Reports</button>
+        </div>
+    </div>
+    
+    <script>
+        function navigateToHome() {
+            window.location.href = '/';
+        }
+        
+        function navigateToJobListings() {
+            window.location.href = '/';
+        }
+        
+        function navigateToAdmin() {
+            window.location.href = '/admin';
+        }
+        
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/';
+        }
     </script>
 </body>
 </html>
@@ -299,9 +568,24 @@ const adminHTML = `
 
 // Create HTTP server
 const server = http.createServer((req, res) => {
-    if (req.url === '/admin') {
+    if (req.url === '/' || req.url === '/home') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(homeHTML);
+    } else if (req.url === '/employee') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(employeeHTML);
+    } else if (req.url === '/admin') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(adminHTML);
+    } else if (req.url === '/logo.png') {
+        try {
+            const logoData = fs.readFileSync(logoPath);
+            res.writeHead(200, { 'Content-Type': 'image/png' });
+            res.end(logoData);
+        } catch (err) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Logo not found');
+        }
     } else if (req.url === '/api/categories' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(categories));
