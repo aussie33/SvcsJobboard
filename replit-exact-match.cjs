@@ -631,6 +631,54 @@ const server = http.createServer((req, res) => {
                 posted: "Posted 1 week ago"
             }
         ]));
+    } else if (req.url === '/api/categories' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify([
+            { id: 1, name: 'Administrative', description: 'Administrative assistants, office management', status: 'active' },
+            { id: 2, name: 'Agriculture', description: 'Farming, agricultural technology, and food production', status: 'active' },
+            { id: 3, name: 'Consulting', description: 'Management consulting, technical consulting', status: 'active' },
+            { id: 4, name: 'Customer Service', description: 'Customer support, service representatives', status: 'active' },
+            { id: 5, name: 'Data Science', description: 'Data analysis, data scientists, and business intelligence', status: 'active' },
+            { id: 6, name: 'Design', description: 'Graphic design, UX/UI design, and creative roles', status: 'active' },
+            { id: 7, name: 'Education', description: 'Teaching, training, and educational specialists', status: 'active' }
+        ]));
+    } else if (req.url === '/api/categories' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
+                const { name, description, status } = JSON.parse(body);
+                
+                // Basic validation
+                if (!name || name.trim() === '') {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        message: 'Category name is required'
+                    }));
+                    return;
+                }
+                
+                // Create new category with ID
+                const newCategory = {
+                    id: Date.now(), // Simple ID generation for demo
+                    name: name.trim(),
+                    description: description ? description.trim() : '',
+                    status: status || 'active'
+                };
+                
+                res.writeHead(201, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(newCategory));
+            } catch (error) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid request format'
+                }));
+            }
+        });
     } else if (req.url === '/dashboard' || req.url === '/admin') {
         // Admin portal matching exact Replit design
         res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -1126,9 +1174,56 @@ const server = http.createServer((req, res) => {
                             return;
                         }
                         
-                        // Here you would normally send the data to your server
-                        alert('Category creation functionality will be implemented in the next phase');
-                        closeAddCategoryModal();
+                        // Create category object
+                        const categoryData = {
+                            name: formData.get('name'),
+                            description: formData.get('description') || '',
+                            status: formData.get('status')
+                        };
+                        
+                        // Send to server
+                        fetch('/api/categories', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(categoryData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.id) {
+                                // Success - add to table
+                                addCategoryToTable(data);
+                                closeAddCategoryModal();
+                                alert('Category added successfully!');
+                            } else {
+                                alert('Error adding category: ' + (data.message || 'Unknown error'));
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error adding category: ' + error.message);
+                        });
+                    }
+                    
+                    function addCategoryToTable(category) {
+                        const tableBody = document.querySelector('#jobCategoriesSection table tbody');
+                        const newRow = document.createElement('tr');
+                        
+                        const currentDate = new Date().toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        });
+                        
+                        newRow.innerHTML = '<td>' + category.name + '</td>' +
+                            '<td>' + category.description + '</td>' +
+                            '<td><span class="status-badge status-' + category.status.toLowerCase() + '">' + 
+                            category.status.charAt(0).toUpperCase() + category.status.slice(1) + '</span></td>' +
+                            '<td>' + currentDate + '</td>' +
+                            '<td><a href="#" class="action-btn">Edit</a>' +
+                            '<a href="#" class="action-btn danger">Delete</a></td>';
+                        
+                        tableBody.appendChild(newRow);
                     }
                     
                     // Close modal when clicking outside
