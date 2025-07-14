@@ -347,6 +347,8 @@ const homeHTML = `
         .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
         .nav-tab:hover { color: #9333ea; }
         .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
+        .login-btn { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 500; }
+        .login-btn:hover { background: #7c3aed; }
         
         .hero { background: linear-gradient(135deg, #9C27B0 0%, #8E24AA 100%); color: white; padding: 80px 24px; text-align: center; }
         .hero h1 { font-size: 48px; font-weight: 700; margin-bottom: 16px; }
@@ -365,6 +367,23 @@ const homeHTML = `
         .badge-location { background: #f3f4f6; color: #6b7280; }
         .apply-btn { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; }
         .apply-btn:hover { background: #7c3aed; }
+        
+        /* Login Modal Styles */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 8px; width: 90%; max-width: 400px; }
+        .modal-header { padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; color: #111827; font-size: 18px; font-weight: 600; }
+        .close { color: #6b7280; font-size: 24px; cursor: pointer; }
+        .close:hover { color: #111827; }
+        .modal-body { padding: 24px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #374151; }
+        .form-group input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #9333ea; }
+        .modal-footer { padding: 20px 24px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 12px; }
+        .btn-cancel { background: #f3f4f6; color: #374151; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-primary-modal { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-primary-modal:hover { background: #7c3aed; }
     </style>
 </head>
 <body>
@@ -375,11 +394,10 @@ const homeHTML = `
             </div>
             <div class="nav-tabs">
                 <a href="#" class="nav-tab active">Job Listings</a>
-                <a href="#" class="nav-tab" onclick="navigateToEmployeePortal()">Employee Portal</a>
-                <a href="#" class="nav-tab" onclick="navigateToAdmin()">Admin Portal</a>
+                <!-- Employee Portal and Admin Portal tabs hidden for unauthenticated users -->
             </div>
             <div class="user-info">
-                <button class="btn-primary" onclick="showLogin()">Login</button>
+                <button class="login-btn" onclick="showLogin()">Login</button>
             </div>
         </div>
     </div>
@@ -393,6 +411,32 @@ const homeHTML = `
     <div class="container">
         <div class="jobs-grid" id="jobsGrid">
             <!-- Jobs will be populated here -->
+        </div>
+    </div>
+    
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login</h3>
+                <span class="close" onclick="closeLogin()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeLogin()">Cancel</button>
+                <button type="button" class="btn-primary-modal" onclick="login()">Login</button>
+            </div>
         </div>
     </div>
     
@@ -458,7 +502,40 @@ const homeHTML = `
         }
         
         function showLogin() {
-            alert('Login functionality - redirect to login page');
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+        
+        function closeLogin() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                alert('Please enter both username and password');
+                return;
+            }
+            
+            // Mock authentication - in real app, this would be a proper API call
+            if (username === 'admin' && password === 'admin') {
+                alert('Login successful! Redirecting to Admin Portal...');
+                window.location.href = '/admin';
+            } else if (username === 'employee' && password === 'employee') {
+                alert('Login successful! Redirecting to Employee Portal...');
+                window.location.href = '/employee';
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target === modal) {
+                closeLogin();
+            }
         }
         
         function scrollToJobs() {
