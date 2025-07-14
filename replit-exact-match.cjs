@@ -720,14 +720,14 @@ const server = http.createServer((req, res) => {
                     </div>
                     
                     <div class="section-tabs">
-                        <a href="#" class="section-tab active">User Management</a>
-                        <a href="#" class="section-tab">Job Categories</a>
+                        <a href="#" class="section-tab active" onclick="showUserManagement(event)">User Management</a>
+                        <a href="#" class="section-tab" onclick="showJobCategories(event)">Job Categories</a>
                     </div>
                     
-                    <div class="card">
+                    <div id="userManagementSection" class="card">
                         <div class="card-header">
                             <h2 class="card-title">Portal User Accounts</h2>
-                            <button class="add-btn">Add New User</button>
+                            <button class="add-btn" onclick="openAddUserModal()">Add New User</button>
                         </div>
                         
                         <div class="table-controls">
@@ -841,7 +841,413 @@ const server = http.createServer((req, res) => {
                             </div>
                         </div>
                     </div>
+                    
+                    <div id="jobCategoriesSection" class="card" style="display: none;">
+                        <div class="card-header">
+                            <h2 class="card-title">Job Categories</h2>
+                            <button class="add-btn">Add New Category</button>
+                        </div>
+                        
+                        <div class="table-controls">
+                            <input type="text" class="search-box" placeholder="Search categories..." />
+                            <select class="filter-select">
+                                <option>All Status</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                        </div>
+                        
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Category Name</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Administrative</td>
+                                    <td>Administrative and office support roles</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>Jun 15, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Technology</td>
+                                    <td>Software development and IT positions</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>Jun 15, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Delete</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Marketing</td>
+                                    <td>Marketing and communications roles</td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>Jun 15, 2025</td>
+                                    <td>
+                                        <a href="#" class="action-btn">Edit</a>
+                                        <a href="#" class="action-btn danger">Delete</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="table-footer">
+                            <div class="results-info">Showing 1 to 3 of 3 results</div>
+                            <div class="pagination">
+                                <span>Show</span>
+                                <select class="page-select">
+                                    <option>20</option>
+                                    <option>50</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                
+                <!-- Add User Modal -->
+                <div id="addUserModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Add New User</h3>
+                            <span class="close" onclick="closeAddUserModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addUserForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>First Name*</label>
+                                        <input type="text" name="firstName" placeholder="John" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Last Name*</label>
+                                        <input type="text" name="lastName" placeholder="Doe" required />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Middle Name</label>
+                                        <input type="text" name="middleName" placeholder="A." />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Preferred Name</label>
+                                        <input type="text" name="preferredName" placeholder="Johnny" />
+                                        <small>If provided, this name will be displayed in greetings</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Username</label>
+                                        <input type="text" name="username" placeholder="johndoe" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="email" placeholder="john.doe@example.com" />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" name="password" placeholder="••••••••" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password" name="confirmPassword" placeholder="••••••••" />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Role</label>
+                                        <select name="role">
+                                            <option value="employee">Employee</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="applicant">Applicant</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Department</label>
+                                        <input type="text" name="department" placeholder="e.g. Engineering" />
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="status" value="active" checked />
+                                            <span class="radio-custom"></span>
+                                            Active
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="status" value="inactive" />
+                                            <span class="radio-custom"></span>
+                                            Inactive
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Notes</label>
+                                    <textarea name="notes" placeholder="Additional notes about this user" rows="3"></textarea>
+                                    <small>These notes are for administrative purposes only</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel" onclick="closeAddUserModal()">Cancel</button>
+                            <button type="button" class="btn-primary" onclick="submitAddUser()">Add User</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    function showUserManagement(event) {
+                        event.preventDefault();
+                        document.getElementById('userManagementSection').style.display = 'block';
+                        document.getElementById('jobCategoriesSection').style.display = 'none';
+                        
+                        // Update active tab
+                        document.querySelectorAll('.section-tab').forEach(tab => tab.classList.remove('active'));
+                        event.target.classList.add('active');
+                    }
+                    
+                    function showJobCategories(event) {
+                        event.preventDefault();
+                        document.getElementById('userManagementSection').style.display = 'none';
+                        document.getElementById('jobCategoriesSection').style.display = 'block';
+                        
+                        // Update active tab
+                        document.querySelectorAll('.section-tab').forEach(tab => tab.classList.remove('active'));
+                        event.target.classList.add('active');
+                    }
+                    
+                    function openAddUserModal() {
+                        document.getElementById('addUserModal').style.display = 'block';
+                    }
+                    
+                    function closeAddUserModal() {
+                        document.getElementById('addUserModal').style.display = 'none';
+                        document.getElementById('addUserForm').reset();
+                    }
+                    
+                    function submitAddUser() {
+                        const form = document.getElementById('addUserForm');
+                        const formData = new FormData(form);
+                        
+                        // Basic validation
+                        if (!formData.get('firstName') || !formData.get('lastName')) {
+                            alert('First Name and Last Name are required');
+                            return;
+                        }
+                        
+                        if (formData.get('password') !== formData.get('confirmPassword')) {
+                            alert('Passwords do not match');
+                            return;
+                        }
+                        
+                        // Here you would normally send the data to your server
+                        alert('User creation functionality will be implemented in the next phase');
+                        closeAddUserModal();
+                    }
+                    
+                    // Close modal when clicking outside
+                    window.onclick = function(event) {
+                        const modal = document.getElementById('addUserModal');
+                        if (event.target === modal) {
+                            closeAddUserModal();
+                        }
+                    }
+                </script>
+                
+                <style>
+                    .modal {
+                        position: fixed;
+                        z-index: 1000;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(0,0,0,0.5);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    
+                    .modal-content {
+                        background-color: white;
+                        border-radius: 8px;
+                        width: 90%;
+                        max-width: 600px;
+                        max-height: 90vh;
+                        overflow-y: auto;
+                    }
+                    
+                    .modal-header {
+                        padding: 20px 24px;
+                        border-bottom: 1px solid #e5e7eb;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    
+                    .modal-header h3 {
+                        margin: 0;
+                        color: #111827;
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+                    
+                    .close {
+                        color: #6b7280;
+                        font-size: 24px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    }
+                    
+                    .close:hover {
+                        color: #111827;
+                    }
+                    
+                    .modal-body {
+                        padding: 24px;
+                    }
+                    
+                    .form-row {
+                        display: flex;
+                        gap: 16px;
+                        margin-bottom: 16px;
+                    }
+                    
+                    .form-group {
+                        flex: 1;
+                    }
+                    
+                    .form-group label {
+                        display: block;
+                        margin-bottom: 6px;
+                        color: #374151;
+                        font-size: 14px;
+                        font-weight: 500;
+                    }
+                    
+                    .form-group input,
+                    .form-group select,
+                    .form-group textarea {
+                        width: 100%;
+                        padding: 8px 12px;
+                        border: 1px solid #d1d5db;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        color: #111827;
+                    }
+                    
+                    .form-group input:focus,
+                    .form-group select:focus,
+                    .form-group textarea:focus {
+                        outline: none;
+                        border-color: #9333ea;
+                        box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+                    }
+                    
+                    .form-group small {
+                        color: #6b7280;
+                        font-size: 12px;
+                        margin-top: 4px;
+                        display: block;
+                    }
+                    
+                    .radio-group {
+                        display: flex;
+                        gap: 16px;
+                        margin-top: 8px;
+                    }
+                    
+                    .radio-label {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: #374151;
+                    }
+                    
+                    .radio-label input[type="radio"] {
+                        display: none;
+                    }
+                    
+                    .radio-custom {
+                        width: 16px;
+                        height: 16px;
+                        border: 2px solid #d1d5db;
+                        border-radius: 50%;
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                    
+                    .radio-label input[type="radio"]:checked + .radio-custom {
+                        border-color: #9333ea;
+                    }
+                    
+                    .radio-label input[type="radio"]:checked + .radio-custom::after {
+                        content: '';
+                        width: 8px;
+                        height: 8px;
+                        background-color: #9333ea;
+                        border-radius: 50%;
+                    }
+                    
+                    .modal-footer {
+                        padding: 20px 24px;
+                        border-top: 1px solid #e5e7eb;
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 12px;
+                    }
+                    
+                    .btn-cancel {
+                        padding: 8px 16px;
+                        border: 1px solid #d1d5db;
+                        background: white;
+                        color: #374151;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    }
+                    
+                    .btn-cancel:hover {
+                        background: #f9fafb;
+                    }
+                    
+                    .btn-primary {
+                        padding: 8px 16px;
+                        border: none;
+                        background: #9333ea;
+                        color: white;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    }
+                    
+                    .btn-primary:hover {
+                        background: #7c3aed;
+                    }
+                </style>
             </body>
             </html>
         `);
