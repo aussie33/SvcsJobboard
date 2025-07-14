@@ -46,7 +46,7 @@ const htmlContent = `
             gap: 6px;
         }
         .job-type-badge { 
-            background: #9333ea; 
+            background: #a855f7; 
             color: white; 
             padding: 4px 12px; 
             border-radius: 16px; 
@@ -54,7 +54,7 @@ const htmlContent = `
             font-weight: 500;
         }
         .apply-btn { 
-            background: #9333ea; 
+            background: #a855f7; 
             color: white; 
             padding: 8px 16px; 
             border: none; 
@@ -63,7 +63,7 @@ const htmlContent = `
             font-weight: 500;
         }
         .apply-btn:hover { 
-            background: #7c3aed; 
+            background: #9333ea; 
         }
         .filter-section { 
             background: white; 
@@ -85,7 +85,7 @@ const htmlContent = `
         .checkbox-item input[type="checkbox"] { 
             width: 16px; 
             height: 16px; 
-            accent-color: #9333ea;
+            accent-color: #a855f7;
         }
         .location-filter { 
             display: flex; 
@@ -181,11 +181,11 @@ const htmlContent = `
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <img src="/logo.png" alt="The Resource Consultants" class="h-10 w-auto" />
+                <img src="/logo.png" alt="The Resource Consultants" class="h-16 w-auto" />
             </div>
             <div class="flex items-center space-x-4">
-                <a href="#" class="text-purple-600 border-b-2 border-purple-600 pb-1">Job Listings</a>
-                <button id="loginBtn" class="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition">
+                <a href="#" class="text-purple-500 border-b-2 border-purple-500 pb-1">Job Listings</a>
+                <button id="loginBtn" class="bg-purple-500 text-white px-6 py-2 rounded hover:bg-purple-600 transition">
                     Log in
                 </button>
             </div>
@@ -193,7 +193,7 @@ const htmlContent = `
     </header>
 
     <!-- Hero Banner -->
-    <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-20">
+    <div class="bg-purple-500 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-5xl font-bold mb-6">Find Your Dream Career</h1>
             <p class="text-xl text-purple-100 mb-8">Explore opportunities that match your skills and ambitions. Your next career move starts here.</p>
@@ -386,7 +386,7 @@ const htmlContent = `
             <!-- Account type selector -->
             <div class="bg-gray-100 px-6 py-4">
                 <div class="flex flex-wrap justify-center gap-2">
-                    <button type="button" class="account-type-btn active" data-role="applicant" style="background: #9333ea; color: white; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
+                    <button type="button" class="account-type-btn active" data-role="applicant" style="background: #a855f7; color: white; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
                         Applicant
                     </button>
                     <button type="button" class="account-type-btn" data-role="employee" style="background: #f3f4f6; color: #6b7280; padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 500;">
@@ -403,18 +403,18 @@ const htmlContent = `
                 <form id="loginForm">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-medium mb-2">Username</label>
-                        <input type="text" id="usernameInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                        <input type="text" id="usernameInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                        <input type="password" id="passwordInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" required>
+                        <input type="password" id="passwordInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent" required>
                     </div>
                     <div class="flex justify-end mb-4">
-                        <button type="button" class="text-sm text-purple-600 font-medium hover:underline">
+                        <button type="button" class="text-sm text-purple-500 font-medium hover:underline">
                             Forgot Password?
                         </button>
                     </div>
-                    <button type="submit" class="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg mb-4">
+                    <button type="submit" class="w-full h-12 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg mb-4">
                         Login
                     </button>
                     
@@ -475,7 +475,7 @@ const htmlContent = `
                     b.style.color = '#6b7280';
                     b.classList.remove('active');
                 });
-                this.style.background = '#9333ea';
+                this.style.background = '#a855f7';
                 this.style.color = 'white';
                 this.classList.add('active');
                 selectedRole = this.dataset.role;
