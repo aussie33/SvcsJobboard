@@ -384,6 +384,26 @@ const homeHTML = `
         .btn-cancel { background: #f3f4f6; color: #374151; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
         .btn-primary-modal { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
         .btn-primary-modal:hover { background: #7c3aed; }
+        
+        /* Explore Jobs Section */
+        .explore-section { background: white; padding: 60px 24px; }
+        .explore-container { max-width: 1200px; margin: 0 auto; }
+        .explore-title { font-size: 32px; font-weight: 700; text-align: center; margin-bottom: 12px; color: #111827; }
+        .explore-subtitle { font-size: 18px; color: #6b7280; text-align: center; margin-bottom: 40px; }
+        .search-filters { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+        .search-box { flex: 1; min-width: 300px; }
+        .search-box input { width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+        .search-box input:focus { outline: none; border-color: #9333ea; }
+        .filter-group { display: flex; gap: 8px; }
+        .filter-btn { padding: 8px 16px; border: 1px solid #d1d5db; background: white; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .filter-btn:hover { border-color: #9333ea; color: #9333ea; }
+        .filter-btn.active { background: #9333ea; color: white; border-color: #9333ea; }
+        .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .category-card { background: #f8f9fa; padding: 24px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+        .category-card:hover { background: #f3f4f6; transform: translateY(-2px); }
+        .category-icon { font-size: 32px; margin-bottom: 12px; }
+        .category-name { font-size: 16px; font-weight: 600; color: #111827; margin-bottom: 8px; }
+        .category-count { font-size: 14px; color: #6b7280; }
     </style>
 </head>
 <body>
@@ -406,6 +426,59 @@ const homeHTML = `
         <h1>Find Your Dream Career</h1>
         <p>Connect with top employers and discover opportunities that match your skills</p>
         <button class="btn-primary" onclick="scrollToJobs()">Browse Jobs</button>
+    </div>
+    
+    <div class="explore-section">
+        <div class="explore-container">
+            <h2 class="explore-title">Explore Job Opportunities</h2>
+            <p class="explore-subtitle">Find your next career move with our comprehensive job search</p>
+            
+            <div class="search-filters">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search jobs, companies, or skills..." onkeyup="filterJobs()">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" onclick="filterByType('all')">All Types</button>
+                    <button class="filter-btn" onclick="filterByType('Full Time')">Full Time</button>
+                    <button class="filter-btn" onclick="filterByType('Part Time')">Part Time</button>
+                    <button class="filter-btn" onclick="filterByType('Contract')">Contract</button>
+                    <button class="filter-btn" onclick="filterByType('Remote')">Remote</button>
+                </div>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-card" onclick="filterByCategory('Technology')">
+                    <div class="category-icon">💻</div>
+                    <div class="category-name">Technology</div>
+                    <div class="category-count">5 positions</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Marketing')">
+                    <div class="category-icon">📈</div>
+                    <div class="category-name">Marketing</div>
+                    <div class="category-count">3 positions</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Design')">
+                    <div class="category-icon">🎨</div>
+                    <div class="category-name">Design</div>
+                    <div class="category-count">2 positions</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Finance')">
+                    <div class="category-icon">💼</div>
+                    <div class="category-name">Finance</div>
+                    <div class="category-count">4 positions</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Sales')">
+                    <div class="category-icon">🎯</div>
+                    <div class="category-name">Sales</div>
+                    <div class="category-count">6 positions</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('Human Resources')">
+                    <div class="category-icon">👥</div>
+                    <div class="category-name">Human Resources</div>
+                    <div class="category-count">2 positions</div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <div class="container">
@@ -446,36 +519,86 @@ const homeHTML = `
             loadJobs();
         });
         
-        function loadJobs() {
+        // Global job data
+        const allJobs = [
+            {
+                title: "Software Engineer",
+                company: "Tech Solutions Inc.",
+                description: "Join our dynamic team to build innovative software solutions. Work with cutting-edge technologies and collaborate with talented developers.",
+                type: "Full Time",
+                location: "Remote",
+                salary: "$80,000 - $120,000",
+                category: "Technology"
+            },
+            {
+                title: "Frontend Developer",
+                company: "Web Innovations",
+                description: "Create stunning user interfaces with React and modern web technologies. Join a fast-growing startup environment.",
+                type: "Full Time",
+                location: "Austin, TX",
+                salary: "$70,000 - $100,000",
+                category: "Technology"
+            },
+            {
+                title: "Marketing Manager",
+                company: "Creative Agency",
+                description: "Lead marketing campaigns and drive brand awareness. Perfect opportunity for a creative professional to make an impact.",
+                type: "Full Time",
+                location: "New York, NY",
+                salary: "$60,000 - $80,000",
+                category: "Marketing"
+            },
+            {
+                title: "UX Designer",
+                company: "Design Studio",
+                description: "Create beautiful and intuitive user experiences. Work with cross-functional teams to deliver exceptional digital products.",
+                type: "Contract",
+                location: "San Francisco, CA",
+                salary: "$70,000 - $90,000",
+                category: "Design"
+            },
+            {
+                title: "Financial Analyst",
+                company: "Finance Corp",
+                description: "Analyze financial data and provide strategic insights. Great opportunity for detail-oriented professionals.",
+                type: "Full Time",
+                location: "Chicago, IL",
+                salary: "$65,000 - $85,000",
+                category: "Finance"
+            },
+            {
+                title: "Sales Representative",
+                company: "Sales Solutions",
+                description: "Drive revenue growth through client relationships and strategic sales initiatives. Excellent commission structure.",
+                type: "Full Time",
+                location: "Miami, FL",
+                salary: "$50,000 - $120,000",
+                category: "Sales"
+            },
+            {
+                title: "HR Coordinator",
+                company: "People First",
+                description: "Support HR operations and employee development. Perfect for someone passionate about people and culture.",
+                type: "Part Time",
+                location: "Denver, CO",
+                salary: "$40,000 - $55,000",
+                category: "Human Resources"
+            },
+            {
+                title: "DevOps Engineer",
+                company: "Cloud Systems",
+                description: "Manage infrastructure and deployment pipelines. Remote-first company with excellent benefits.",
+                type: "Remote",
+                location: "Remote",
+                salary: "$90,000 - $130,000",
+                category: "Technology"
+            }
+        ];
+
+        function loadJobs(jobsToShow = allJobs) {
             const jobsGrid = document.getElementById('jobsGrid');
-            const sampleJobs = [
-                {
-                    title: "Software Engineer",
-                    company: "Tech Solutions Inc.",
-                    description: "Join our dynamic team to build innovative software solutions. Work with cutting-edge technologies and collaborate with talented developers.",
-                    type: "Full Time",
-                    location: "Remote",
-                    salary: "$80,000 - $120,000"
-                },
-                {
-                    title: "Marketing Manager",
-                    company: "Creative Agency",
-                    description: "Lead marketing campaigns and drive brand awareness. Perfect opportunity for a creative professional to make an impact.",
-                    type: "Full Time",
-                    location: "New York, NY",
-                    salary: "$60,000 - $80,000"
-                },
-                {
-                    title: "UX Designer",
-                    company: "Design Studio",
-                    description: "Create beautiful and intuitive user experiences. Work with cross-functional teams to deliver exceptional digital products.",
-                    type: "Contract",
-                    location: "San Francisco, CA",
-                    salary: "$70,000 - $90,000"
-                }
-            ];
             
-            jobsGrid.innerHTML = sampleJobs.map(job => 
+            jobsGrid.innerHTML = jobsToShow.map(job => 
                 '<div class="job-card">' +
                     '<div class="job-title">' + job.title + '</div>' +
                     '<div class="job-company">' + job.company + '</div>' +
@@ -487,6 +610,42 @@ const homeHTML = `
                     '<button class="apply-btn" onclick="applyToJob(\'' + job.title + '\')">Apply Now</button>' +
                 '</div>'
             ).join('');
+        }
+        
+        // Filter functions
+        function filterJobs() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filteredJobs = allJobs.filter(job => 
+                job.title.toLowerCase().includes(searchTerm) ||
+                job.company.toLowerCase().includes(searchTerm) ||
+                job.description.toLowerCase().includes(searchTerm) ||
+                job.type.toLowerCase().includes(searchTerm) ||
+                job.location.toLowerCase().includes(searchTerm)
+            );
+            loadJobs(filteredJobs);
+        }
+        
+        function filterByType(type) {
+            // Update active filter button
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter jobs
+            if (type === 'all') {
+                loadJobs(allJobs);
+            } else {
+                const filteredJobs = allJobs.filter(job => job.type === type);
+                loadJobs(filteredJobs);
+            }
+        }
+        
+        function filterByCategory(category) {
+            const filteredJobs = allJobs.filter(job => job.category === category);
+            loadJobs(filteredJobs);
+            
+            // Scroll to jobs section
+            document.getElementById('jobsGrid').scrollIntoView({ behavior: 'smooth' });
         }
         
         function navigateToHome() {
