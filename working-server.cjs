@@ -450,7 +450,13 @@ const homeHTML = `
         });
         
         function loadJobs() {
+            console.log('Loading jobs...');
             const jobsGrid = document.getElementById('jobsGrid');
+            if (!jobsGrid) {
+                console.error('jobsGrid element not found!');
+                return;
+            }
+            console.log('Found jobsGrid element, loading jobs...');
             const sampleJobs = [
                 {
                     title: "Software Engineer",
@@ -490,6 +496,7 @@ const homeHTML = `
                     '<button class="apply-btn" onclick="applyToJob(\'' + job.title + '\')">Apply Now</button>' +
                 '</div>'
             ).join('');
+            console.log('Successfully loaded ' + sampleJobs.length + ' jobs');
         }
         
         function navigateToHome() {
