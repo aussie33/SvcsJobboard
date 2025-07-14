@@ -181,7 +181,7 @@ const htmlContent = `
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <img src="/logo.png" alt="The Resource Consultants" class="h-20 w-auto" />
+                <img src="/logo.png" alt="The Resource Consultants" class="h-16 w-auto" />
             </div>
             <div class="flex items-center space-x-4">
                 <a href="#" class="text-purple-600 border-b-2 border-purple-600 pb-1">Job Listings</a>
@@ -372,14 +372,8 @@ const htmlContent = `
             <!-- Header with logo and gradient -->
             <div class="bg-gradient-to-r from-purple-600 to-blue-600 pt-20 pb-10 px-4 text-white text-center">
                 <div class="flex justify-center mb-6 mt-8">
-                    <svg width="300" height="80" viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <text x="150" y="25" text-anchor="middle" fill="white" font-size="18" font-weight="bold">THE</text>
-                        <text x="150" y="45" text-anchor="middle" fill="white" font-size="18" font-weight="bold">RESOURCE CONSULTANTS</text>
-                        <circle cx="50" cy="35" r="20" fill="white" opacity="0.2"/>
-                        <text x="50" y="42" text-anchor="middle" fill="white" font-size="16" font-weight="bold">RC</text>
-                    </svg>
+                    <img src="/logo.png" alt="The Resource Consultants" class="h-16 w-auto" />
                 </div>
-                <h1 class="text-2xl font-bold">Login Now</h1>
                 <p class="text-sm text-white/90 mt-2">Please login or sign up to continue using our app</p>
             </div>
             
