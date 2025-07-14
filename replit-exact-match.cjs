@@ -482,8 +482,43 @@ const htmlContent = `
             const username = document.getElementById('usernameInput').value;
             const password = document.getElementById('passwordInput').value;
             
-            showNotification('Login attempt as ' + selectedRole + ': ' + username + '. Backend integration will authenticate user.');
-            loginModal.style.display = 'none';
+            // Authenticate user
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                    role: selectedRole
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Login successful! Welcome ' + data.user.firstName + '!');
+                    loginModal.style.display = 'none';
+                    
+                    // Update UI based on role
+                    if (data.user.role === 'admin' || data.user.role === 'employee') {
+                        // Show admin/employee controls
+                        document.getElementById('loginBtn').textContent = 'Dashboard';
+                        document.getElementById('loginBtn').onclick = function() {
+                            window.location.href = '/dashboard';
+                        };
+                    } else {
+                        // Show applicant view
+                        document.getElementById('loginBtn').textContent = 'My Applications';
+                    }
+                } else {
+                    showNotification('Login failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                showNotification('Login error. Please try again.');
+            });
         }
 
         document.getElementById('applicationForm').onsubmit = function(e) {
@@ -524,20 +559,108 @@ const server = http.createServer((req, res) => {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('Logo not found');
         }
+    } else if (req.url === '/api/login' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+        req.on('end', () => {
+            try {
+                const { username, password, role } = JSON.parse(body);
+                
+                // Test user accounts
+                const users = {
+                    'admin': { password: 'admin123', role: 'admin', firstName: 'Admin', lastName: 'User' },
+                    'employee': { password: 'employee123', role: 'employee', firstName: 'Employee', lastName: 'User' },
+                    'applicant': { password: 'applicant123', role: 'applicant', firstName: 'Applicant', lastName: 'User' }
+                };
+                
+                if (users[username] && users[username].password === password) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        user: {
+                            username: username,
+                            firstName: users[username].firstName,
+                            lastName: users[username].lastName,
+                            role: users[username].role
+                        }
+                    }));
+                } else {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: false,
+                        message: 'Invalid username or password'
+                    }));
+                }
+            } catch (error) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: false,
+                    message: 'Invalid request format'
+                }));
+            }
+        });
     } else if (req.url === '/api/jobs') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify([
             {
                 id: 1,
-                title: "test",
-                department: "test",
+                title: "Software Engineer",
+                department: "Engineering",
                 location: "Remote",
                 type: "Full Time",
-                category: "Uncategorized",
-                salary: "Salary negotiable",
-                posted: "Posted Recently"
+                category: "Technology",
+                salary: "$80,000 - $120,000",
+                posted: "Posted 2 days ago"
+            },
+            {
+                id: 2,
+                title: "Marketing Manager",
+                department: "Marketing",
+                location: "New York, NY",
+                type: "Full Time",
+                category: "Marketing",
+                salary: "$60,000 - $80,000",
+                posted: "Posted 1 week ago"
             }
         ]));
+    } else if (req.url === '/dashboard') {
+        // Simple dashboard page for admin/employee
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Dashboard - The Resource Consultants</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    .header { background: #9333ea; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+                    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+                    .btn { background: #9333ea; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+                    .btn:hover { background: #7c3aed; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome to The Resource Consultants Admin Panel</p>
+                </div>
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <button class="btn" onclick="location.href='/'">Back to Job Portal</button>
+                    <button class="btn" onclick="alert('Create Job functionality coming soon!')">Create New Job</button>
+                    <button class="btn" onclick="alert('View Applications functionality coming soon!')">View Applications</button>
+                </div>
+                <div class="card">
+                    <h2>Recent Activity</h2>
+                    <p>• 2 new job applications received</p>
+                    <p>• 1 new job posting published</p>
+                    <p>• 5 active job listings</p>
+                </div>
+            </body>
+            </html>
+        `);
     } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('Not Found');
