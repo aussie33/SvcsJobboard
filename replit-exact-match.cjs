@@ -181,11 +181,7 @@ const htmlContent = `
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 0L35 10V30L20 40L5 30V10L20 0Z" fill="#9333EA"/>
-                    <text x="20" y="26" text-anchor="middle" fill="white" font-size="14" font-weight="bold">RC</text>
-                </svg>
-                <h1 class="text-2xl font-bold text-gray-900">THE RESOURCE CONSULTANTS</h1>
+                <img src="/logo.png" alt="The Resource Consultants" class="h-10 w-auto" />
             </div>
             <div class="flex items-center space-x-4">
                 <a href="#" class="text-purple-600 border-b-2 border-purple-600 pb-1">Job Listings</a>
@@ -525,6 +521,15 @@ const server = http.createServer((req, res) => {
     if (req.url === '/' || req.url === '/index.html') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(htmlContent);
+    } else if (req.url === '/logo.png') {
+        try {
+            const logoData = fs.readFileSync('logo.png');
+            res.writeHead(200, { 'Content-Type': 'image/png' });
+            res.end(logoData);
+        } catch (err) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Logo not found');
+        }
     } else if (req.url === '/api/jobs') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify([
