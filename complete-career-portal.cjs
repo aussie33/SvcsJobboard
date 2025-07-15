@@ -228,31 +228,7 @@ const mainHTML = `
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <span class="text-2xl font-bold text-purple-600">RC</span>
-                        <span class="ml-2 text-lg font-semibold text-gray-900">The Resource Consultants</span>
-                    </div>
-                </div>
-                
-                <nav class="flex space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Job Listings</a>
-                    <a href="/employee" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Employee Portal</a>
-                    <a href="/admin" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Admin Portal</a>
-                </nav>
-                
-                <div class="flex items-center space-x-4">
-                    <button id="loginBtn" class="login-btn">Login</button>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <!-- Hero Section -->
     <section class="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-6">Find Your Dream Career</h1>
