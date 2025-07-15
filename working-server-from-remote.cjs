@@ -224,7 +224,36 @@ const mainHTML = `
             border-radius: 6px; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
             z-index: 1001;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AAAADACAYAAAA9r2/gAAAACXBIWXMAABcRAAAXEQHKJvM/AAAAB3RJTUUH5AsJBzYsxEeQUgAAAAlwSFlzAAALEwAACxMBAJqcGAAAHDVJREFUeJztnXtsXNeZ3r/7zhxySM7wcpFlSTJla6JYFGUrI3mBbGOzaIBkHbRJX5u0zSbdRYJGLQINugvSdLuYNGnSNIuiRbJF3TRJ0CIpHSTrpLWQ+kVFSO6/8mwGxnvxcLUc9lT7WrqGRJtS1o1/v7+E4EQcIrxlYRKvfMfUXCJpKRmzZsyeS57BmOGrjgAAAABJRU5ErkJggg==" alt="The Resource Consultants" class="h-8 w-auto mr-3">
+                    </div>
+                </div>
+                
+                <nav class="flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Job Listings</a>
+                    <a href="/employee" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Employee Portal</a>
+                    <a href="/admin" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Admin Portal</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="loginBtn" class="login-btn">Login</button>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-6">Find Your Dream Career</h1>
             <p class="text-xl md:text-2xl mb-8 text-purple-100">
                 Discover exciting opportunities with The Resource Consultants
@@ -326,7 +355,7 @@ const mainHTML = `
                 <span class="close login-close">&times;</span>
                 <div class="text-center">
                     <div class="mb-4">
-                        <span class="text-3xl font-bold">RC</span>
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AAAADACAYAAAA9r2/gAAAACXBIWXMAABcRAAAXEQHKJvM/AAAAB3RJTUUH5AsJBzYsxEeQUgAAAAlwSFlzAAALEwAACxMBAJqcGAAAHDVJREFUeJztnXtsXdeZ3r/7zhxySM7wcpFlSTJla6JYFGUrI3mBbGOzaIBkHbRJX5u0zSbdRYJGLQINugvSdLuYNGnSNIuiRbJF3TRJ0CIpHSTrpLWQ+kVFSO6/8mwGxnvxcLUc9lT7WrqGRJtS1o1/v7+E4EQcIrxlYRKvfMfUXCJpKRmzZsyeS57BmOGrjgAAAABJRU5ErkJggg==" alt="The Resource Consultants" style="height: 40px; margin: 0 auto; display: block;">
                     </div>
                     <p class="text-sm text-white/90">Please login or sign up to continue using our app</p>
                 </div>
@@ -623,7 +652,8 @@ const employeeHTML = `
     <div class="header">
         <div class="header-content">
             <div class="logo">
-                🏢 The Resource Consultants
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AAAADACAYAAAA9r2/gAAAACXBIWXMAABcRAAAXEQHKJvM/AAAAB3RJTUUH5AsJBzYsxEeQUgAAAAlwSFlzAAALEwAACxMBAJqcGAAAHDVJREFUeJztnXtsXNeZ3r/7zhxySM7wcpFlSTJla6JYFGUrI3mBbGOzaIBkHbRJX5u0zSbdRYJGLQINugvSdLuYNGnSNIuiRbJF3TRJ0CIpHSTrpLWQ+kVFSO6/8mwGxnvxcLUc9lT7WrqGRJtS1o1/v7+E4EQcIrxlYRKvfMfUXCJpKRmzZsyeS57BmOGrjgAAAABJRU5ErkJggg==" alt="The Resource Consultants" style="height: 32px; margin-right: 8px; vertical-align: middle;">
+                <span>The Resource Consultants</span>
             </div>
             <div class="nav-tabs">
                 <a href="/" class="nav-tab">Job Listings</a>
@@ -857,7 +887,8 @@ const adminHTML = `
     <div class="header">
         <div class="header-content">
             <div class="logo">
-                🏢 The Resource Consultants
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8AAAADACAYAAAA9r2/gAAAACXBIWXMAABcRAAAXEQHKJvM/AAAAB3RJTUUH5AsJBzYsxEeQUgAAAAlwSFlzAAALEwAACxMBAJqcGAAAHDVJREFUeJztnXtsXNeZ3r/7zhxySM7wcpFlSTJla6JYFGUrI3mBbGOzaIBkHbRJX5u0zSbdRYJGLQINugvSdLuYNGnSNIuiRbJF3TRJ0CIpHSTrpLWQ+kVFSO6/8mwGxnvxcLUc9lT7WrqGRJtS1o1/v7+E4EQcIrxlYRKvfMfUXCJpKRmzZsyeS57BmOGrjgAAAABJRU5ErkJggg==" alt="The Resource Consultants" style="height: 32px; margin-right: 8px; vertical-align: middle;">
+                <span>The Resource Consultants</span>
             </div>
             <div class="nav-tabs">
                 <a href="/" class="nav-tab">Job Listings</a>
