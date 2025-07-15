@@ -241,7 +241,7 @@ const mainHTML = `
                 
                 <nav class="flex space-x-8">
                     <a href="#" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Job Listings</a>
-                    <a href="#" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Employee Portal</a>
+                    <a href="/employee" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Employee Portal</a>
                     <a href="/admin" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium">Admin Portal</a>
                 </nav>
                 
@@ -592,6 +592,232 @@ const mainHTML = `
 </html>
 `;
 
+// Employee Portal HTML
+const employeeHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - The Resource Consultants</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; }
+        
+        .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 12px 24px; }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { display: flex; align-items: center; gap: 8px; color: #9333ea; font-weight: 600; }
+        .nav-tabs { display: flex; gap: 32px; }
+        .nav-tab { color: #6b7280; text-decoration: none; padding: 8px 0; border-bottom: 2px solid transparent; }
+        .nav-tab.active { color: #9333ea; border-bottom-color: #9333ea; font-weight: 500; }
+        .user-info { display: flex; align-items: center; gap: 16px; color: #6b7280; font-size: 14px; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+        .page-title { font-size: 24px; font-weight: 600; color: #111827; margin-bottom: 4px; }
+        .page-subtitle { color: #6b7280; font-size: 14px; margin-bottom: 32px; }
+        
+        .section-tabs { display: flex; gap: 32px; margin-bottom: 32px; border-bottom: 1px solid #e5e7eb; }
+        .section-tab { padding: 12px 0; color: #6b7280; text-decoration: none; border-bottom: 2px solid transparent; cursor: pointer; }
+        .section-tab.active { color: #111827; border-bottom-color: #9333ea; font-weight: 500; }
+        
+        .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+        .card-header { padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 16px; font-weight: 600; color: #111827; }
+        .add-btn { background: #9333ea; color: white; padding: 8px 16px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; }
+        .add-btn:hover { background: #7c3aed; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 24px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f8f9fa; font-weight: 500; color: #6b7280; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .action-btn { color: #6b7280; text-decoration: none; margin-right: 12px; }
+        .action-btn:hover { color: #9333ea; }
+        .action-btn.danger { color: #dc2626; }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .stat-number { font-size: 24px; font-weight: 600; color: #111827; }
+        .stat-label { color: #6b7280; font-size: 14px; }
+        .stat-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+        .stat-icon.purple { background: #f3e8ff; color: #9333ea; }
+        .stat-icon.green { background: #ecfdf5; color: #10b981; }
+        .stat-icon.blue { background: #eff6ff; color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                🏢 The Resource Consultants
+            </div>
+            <div class="nav-tabs">
+                <a href="/" class="nav-tab">Job Listings</a>
+                <a href="#" class="nav-tab active">Employee Portal</a>
+                <a href="/admin" class="nav-tab">Admin Portal</a>
+            </div>
+            <div class="user-info">
+                <span>Hello, Employee</span>
+                <a href="/" class="logout-btn">Log off</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Employee Portal</h1>
+            <p class="page-subtitle">Manage job postings and review applications</p>
+        </div>
+        
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple">📄</div>
+                <div class="stat-number">3</div>
+                <div class="stat-label">Active Job Postings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">👥</div>
+                <div class="stat-number">12</div>
+                <div class="stat-label">Total Applications</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue">📊</div>
+                <div class="stat-number">8</div>
+                <div class="stat-label">Applications This Week</div>
+            </div>
+        </div>
+        
+        <div class="section-tabs">
+            <a href="#" class="section-tab active" onclick="showSection('jobs')">Job Postings</a>
+            <a href="#" class="section-tab" onclick="showSection('applications')">Applications</a>
+        </div>
+        
+        <div id="jobsSection" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Job Postings</h2>
+                    <button class="add-btn">Create New Job</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Applications</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobsTableBody">
+                        <tr>
+                            <td>Software Engineer</td>
+                            <td>Engineering</td>
+                            <td>Remote</td>
+                            <td>5</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>
+                                <a href="#" class="action-btn">Edit</a>
+                                <a href="#" class="action-btn">View Applications</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Marketing Manager</td>
+                            <td>Marketing</td>
+                            <td>New York, NY</td>
+                            <td>4</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>
+                                <a href="#" class="action-btn">Edit</a>
+                                <a href="#" class="action-btn">View Applications</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Administrative Assistant</td>
+                            <td>Administration</td>
+                            <td>Boston, MA</td>
+                            <td>3</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>
+                                <a href="#" class="action-btn">Edit</a>
+                                <a href="#" class="action-btn">View Applications</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div id="applicationsSection" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Recent Applications</h2>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Applicant Name</th>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Smith</td>
+                            <td>Software Engineer</td>
+                            <td>2 days ago</td>
+                            <td><span class="status-badge status-pending">Under Review</span></td>
+                            <td>
+                                <a href="#" class="action-btn">View Details</a>
+                                <a href="#" class="action-btn">Download Resume</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td>Marketing Manager</td>
+                            <td>3 days ago</td>
+                            <td><span class="status-badge status-pending">Under Review</span></td>
+                            <td>
+                                <a href="#" class="action-btn">View Details</a>
+                                <a href="#" class="action-btn">Download Resume</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mike Davis</td>
+                            <td>Administrative Assistant</td>
+                            <td>1 week ago</td>
+                            <td><span class="status-badge status-active">Shortlisted</span></td>
+                            <td>
+                                <a href="#" class="action-btn">View Details</a>
+                                <a href="#" class="action-btn">Download Resume</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(section + 'Section').classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+`;
+
 // Admin Portal HTML (from working-server.cjs)
 const adminHTML = `
 <!DOCTYPE html>
@@ -665,8 +891,8 @@ const adminHTML = `
             </div>
             <div class="nav-tabs">
                 <a href="/" class="nav-tab">Job Listings</a>
-                <a href="#" class="nav-tab">Employee Portal</a>
-                <a href="#" class="nav-tab active">Admin Portal</a>
+                <a href="/employee" class="nav-tab">Employee Portal</a>
+                <a href="/admin" class="nav-tab active">Admin Portal</a>
             </div>
             <div class="user-info">
                 <span>Hello, Admin</span>
@@ -889,6 +1115,9 @@ const server = http.createServer((req, res) => {
     } else if (pathname === '/admin') {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(adminHTML);
+    } else if (pathname === '/employee') {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(employeeHTML);
     } else if (pathname === '/api/jobs' && req.method === 'GET') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(jobs));
