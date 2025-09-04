@@ -40,7 +40,7 @@ const Navbar = () => {
               Job Listings
             </Link>
             
-            {(user && user.role === 'employee') || user?.role === 'admin' ? (
+            {user && (user.role === 'employee' || user.role === 'admin') ? (
               <Link 
                 href="/employee" 
                 className={`${isActive('/employee')} px-3 py-2 text-sm font-medium`}>
@@ -108,7 +108,7 @@ const Navbar = () => {
               Job Listings
             </Link>
             
-            {(user && user.role === 'employee') || user?.role === 'admin' ? (
+            {user && (user.role === 'employee' || user.role === 'admin') ? (
               <Link 
                 href="/employee" 
                 className={`block px-3 py-2 rounded-md text-base font-medium ${location === '/employee' ? 'text-primary border-l-4 border-primary bg-gray-50' : 'text-gray-700'} hover:text-primary hover:bg-gray-50`}
