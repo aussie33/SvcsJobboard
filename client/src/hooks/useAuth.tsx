@@ -118,6 +118,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Logout function
   const logout = async () => {
     await logoutMutation.mutateAsync();
+    // Redirect to home page after logout
+    window.location.href = '/';
   };
 
   return (
