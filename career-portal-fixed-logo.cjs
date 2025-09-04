@@ -179,9 +179,7 @@ function getHomePage() {
                 </div>
                 
                 <nav class="flex space-x-8">
-                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Home</a>
-                    <a href="/admin" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Admin Portal</a>
-                    <a href="/employee" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Employee Portal</a>
+                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Job Listings</a>
                     <button onclick="openLoginModal()" class="bg-white text-purple-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-purple-50">
                         Login
                     </button>
@@ -712,7 +710,7 @@ function getAdminPage() {
                     </div>
                 </div>
                 <nav class="flex space-x-8">
-                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Job Listings</a>
                     <a href="/admin" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Admin Portal</a>
                     <a href="/employee" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Employee Portal</a>
                 </nav>
@@ -934,7 +932,7 @@ function getEmployeePage() {
                     </div>
                 </div>
                 <nav class="flex space-x-8">
-                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Home</a>
+                    <a href="/" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Job Listings</a>
                     <a href="/admin" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Admin Portal</a>
                     <a href="/employee" class="text-white hover:text-purple-200 px-3 py-2 text-sm font-medium">Employee Portal</a>
                 </nav>

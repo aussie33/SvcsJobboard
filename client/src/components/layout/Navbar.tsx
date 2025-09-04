@@ -14,8 +14,6 @@ const Navbar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { user, logout, isLoading } = useAuth();
 
-  // Debug logging
-  console.log('Navbar render - user:', user, 'isLoading:', isLoading);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
