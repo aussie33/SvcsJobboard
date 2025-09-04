@@ -117,9 +117,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Logout function
   const logout = async () => {
-    await logoutMutation.mutateAsync();
-    // Redirect to home page after logout
-    window.location.href = '/';
+    try {
+      await logoutMutation.mutateAsync();
+    } catch (error) {
+      // Even if the logout request fails, clear local state
+      console.error('Logout request failed:', error);
+    }
+    
+    // Force clear all cached data
+    queryClient.setQueryData(['/api/auth/me'], null);
+    queryClient.clear();
+    
+    // Clear any browser storage
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (e) {
+        console.warn('Could not clear browser storage:', e);
+      }
+    }
+    
+    // Force a complete page reload to the home page
+    window.location.replace('/');
   };
 
   return (
