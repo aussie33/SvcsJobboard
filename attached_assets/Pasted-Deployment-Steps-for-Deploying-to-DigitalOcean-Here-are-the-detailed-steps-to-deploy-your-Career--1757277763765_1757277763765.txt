@@ -1,0 +1,110 @@
+Deployment
+
+
+
+Steps for Deploying to DigitalOcean
+Here are the detailed steps to deploy your Career Portal application to DigitalOcean:
+1. Setup DigitalOcean Account & Droplet
+Create a DigitalOcean account if you don't have one
+Create a new Droplet (virtual server)
+Choose Ubuntu 22.04 LTS
+Select a plan based on your needs (Basic plan with 2GB RAM/1CPU is good to start)
+Choose a datacenter region closest to your users
+Add SSH keys for secure access (recommended) or use password authentication
+2. Initial Server Setup
+Connect to your droplet via SSH: ssh root@your_server_ip
+Create a non-root user with sudo privileges:
+adduser username
+usermod -aG sudo username
+Set up a basic firewall:
+ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw enable
+3. Install Required Software
+Update package lists: sudo apt update && sudo apt upgrade -y
+Install Node.js and npm:
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+Install PostgreSQL (if using a database):
+sudo apt install postgresql postgresql-contrib
+Install Nginx as a reverse proxy:
+sudo apt install nginx
+4. Database Setup (PostgreSQL)
+Start PostgreSQL service: sudo systemctl start postgresql
+Set up a database user and database:
+sudo -u postgres psql
+CREATE USER careerportal WITH PASSWORD 'your_strong_password';
+CREATE DATABASE careerportal_db OWNER careerportal;
+\q
+5. Deploy Your Application
+Clone your repository:
+git clone https://github.com/yourusername/career-portal.git
+cd career-portal
+Install dependencies:
+npm install
+Create a production build:
+npm run build
+Set up environment variables:
+nano .env
+# Add your environment variables here
+# DATABASE_URL=postgres://careerportal:your_strong_password@localhost:5432/careerportal_db
+# PORT=5000
+6. Set Up PM2 Process Manager
+Install PM2 globally:
+sudo npm install -g pm2
+Start your application with PM2:
+pm2 start server/index.js --name career-portal
+Set PM2 to start on system boot:
+pm2 startup systemd
+pm2 save
+7. Configure Nginx as Reverse Proxy
+Create an Nginx server block:
+sudo nano /etc/nginx/sites-available/career-portal
+Add the following configuration:
+server {
+   listen 80;
+   server_name your_domain.com www.your_domain.com;
+  
+   location / {
+       proxy_pass http://localhost:5000;
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection 'upgrade';
+       proxy_set_header Host $host;
+       proxy_cache_bypass $http_upgrade;
+   }
+}
+Enable the configuration:
+sudo ln -s /etc/nginx/sites-available/career-portal /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+8. Set Up SSL with Let's Encrypt
+Install Certbot:
+sudo apt install certbot python3-certbot-nginx
+Obtain SSL certificate:ƒ
+sudo certbot --nginx -d your_domain.com -d www.your_domain.com
+Follow the prompts to complete the SSL setup
+9. Point Domain to DigitalOcean
+Log in to your domain registrar
+Update your domain's nameservers to point to DigitalOcean's nameservers or
+Create an A record pointing to your droplet's IP address
+10. Regular Maintenance
+Set up automated backups of your database:
+sudo -u postgres pg_dump careerportal_db > /backup/careerportal_db_$(date +%Y-%m-%d).sql
+Configure automatic security updates:
+sudo apt install unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
+11. Monitoring
+Set up basic monitoring with PM2:
+pm2 monit
+For more advanced monitoring, consider setting up DigitalOcean Monitoring or installing a tool like Netdata
+Is there any specific part of the deployment process you'd like me to elaborate on?
+Setting up the database configuration
+Configuring Nginx properly for your specific application
+Setting up the environment variables
+SSL certificate installation
+Domain configuration
+Or if you'd like, I can provide more specific information about optimizing your application for production, implementing CI/CD pipelines, or backup strategies for your career portal application.
+
+
