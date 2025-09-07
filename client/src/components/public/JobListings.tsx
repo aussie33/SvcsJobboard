@@ -95,8 +95,8 @@ const JobListings: React.FC<JobListingsProps> = ({ onApplyClick }) => {
       const lowercaseTerm = searchTerm.toLowerCase();
       result = result.filter(job => 
         job.title.toLowerCase().includes(lowercaseTerm) ||
-        job.shortDescription.toLowerCase().includes(lowercaseTerm) ||
-        job.fullDescription.toLowerCase().includes(lowercaseTerm) ||
+        (job.shortDescription && job.shortDescription.toLowerCase().includes(lowercaseTerm)) ||
+        (job.fullDescription && job.fullDescription.toLowerCase().includes(lowercaseTerm)) ||
         job.tags.some(tag => tag.toLowerCase().includes(lowercaseTerm))
       );
     }

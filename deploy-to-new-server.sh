@@ -1,29 +1,37 @@
 #!/bin/bash
 
-# Career Portal - New Server Deployment Script
-# Usage: ./deploy-to-new-server.sh [NEW_SERVER_IP] [DATABASE_URL]
+# Deployment script for Ubuntu server 134.199.237.34
+# Run this script AFTER running backup-new-server.sh
 
-NEW_SERVER_IP=$1
-NEW_DATABASE_URL=$2
+set -e  # Exit on any error
 
-if [ -z "$NEW_SERVER_IP" ] || [ -z "$NEW_DATABASE_URL" ]; then
-    echo "Usage: $0 <new_server_ip> <database_url>"
-    echo "Example: $0 192.168.1.100 'postgresql://user:pass@host:5432/dbname'"
-    exit 1
+echo "=== Career Portal Deployment Script ==="
+echo "Server: 134.199.237.34 (Ubuntu)"
+echo "Date: $(date)"
+echo ""
+
+# Configuration
+APP_DIR="/var/www/career-portal"
+WEB_ROOT="/var/www/html"
+NGINX_SITE="/etc/nginx/sites-available/career-portal"
+SERVICE_NAME="career-portal"
+
+# Check if running as root or with sudo
+if [[ $EUID -eq 0 ]]; then
+    echo "⚠️  Running as root. This script should be run as a regular user with sudo privileges."
+    read -p "Continue anyway? (y/N): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
 fi
 
-echo "🚀 Deploying Career Portal to new server: $NEW_SERVER_IP"
-
-# Step 1: Create deployment package
-echo "📦 Creating deployment package..."
-tar -czf career-portal-deploy.tar.gz \
-    --exclude=node_modules \
-    --exclude=.git \
-    --exclude=uploads \
-    --exclude=dist \
-    --exclude=.npm \
-    --exclude=logs \
-    .
+echo "Step 1: Stopping existing services..."
+# Stop existing services
+sudo systemctl stop nginx 2>/dev/null || echo "Nginx not running"
+sudo systemctl stop $SERVICE_NAME 2>/dev/null || echo "Career portal service not running"
+pm2 stop all 2>/dev/null || echo "No PM2 processes running"
+sudo pkill -f "node.*career" 2>/dev/null || echo "No node processes found"
 
 # Step 2: Copy to new server
 echo "📤 Copying files to new server..."
