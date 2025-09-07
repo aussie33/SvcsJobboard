@@ -33,93 +33,140 @@ sudo systemctl stop $SERVICE_NAME 2>/dev/null || echo "Career portal service not
 pm2 stop all 2>/dev/null || echo "No PM2 processes running"
 sudo pkill -f "node.*career" 2>/dev/null || echo "No node processes found"
 
-# Step 2: Copy to new server
-echo "📤 Copying files to new server..."
-scp career-portal-deploy.tar.gz root@$NEW_SERVER_IP:/tmp/
-scp deploy-to-new-server.sh root@$NEW_SERVER_IP:/tmp/
+echo ""
+echo "Step 2: Installing system dependencies..."
+# Update system packages
+sudo apt update
+sudo apt install -y nodejs npm nginx postgresql postgresql-contrib curl git
 
-# Step 3: Setup on new server
-echo "⚙️ Setting up on new server..."
-ssh root@$NEW_SERVER_IP << 'ENDSSH'
+# Install PM2 globally if not installed
+if ! command -v pm2 &> /dev/null; then
+    sudo npm install -g pm2
+    echo "✓ PM2 installed"
+fi
 
-# Install dependencies
-apt update
-apt install -y nodejs npm nginx postgresql-client
-
-# Install PM2 globally
-npm install -g pm2
-
+echo ""
+echo "Step 3: Setting up application directory..."
 # Create application directory
-mkdir -p /var/www/career-portal
-cd /var/www/career-portal
+sudo mkdir -p $APP_DIR
+sudo chown -R $USER:$USER $APP_DIR
+cd $APP_DIR
 
-# Extract application
-tar -xzf /tmp/career-portal-deploy.tar.gz
+# Copy application files (assuming they're uploaded to /tmp/career-portal)
+if [ -d "/tmp/career-portal" ]; then
+    echo "Copying application files from /tmp/career-portal..."
+    cp -r /tmp/career-portal/* .
+else
+    echo "⚠️  Application files not found in /tmp/career-portal"
+    echo "Please upload the application files first, then re-run this script"
+    exit 1
+fi
 
+echo ""
+echo "Step 4: Installing Node.js dependencies..."
 # Install dependencies
-npm install
+npm install --production
 
-# Build application
-npm run build
+echo ""
+echo "Step 5: Setting up environment variables..."
+# Create environment file
+cat > .env << EOF
+NODE_ENV=production
+PORT=5000
+HOST=0.0.0.0
+SESSION_SECRET=$(openssl rand -base64 32)
 
-# Create proper directory structure for static files
-mkdir -p /var/www/career-portal/dist/public
-cp -r /var/www/career-portal/dist/dist/client/* /var/www/career-portal/dist/public/
+# Database Configuration
+DATABASE_URL=postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db
+PGHOST=localhost
+PGPORT=5432
+PGUSER=career_portal_user
+PGPASSWORD=career_portal_secure_pass
+PGDATABASE=career_portal_db
 
-# Create uploads directory
-mkdir -p uploads
-chmod 755 uploads
+# File Upload Configuration
+UPLOAD_DIR=./uploads
+MAX_FILE_SIZE=5242880
 
-ENDSSH
+# Application Settings
+REPLIT_DOMAIN=134.199.237.34
+REPL_ID=career-portal-production
+EOF
 
-# Step 4: Configure environment and database
-echo "🗄️ Configuring database and environment..."
-ssh root@$NEW_SERVER_IP << ENDSSH
+echo "✓ Environment file created"
 
-cd /var/www/career-portal
+echo ""
+echo "Step 6: Setting up PostgreSQL database..."
+# Setup PostgreSQL
+sudo -u postgres psql << EOF
+CREATE USER career_portal_user WITH PASSWORD 'career_portal_secure_pass';
+CREATE DATABASE career_portal_db OWNER career_portal_user;
+GRANT ALL PRIVILEGES ON DATABASE career_portal_db TO career_portal_user;
+\q
+EOF
 
-# Set database URL
-export DATABASE_URL="$NEW_DATABASE_URL"
-echo "DATABASE_URL=$NEW_DATABASE_URL" > .env
+# Run database migrations
+export DATABASE_URL="postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db"
+npm run db:push
 
-# Run database migration
-node migrate.js
+# Insert sample data including all user types
+echo "Setting up sample data with admin, employee, and customer accounts..."
+PGPASSWORD=career_portal_secure_pass psql -h localhost -U career_portal_user -d career_portal_db << 'EOF'
+-- Insert categories
+INSERT INTO categories (name, description) VALUES 
+('Technology', 'Information Technology and Software Development'),
+('Healthcare', 'Medical and Healthcare Services'),
+('Finance', 'Banking, Accounting, and Financial Services'),
+('Marketing', 'Marketing, Advertising, and Communications'),
+('Sales', 'Sales and Business Development'),
+('Operations', 'Operations and Supply Chain Management'),
+('Human Resources', 'HR and People Operations'),
+('Customer Service', 'Customer Support and Relations'),
+('Engineering', 'Engineering and Technical Roles'),
+('Administrative', 'Administrative and Office Support'),
+('Education', 'Education and Training'),
+('Legal', 'Legal and Compliance'),
+('Consulting', 'Consulting and Advisory Services')
+ON CONFLICT (name) DO NOTHING;
 
-ENDSSH
+-- Insert users with all three types
+INSERT INTO users (username, email, firstName, lastName, role, passwordHash) VALUES 
+('admin', 'admin@theresourceconsultants.com', 'System', 'Administrator', 'admin', '$2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO'),
+('employee', 'employee@theresourceconsultants.com', 'Staff', 'Employee', 'employee', '$2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO'),
+('customer1', 'customer1@example.com', 'John', 'Smith', 'applicant', '$2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO'),
+('customer2', 'customer2@example.com', 'Sarah', 'Johnson', 'applicant', '$2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO'),
+('customer3', 'customer3@example.com', 'Michael', 'Brown', 'applicant', '$2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO')
+ON CONFLICT (username) DO NOTHING;
 
-# Step 5: Configure Nginx
-echo "🌐 Configuring Nginx..."
-ssh root@$NEW_SERVER_IP << 'ENDSSH'
+-- Insert sample jobs
+INSERT INTO jobs (title, shortDescription, fullDescription, requirements, type, location, salaryRange, categoryId, department, postedDate, status, tags) VALUES 
+('Senior Software Developer', 'Join our dynamic development team building cutting-edge applications', 'We are seeking an experienced software developer to join our growing team. You will be responsible for designing, developing, and maintaining high-quality software applications using modern technologies and best practices.', 'Bachelor''s degree in Computer Science, 5+ years experience, proficiency in React, Node.js, and PostgreSQL', 'full-time', 'remote', '$80,000 - $120,000', 1, 'Engineering', NOW(), 'active', '{"React","Node.js","PostgreSQL","Remote"}'),
+('Marketing Manager', 'Lead our marketing initiatives and drive brand awareness', 'We are looking for a creative and strategic Marketing Manager to develop and execute marketing campaigns that drive business growth. You will work closely with cross-functional teams to create compelling marketing materials and strategies.', 'Bachelor''s degree in Marketing, 3+ years management experience, digital marketing expertise', 'full-time', 'hybrid', '$60,000 - $85,000', 4, 'Marketing', NOW(), 'active', '{"Marketing","Management","Digital","Strategy"}'),
+('Customer Success Specialist', 'Help our customers achieve their goals with our platform', 'Join our customer success team to ensure our clients get maximum value from our services. You will be the primary point of contact for customer inquiries, onboarding, and ongoing support.', 'Bachelor''s degree preferred, excellent communication skills, customer service experience', 'full-time', 'on-site', '$45,000 - $65,000', 8, 'Customer Success', NOW(), 'active', '{"Customer Service","Communication","Support","Onboarding"}'),
+('Financial Analyst', 'Analyze financial data to support business decisions', 'We are seeking a detail-oriented Financial Analyst to join our finance team. You will be responsible for financial modeling, budgeting, forecasting, and providing insights to support strategic business decisions.', 'Bachelor''s degree in Finance or Accounting, CPA preferred, Excel proficiency, 2+ years experience', 'full-time', 'on-site', '$55,000 - $75,000', 3, 'Finance', NOW(), 'active', '{"Finance","Excel","Analysis","CPA"}'),
+('HR Coordinator', 'Support our human resources operations', 'Join our HR team to help with recruitment, employee relations, and HR administrative tasks. This is a great opportunity for someone looking to grow their career in human resources.', 'Bachelor''s degree in HR or related field, 1+ years HR experience, strong organizational skills', 'full-time', 'hybrid', '$40,000 - $55,000', 7, 'Human Resources', NOW(), 'active', '{"HR","Recruitment","Administration","Organization"}')
+ON CONFLICT DO NOTHING;
 
-# Create Nginx configuration
-cat > /etc/nginx/sites-available/career-portal << 'EOF'
+COMMIT;
+EOF
+
+echo "✓ Database setup complete with sample data"
+
+echo ""
+echo "Step 7: Setting up nginx configuration..."
+# Setup nginx
+sudo tee $NGINX_SITE > /dev/null << 'EOF'
 server {
     listen 80;
-    server_name _;
+    server_name 134.199.237.34;
 
-    # API routes
-    location /api/ {
-        proxy_pass http://localhost:5000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 
-    # Upload files
-    location /uploads/ {
-        proxy_pass http://localhost:5000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-
-    # All other routes - serve React app
+    # Main application
     location / {
         proxy_pass http://localhost:5000;
         proxy_http_version 1.1;
@@ -130,47 +177,117 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
     }
 
-    client_max_body_size 10M;
+    # Static files (if serving directly)
+    location /uploads/ {
+        alias /var/www/career-portal/uploads/;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
 }
 EOF
 
-# Enable site
-ln -sf /etc/nginx/sites-available/career-portal /etc/nginx/sites-enabled/
-rm -f /etc/nginx/sites-enabled/default
+# Enable the site
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo ln -sf $NGINX_SITE /etc/nginx/sites-enabled/
+sudo nginx -t
+echo "✓ Nginx configuration complete"
 
-# Test and reload Nginx
-nginx -t && systemctl reload nginx
-systemctl enable nginx
+echo ""
+echo "Step 8: Setting up PM2 process management..."
+# Create PM2 ecosystem file
+cat > ecosystem.config.js << EOF
+module.exports = {
+  apps: [{
+    name: 'career-portal',
+    script: 'dist/index.js',
+    instances: 1,
+    exec_mode: 'cluster',
+    watch: false,
+    max_memory_restart: '1G',
+    env: {
+      NODE_ENV: 'production',
+      PORT: 5000
+    },
+    error_file: './logs/err.log',
+    out_file: './logs/out.log',
+    log_file: './logs/combined.log',
+    time: true
+  }]
+};
+EOF
 
-ENDSSH
-
-# Step 6: Start application
-echo "🚀 Starting Career Portal..."
-ssh root@$NEW_SERVER_IP << 'ENDSSH'
-
-cd /var/www/career-portal
+# Create logs directory
+mkdir -p logs
+mkdir -p uploads
 
 # Start with PM2
-DATABASE_URL="$NEW_DATABASE_URL" pm2 start "node dist/index.js" --name "career-portal" --max-restarts 3
-
-# Save PM2 configuration
+pm2 start ecosystem.config.js
 pm2 save
 pm2 startup
 
-ENDSSH
+echo "✓ PM2 setup complete"
 
-# Step 7: Copy uploads (if any exist)
-echo "📁 Copying uploaded files..."
-if [ -d "uploads" ] && [ "$(ls -A uploads)" ]; then
-    scp -r uploads/* root@$NEW_SERVER_IP:/var/www/career-portal/uploads/
-fi
+echo ""
+echo "Step 9: Starting services..."
+# Start services
+sudo systemctl enable nginx
+sudo systemctl start nginx
+sudo systemctl enable postgresql
+sudo systemctl start postgresql
 
-# Cleanup
-rm career-portal-deploy.tar.gz
+echo ""
+echo "Step 10: Setting up firewall..."
+# Setup UFW firewall
+sudo ufw allow 22/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw --force enable
 
-echo "✅ Deployment complete!"
-echo "🌐 Your Career Portal is now available at: http://$NEW_SERVER_IP"
-echo "📊 Monitor with: ssh root@$NEW_SERVER_IP 'pm2 status'"
-echo "📋 View logs with: ssh root@$NEW_SERVER_IP 'pm2 logs career-portal'"
+echo ""
+echo "=== Deployment Complete ==="
+echo "✅ Career Portal deployed successfully!"
+echo ""
+echo "Application Details:"
+echo "- URL: http://134.199.237.34"
+echo "- App Directory: $APP_DIR"
+echo "- Logs: $APP_DIR/logs/"
+echo "- Database: PostgreSQL on localhost:5432"
+echo ""
+echo "Test Accounts Available:"
+echo "🔧 Admin Portal:"
+echo "   Username: admin"
+echo "   Password: admin123"
+echo "   Access: Full system administration"
+echo ""
+echo "👔 Employee Portal:"
+echo "   Username: employee" 
+echo "   Password: employee123"
+echo "   Access: Job posting management"
+echo ""
+echo "👤 Customer/Applicant Accounts:"
+echo "   Username: customer1, customer2, customer3"
+echo "   Password: customer123"
+echo "   Access: Job browsing and applications"
+echo ""
+echo "Useful Commands:"
+echo "- Check app status: pm2 status"
+echo "- View logs: pm2 logs career-portal"
+echo "- Restart app: pm2 restart career-portal"
+echo "- Check nginx: sudo systemctl status nginx"
+echo "- View nginx logs: sudo tail -f /var/log/nginx/error.log"
+echo ""
+echo "Test your deployment:"
+echo "curl http://134.199.237.34"
+echo ""
