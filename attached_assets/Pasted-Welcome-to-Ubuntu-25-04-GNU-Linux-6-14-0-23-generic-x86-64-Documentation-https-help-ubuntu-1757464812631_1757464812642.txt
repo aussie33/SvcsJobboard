@@ -1,0 +1,103 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Sep 10 00:39:39 UTC 2025
+
+  System load:  0.0               Processes:             123
+  Usage of /:   8.4% of 47.35GB   Users logged in:       1
+  Memory usage: 29%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Navigate to application directory
+cd /var/www/career-portal
+
+# 2. Build the assets properly (this will create dist/assets/)
+npm run build
+
+# 3. Check if CSS assets were created
+ls -la dist/assets/
+
+# 4. Stop current server
+pm2 stop career-portal
+
+# 5. Start in proper production mode with built assets
+pm2 start "node dist/index.js" --name "career-portal" -i 1
+
+# 6. Test if CSS now loads
+curl http://localhost:5000/assets/index-CV74azv5.css
+
+# 7. Check the HTML output for built assets
+curl http://localhost:5000 | grep -i "stylesheet\|assets"
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+✓ 1867 modules transformed.
+dist/index.html                          0.71 kB │ gzip:   0.44 kB
+dist/assets/cropped-logo-BTJp_xEo.png   86.41 kB
+dist/assets/index-CV74azv5.css           0.16 kB │ gzip:   0.13 kB
+dist/assets/index-Dsy60tCi.js          558.33 kB │ gzip: 165.30 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 12.13s
+▲ [WARNING] The CommonJS "module" variable is treated as a global variable in an ECMAScript module and may not work as expected [commonjs-variable-in-esm]
+
+    server/postgres-storage.js:496:0:
+      496 │ module.exports = { PostgreSQLStorage };
+          ╵ ~~~~~~
+
+  This file is considered to be an ECMAScript module because the enclosing "package.json" file sets
+  the type of this file to "module":
+
+    package.json:4:10:
+      4 │   "type": "module",
+        ╵           ~~~~~~~~
+
+  Node's package format requires that CommonJS files in a "type": "module" package use the ".cjs"
+  file extension.
+
+▲ [WARNING] Import "PostgreSQLStorage" will always be undefined because the file "server/postgres-storage.js" has no exports [import-is-undefined]
+
+    server/storage.ts:591:9:
+      591 │ import { PostgreSQLStorage } from './postgres-storage.js';
+          ╵          ~~~~~~~~~~~~~~~~~
+
+2 warnings
+
+  dist/index.js  60.5kb
+
+⚡ Done in 21ms
+ls: cannot access 'dist/assets/': No such file or directory
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 1    │ stopped   │ 0%       │ 0b       │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 1    │ stopped   │ 0%       │ 0b       │
+│ 1  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 3.3mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+curl: (7) Failed to connect to localhost port 5000 after 0 ms: Could not connect to server
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to localhost port 5000 after 4 ms: Could not connect to server
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

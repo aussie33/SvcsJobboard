@@ -1,0 +1,130 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Sep 10 01:08:30 UTC 2025
+
+  System load:  0.0               Processes:             123
+  Usage of /:   8.4% of 47.35GB   Users logged in:       1
+  Memory usage: 30%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Navigate to app directory
+cd /var/www/career-portal
+
+# 2. Check what the BUILT HTML looks like (should have CSS links)
+cat dist/public/index.html
+
+# 3. Force server to serve production HTML instead of development
+pm2 stop career-portal
+
+# 4. Set environment to serve built files
+echo "VITE_SERVE_BUILD=true" >> .env
+
+# 5. Start server to serve production build with CSS
+pm2 start "npx tsx server/index.ts" --name "career-portal" -i 1
+
+# 6. Test if HTML now includes CSS links
+curl http://localhost:5000 | grep -i css
+
+# 7. Test website
+curl -I http://134.199.237.34
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style data-vite-theme="" data-inject-first="">:root {
+      --background: 0 0% 100%;
+--foreground: 20 14.3% 4.1%;
+--muted: 60 4.8% 95.9%;
+--muted-foreground: 25 5.3% 44.7%;
+--popover: 0 0% 100%;
+--popover-foreground: 20 14.3% 4.1%;
+--card: 0 0% 100%;
+--card-foreground: 20 14.3% 4.1%;
+--border: 20 5.9% 90%;
+--input: 20 5.9% 90%;
+--primary: 291 64% 42%;
+--primary-foreground: 291 49% 98%;
+--secondary: 60 4.8% 95.9%;
+--secondary-foreground: 24 9.8% 10%;
+--accent: 60 4.8% 95.9%;
+--accent-foreground: 24 9.8% 10%;
+--destructive: 0 84.2% 60.2%;
+--destructive-foreground: 60 9.1% 97.8%;
+--ring: 20 14.3% 4.1%;
+--radius: 0.5rem;
+  }
+  .dark {
+      --background: 240 10% 3.9%;
+--foreground: 0 0% 98%;
+--muted: 240 3.7% 15.9%;
+--muted-foreground: 240 5% 64.9%;
+--popover: 240 10% 3.9%;
+--popover-foreground: 0 0% 98%;
+--card: 240 10% 3.9%;
+--card-foreground: 0 0% 98%;
+--border: 240 3.7% 15.9%;
+--input: 240 3.7% 15.9%;
+--primary: 291 64% 42%;
+--primary-foreground: 291 49% 98%;
+--secondary: 240 3.7% 15.9%;
+--secondary-foreground: 0 0% 98%;
+--accent: 240 3.7% 15.9%;
+--accent-foreground: 0 0% 98%;
+--destructive: 0 62.8% 30.6%;
+--destructive-foreground: 0 0% 98%;
+--ring: 240 4.9% 83.9%;
+--radius: 0.5rem;
+  }</style>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Resource Consultants - A comprehensive career portal for job seekers and employers">
+  <title>The Resource Consultants - Job Board Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script type="module" crossorigin src="/assets/index-Cll8dbUb.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Dm_e3IT3.css">
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 1    │ stopped   │ 0%       │ 0b       │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 1    │ stopped   │ 0%       │ 0b       │
+│ 1  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 4.4mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to localhost port 5000 after 3 ms: Could not connect to server
+HTTP/1.1 502 Bad Gateway
+Server: nginx/1.26.3 (Ubuntu)
+Date: Wed, 10 Sep 2025 01:08:37 GMT
+Content-Type: text/html
+Content-Length: 166
+Connection: keep-alive
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

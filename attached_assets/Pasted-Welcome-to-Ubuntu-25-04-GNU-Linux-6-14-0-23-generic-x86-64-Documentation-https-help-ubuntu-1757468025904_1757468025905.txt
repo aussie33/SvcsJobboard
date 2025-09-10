@@ -1,0 +1,231 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Sep 10 01:23:42 UTC 2025
+
+  System load:  0.0               Processes:             126
+  Usage of /:   8.4% of 47.35GB   Users logged in:       1
+  Memory usage: 30%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Navigate to app directory
+cd /var/www/career-portal
+
+# 2. Stop all PM2 processes
+pm2 delete all
+
+# 3. Check what's in our environment file
+cat .env
+
+# 4. Run the SOURCE TypeScript version (not the built version)
+# This avoids the "pg" ES module issue
+pm2 start "npx tsx server/index.ts" --name "career-portal"
+
+# 5. Wait for startup
+sleep 10
+
+# 6. Check if server is running and responding
+curl -I http://localhost:5000
+
+# 7. Test if it serves the production HTML with CSS
+curl http://localhost:5000 | head -20
+
+# 8. Check final result
+curl -I http://134.199.237.34
+[PM2] Applying action deleteProcessId on app [all](ids: [ 0, 1 ])
+[PM2] [career-portal](0) ✓
+[PM2] [career-portal](1) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+NODE_ENV=production
+PORT=5000
+HOST=0.0.0.0
+SESSION_SECRET=eRSD5KBXWWMv04whSehXwqwgQoTza9eY5bBKYj8yvxY=
+
+# Database Configuration
+DATABASE_URL=postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db
+PGHOST=localhost
+PGPORT=5432
+PGUSER=career_portal_user
+PGPASSWORD=career_portal_secure_pass
+PGDATABASE=career_portal_db
+
+# File Upload Configuration
+UPLOAD_DIR=./uploads
+MAX_FILE_SIZE=5242880
+
+# Application Settings
+REPLIT_DOMAIN=134.199.237.34
+REPL_ID=career-portal-production
+NODE_ENV=production
+VITE_SERVE_BUILD=true
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 3.4mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+Vary: Origin
+Content-Type: text/html; charset=utf-8
+Date: Wed, 10 Sep 2025 01:23:56 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   947  100   947    0     0  49217      0 --:--:-- --:--:-- --:--:-- 49842
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script type="module">
+import RefreshRuntime from "/@react-refresh"
+RefreshRuntime.injectIntoGlobalHook(window)
+window.$RefreshReg$ = () => {}
+window.$RefreshSig$ = () => (type) => type
+window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Resource Consultants - A comprehensive career portal for job seekers and employers">
+  <title>The Resource Consultants - Job Board Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+HTTP/1.1 200 OK
+Server: nginx/1.26.3 (Ubuntu)
+Date: Wed, 10 Sep 2025 01:23:57 GMT
+Content-Type: text/html; charset=utf-8
+Connection: keep-alive
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+Vary: Origin
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # 1. Check the server code to see how it handles VITE_SERVE_BUILD
+cd /var/www/career-portal
+cat server/index.ts | grep -A 20 -B 5 "VITE_SERVE_BUILD\|production\|dist"
+
+# 2. Check if there's a vite.config or server setup issue
+cat server/vite.ts | head -30
+
+# 3. Force server to use production mode
+pm2 stop career-portal
+export NODE_ENV=production
+export VITE_SERVE_BUILD=true
+pm2 start "NODE_ENV=production VITE_SERVE_BUILD=true npx tsx server/index.ts" --name "career-portal"
+
+# 4. Test if it now serves production HTML
+sleep 10
+curl http://localhost:5000 | grep -E "stylesheet|index-.*\.css"
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Set up session middleware with proper production configuration
+const MemoryStoreSession = MemoryStore(session);
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'career-portal-secret-key-dev',
+  resave: false,
+  saveUninitialized: false,
+  store: new MemoryStoreSession({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    secure: false, // Keep false for HTTP in production
+    httpOnly: true,
+    sameSite: 'lax'
+  },
+  name: 'connect.sid'
+}));
+
+app.use((req, res, next) => {
+  const start = Date.now();
+  const path = req.path;
+  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+
+  const originalResJson = res.json;
+  res.json = function (bodyJson, ...args) {
+    capturedJsonResponse = bodyJson;
+    return originalResJson.apply(res, [bodyJson, ...args]);
+  };
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (path.startsWith("/api")) {
+import express, { type Express } from "express";
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+import { createServer as createViteServer, createLogger } from "vite";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+import { type Server } from "http";
+import viteConfig from "../vite.config";
+import { nanoid } from "nanoid";
+
+const viteLogger = createLogger();
+
+export function log(message: string, source = "express") {
+  const formattedTime = new Date().toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+export async function setupVite(app: Express, server: Server) {
+  const serverOptions = {
+    middlewareMode: true,
+    hmr: { server },
+    allowedHosts: true,
+  };
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 0        │ 0      │ 0    │ stopped   │ 0%       │ 0b       │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬──────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name             │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼──────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ career-portal    │ default     │ N/A     │ fork    │ 0        │ 0      │ 0    │ stopped   │ 0%       │ 0b       │ root     │ disabled │
+│ 1  │ career-portal    │ default     │ N/A     │ fork    │ 91204    │ 0s     │ 0    │ online    │ 0%       │ 3.0mb    │ root     │ disabled │
+└────┴──────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (7) Failed to connect to localhost port 5000 after 3 ms: Could not connect to server
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

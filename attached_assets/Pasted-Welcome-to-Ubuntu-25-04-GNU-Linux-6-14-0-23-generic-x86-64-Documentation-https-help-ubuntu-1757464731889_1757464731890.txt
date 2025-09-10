@@ -1,0 +1,100 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Wed Sep 10 00:38:04 UTC 2025
+
+  System load:  0.0               Processes:             123
+  Usage of /:   8.4% of 47.35GB   Users logged in:       1
+  Memory usage: 29%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Navigate to application directory
+cd /var/www/career-portal
+
+# 2. Check what CSS assets we actually have
+ls -la dist/assets/
+
+# 3. Check what the current .env file contains
+cat .env
+
+# 4. Test if CSS file is accessible
+curl http://localhost:5000/assets/index-CV74azv5.css
+
+# 5. Check if browser is loading CSS - test main page source
+curl http://localhost:5000 | grep -i "stylesheet\|css"
+
+# 6. Check current logs for any CSS/asset loading errors
+pm2 logs career-portal --lines 10
+ls: cannot access 'dist/assets/': No such file or directory
+NODE_ENV=production
+PORT=5000
+HOST=0.0.0.0
+SESSION_SECRET=eRSD5KBXWWMv04whSehXwqwgQoTza9eY5bBKYj8yvxY=
+
+# Database Configuration
+DATABASE_URL=postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db
+PGHOST=localhost
+PGPORT=5432
+PGUSER=career_portal_user
+PGPASSWORD=career_portal_secure_pass
+PGDATABASE=career_portal_db
+
+# File Upload Configuration
+UPLOAD_DIR=./uploads
+MAX_FILE_SIZE=5242880
+
+# Application Settings
+REPLIT_DOMAIN=134.199.237.34
+REPL_ID=career-portal-production
+NODE_ENV=production
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script type="module">
+import RefreshRuntime from "/@react-refresh"
+RefreshRuntime.injectIntoGlobalHook(window)
+window.$RefreshReg$ = () => {}
+window.$RefreshSig$ = () => (type) => type
+window.__vite_plugin_react_preamble_installed__ = true
+</script>
+
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Resource Consultants - A comprehensive career portal for job seekers and employers">
+  <title>The Resource Consultants - Job Board Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx?v=NSO9GCVG3C2bTV5cANvAS"></script>
+</body>
+</html>
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   947  100   947    0     0  73817      0 --:--:-- --:--:-- --:--:-- 78916
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error-0.log last 10 lines:
+/root/.pm2/logs/career-portal-out-0.log last 10 lines:
+0|career-p | 12:33:45 AM [express] GET /api/auth/me 401 in 4ms :: {"message":"Unauthorized"}
+0|career-p | 12:33:45 AM [express] GET /api/categories 304 in 2ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-p | No status specified and showAllStatuses=false, defaulting to active only
+0|career-p | 12:37:50 AM [express] GET /api/jobs 304 in 5ms :: [{"id":1,"title":"Senior Frontend Developer","depar…
+0|career-p | requireAuth - Session ID: hbk9uaiDNlhywLAMLOHZWgkbvQHC6y6p
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: undefined
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 12:37:50 AM [express] GET /api/auth/me 401 in 6ms :: {"message":"Unauthorized"}
+0|career-p | 12:37:50 AM [express] GET /api/categories 304 in 2ms :: [{"id":1,"name":"Engineering","description":"…
+

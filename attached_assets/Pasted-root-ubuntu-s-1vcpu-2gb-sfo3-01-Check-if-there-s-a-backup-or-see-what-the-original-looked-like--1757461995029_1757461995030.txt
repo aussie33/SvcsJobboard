@@ -1,0 +1,79 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # Check if there's a backup or see what the original looked like
+ls -la vite.config*
+
+# Let's check what the error is by looking at the complete logs
+pm2 logs career-portal --lines 25
+
+# Check if the original vite.config.ts had different content
+# First let's see what our current one looks like line by line
+cat -n vite.config.ts
+ls: cannot access 'vite.config*': No such file or directory
+[TAILING] Tailing last 25 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-out-0.log last 25 lines:
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+
+/root/.pm2/logs/career-portal-error-0.log last 25 lines:
+0|career-p | Node.js v20.18.1
+0|career-p | /var/www/career-portal/vite.config.ts:9
+0|career-p |       "@": path.resolve(__dirname, "./client/src"),
+0|career-p |                         ^
+0|career-p | 
+0|career-p | 
+0|career-p | ReferenceError: __dirname is not defined in ES module scope
+0|career-p |     at <anonymous> (/var/www/career-portal/vite.config.ts:9:25)
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+0|career-p |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+0|career-p | 
+0|career-p | Node.js v20.18.1
+0|career-p | /var/www/career-portal/vite.config.ts:9
+0|career-p |       "@": path.resolve(__dirname, "./client/src"),
+0|career-p |                         ^
+0|career-p | 
+0|career-p | 
+0|career-p | ReferenceError: __dirname is not defined in ES module scope
+0|career-p |     at <anonymous> (/var/www/career-portal/vite.config.ts:9:25)
+0|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+0|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+0|career-p |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+0|career-p | 
+0|career-p | Node.js v20.18.1
+
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | /var/www/career-portal/vite.config.ts:9
+0|career-portal  |       "@": path.resolve(__dirname, "./client/src"),
+0|career-portal  |                         ^
+0|career-portal  | ReferenceError: __dirname is not defined in ES module scope
+0|career-portal  |     at <anonymous> (/var/www/career-portal/vite.config.ts:9:25)
+0|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+0|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+0|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+0|career-portal  | Node.js v20.18.1
+0

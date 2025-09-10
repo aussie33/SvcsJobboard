@@ -1,0 +1,90 @@
+~/workspace$ ssh root@134.199.237.34
+The authenticity of host '134.199.237.34 (134.199.237.34)' can't be established.
+ED25519 key fingerprint is SHA256:B/sbiTEv2LrL+N1W/H18Z8J45BUZ3qqHeRXmS3dc1OM.
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '134.199.237.34' (ED25519) to the list of known hosts.
+root@134.199.237.34's password: 
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Tue Sep  9 22:47:47 UTC 2025
+
+  System load:  0.0               Processes:             109
+  Usage of /:   8.3% of 47.35GB   Users logged in:       1
+  Memory usage: 20%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # Stop PM2 first
+pm2 stop career-portal
+
+# Install all dependencies (including dev)
+npm install
+
+# Check what's actually in the dist directory
+ls -la dist/
+
+# The build might be incomplete, let's rebuild
+npm run build
+
+# Check if the new build created the files properly
+ls -la dist/
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 8    │ stopped   │ 0%       │ 0b       │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+npm ERR! code ENOENT
+npm ERR! syscall open
+npm ERR! path /root/package.json
+npm ERR! errno -2
+npm ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+npm ERR! enoent This is related to npm not being able to find a file.
+npm ERR! enoent 
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2025-09-09T22_48_41_772Z-debug-0.log
+ls: cannot access 'dist/': No such file or directory
+npm ERR! code ENOENT
+npm ERR! syscall open
+npm ERR! path /root/package.json
+npm ERR! errno -2
+npm ERR! enoent ENOENT: no such file or directory, open '/root/package.json'
+npm ERR! enoent This is related to npm not being able to find a file.
+npm ERR! enoent 
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /root/.npm/_logs/2025-09-09T22_48_42_453Z-debug-0.log
+ls: cannot access 'dist/': No such file or directory
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # Instead of using the built version, run the source directly
+pm2 delete career-portal
+
+# Start from the server source file directly
+pm2 start server/index.ts --name "career-portal" --interpreter node --interpreter-args "--loader tsx" -i 1
+
+# Or try with tsx if available
+pm2 start "npx tsx server/index.ts" --name "career-portal" -i 1
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2][ERROR] Script not found: /root/server/index.ts
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 4.9mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# 

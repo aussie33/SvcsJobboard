@@ -1,0 +1,58 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Tue Sep  9 00:52:34 UTC 2025
+
+  System load:  0.0               Processes:             110
+  Usage of /:   4.7% of 47.35GB   Users logged in:       1
+  Memory usage: 16%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # Check if SSH is running
+systemctl status ssh
+
+# If not running, start it
+systemctl start ssh
+systemctl enable ssh
+
+# Check if password authentication is enabled
+nano /etc/ssh/sshd_config
+# Look for: PasswordAuthentication yes
+
+# Restart SSH if you made changes
+systemctl restart ssh
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/usr/lib/systemd/system/ssh.service; disabled; preset: enabled)
+     Active: active (running) since Mon 2025-09-08 06:38:54 UTC; 18h ago
+ Invocation: 631de52578b640f8b2187e592aff2c32
+TriggeredBy: ● ssh.socket
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 12608 (sshd)
+      Tasks: 3 (limit: 2310)
+     Memory: 9.7M (peak: 13.6M)
+        CPU: 1min 10.287s
+     CGroup: /system.slice/ssh.service
+             ├─12608 "sshd: /usr/sbin/sshd -D [listener] 1 of 10-100 startups"
+             ├─23243 "sshd-session: root [priv]"
+             └─23244 "sshd-session: root [net]"
+
+Sep 09 00:50:44 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23241]: Received disconnect from 193.46.255.20 port 5564>
+Sep 09 00:50:44 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23241]: Disconnected from authenticating user root 193.4>
+Sep 09 00:50:44 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23241]: PAM 2 more authentication failures; logname= uid>
+Sep 09 00:51:27 ubuntu-s-1vcpu-2gb-sfo3-01 sshd[12608]: drop connection #0 from [34.11.248.85]:56262 on [134.199>
+Sep 09 00:51:49 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23243]: pam_unix(sshd:auth): authentication failure; log>
+Sep 09 00:51:50 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23243]: Failed password for root from 34.11.248.85 port >
+Sep 09 00:52:34 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23252]: Accepted publickey for root from 162.243.190.66 >
+Sep 09 00:52:34 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23252]: pam_unix(sshd:session): session opened for user >
+Sep 09 00:52:35 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23252]: lastlog_openseek: Couldn't stat /var/log/lastlog>
+Sep 09 00:52:35 ubuntu-s-1vcpu-2gb-sfo3-01 sshd-session[23252]: lastlog_openseek: Couldn't stat /var/log/lastlog>
+lines 1-26/26 (END)

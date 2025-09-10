@@ -1,0 +1,114 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # 1. Navigate to application directory
+cd /var/www/career-portal
+
+# 2. Check what's wrong with current process  
+pm2 logs career-portal --lines 15
+
+# 3. Stop everything and start fresh
+pm2 delete all
+
+# 4. Start development server
+pm2 start "npx tsx server/index.ts" --name "career-portal" -i 1
+
+# 5. Wait and check logs
+sleep 5
+pm2 logs career-portal --lines 10
+
+# 6. Test local connection
+curl -I http://localhost:5000
+[TAILING] Tailing last 15 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-out-1.log last 15 lines:
+1|career-p | Initialized users: 3
+1|career-p | Initialized categories: 30
+1|career-p | Initialized jobs: 3
+1|career-p | Initialized job tags: 9
+1|career-p | 11:43:07 PM [express] serving on port 5000
+
+/root/.pm2/logs/career-portal-error-1.log last 15 lines:
+1|career-p |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-p | 
+1|career-p | Node.js v20.18.1
+1|career-p | file:///var/www/career-portal/dist/index.js:5
+1|career-p |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-p |         ^
+1|career-p | 
+1|career-p | Error: Dynamic require of "pg" is not supported
+1|career-p |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-p |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-p |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-p |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-p |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-p | 
+1|career-p | Node.js v20.18.1
+
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/www/career-portal/dist/index.js:5
+1|career-portal  |   throw Error('Dynamic require of "' + x + '" is not supported');
+1|career-portal  |         ^
+1|career-portal  | Error: Dynamic require of "pg" is not supported
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:5:9
+1|career-portal  |     at file:///var/www/career-portal/dist/index.js:15:16
+1|career-portal  |     at ModuleJob.run (node:internal/modules/esm/module_job:234:25)
+1|career-portal  |     at async ModuleLoader.import (node:internal/modules/esm/loader:473:24)
+1|career-portal  |     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:122:5)
+1|career-portal  | Node.js v20.18.1
+1|career-portal  | file:///var/ww

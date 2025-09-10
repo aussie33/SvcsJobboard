@@ -1,0 +1,89 @@
+lendalemarshall@Lendales-MacBook-Pro Downloads % ssh root@134.199.237.34
+root@134.199.237.34's password: 
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Tue Sep  9 23:33:59 UTC 2025
+
+  System load:  0.07              Processes:             123
+  Usage of /:   8.4% of 47.35GB   Users logged in:       1
+  Memory usage: 29%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # The plugin might be looking for theme.json in the client directory
+cp theme.json client/theme.json
+
+# Also copy it to the server directory just in case
+cp theme.json server/theme.json
+
+# Restart PM2
+pm2 restart career-portal
+
+# Check logs after restart
+sleep 5
+pm2 logs career-portal --lines 10
+cp: cannot create regular file 'client/theme.json': No such file or directory
+cp: cannot create regular file 'server/theme.json': No such file or directory
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 72   │ online    │ 0%       │ 8.3mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error-0.log last 10 lines:
+0|career-p |     at async PluginContainer.hookParallel (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:48990:5)
+0|career-p |     at async PluginContainer.buildStart (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:48993:5)
+0|career-p |     at async <anonymous> (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:63291:7)
+0|career-p |     at async _createServer (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:63317:5)
+0|career-p |     at async setupVite (/var/www/career-portal/server/vite.ts:32:16)
+0|career-p |     at async <anonymous> (/var/www/career-portal/server/index.ts:96:5) {
+0|career-p |   plugin: 'vite-plugin-theme'
+0|career-p | }
+0|career-p | 
+0|career-p | Node.js v20.18.1
+
+/root/.pm2/logs/career-portal-out-0.log last 10 lines:
+0|career-p | Initialized job tags: 9
+0|career-p | 11:31:50 PM [express] serving on port 5000
+0|career-p | No status specified and showAllStatuses=false, defaulting to active only
+0|career-p | 11:32:05 PM [express] GET /api/jobs 200 in 14ms :: [{"id":1,"title":"Senior Frontend Developer","depa…
+0|career-p | 11:32:05 PM [express] GET /api/categories 200 in 2ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-p | requireAuth - Session ID: oZ0FFbTDu1bP-bhdHCx4bw6tCTLbVHf7
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: undefined
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 11:32:05 PM [express] GET /api/auth/me 401 in 16ms :: {"message":"Unauthorized"}
+
+0|career-portal  | Initialized users: 3
+0|career-portal  | Initialized categories: 30
+0|career-portal  | Initialized jobs: 3
+0|career-portal  | Initialized job tags: 9
+0|career-portal  | 11:35:16 PM [express] serving on port 5000
+0|career-portal  | No status specified and showAllStatuses=false, defaulting to active only
+0|career-portal  | 11:35:52 PM [express] GET /api/jobs 200 in 10ms :: [{"id":1,"title":"Senior Frontend Developer","depa…
+0|career-portal  | 11:35:52 PM [express] GET /api/categories 200 in 3ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-portal  | requireAuth - Session ID: eXAolwnbOQEqkf675RGuIMUQ3-lwleBJ
+0|career-portal  | requireAuth - Session exists: true
+0|career-portal  | requireAuth - Session userId: undefined
+0|career-portal  | requireAuth - No session or userId, returning 401
+0|career-portal  | 11:35:52 PM [express] GET /api/auth/me 401 in 18ms :: {"message":"Unauthorized"}
+0|career-portal  | No status specified and showAllStatuses=false, defaulting to active only
+0|career-portal  | 11:35:54 PM [express] GET /api/jobs 304 in 4ms :: [{"id":1,"title":"Senior Frontend Developer","depar…
+0|career-portal  | 11:35:54 PM [express] GET /api/categories 304 in 1ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-portal  | requireAuth - Session ID: f5RcjN2gikSphWCWvhxL_t50EL-mOBBg
+0|career-portal  | requireAuth - Session exists: true
+0|career-portal  | requireAuth - Session userId: undefined
+0|career-portal  | requireAuth - No session or userId, returning 401
+0|career-portal  | 11:35:54 PM [express] GET /api/auth/me 401 in 6ms :: {"message":"Unauthorized"}
+

@@ -1,0 +1,191 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # Navigate to the application directory
+cd /var/www/career-portal
+
+# Now check what's here
+ls -la
+
+# Stop the PM2 process properly
+pm2 delete career-portal
+
+# Install all dependencies
+npm install
+
+# Check if we have the source files
+ls -la server/
+
+# Try to start with tsx directly
+pm2 start "npx tsx server/index.ts" --name "career-portal" -i 1
+
+# Check the status
+pm2 status
+total 704
+drwxr-xr-x   6 root root   4096 Sep  9 01:52 .
+drwxr-xr-x   4 root root   4096 Sep  9 01:17 ..
+-rw-r--r--   1 root root    510 Sep  9 01:35 .env
+-rwxr-xr-x   1 root root   3707 Sep  9 01:35 backup-new-server.sh
+-rwxr-xr-x   1 root root   3695 Sep  9 01:35 backup-server.sh
+-rwxr-xr-x   1 root root   1404 Sep  9 01:35 check-docker-status.sh
+-rwxr-xr-x   1 root root   2671 Sep  9 01:35 complete-deployment.sh
+-rwxr-xr-x   1 root root   6034 Sep  9 01:35 debug-server-issue.sh
+-rwxr-xr-x   1 root root    779 Sep  9 01:35 deploy-career-portal.sh
+-rwxr-xr-x   1 root root   5991 Sep  9 01:35 deploy-digitalocean.sh
+-rwxr-xr-x   1 root root    766 Sep  9 01:35 deploy-employee-portal.sh
+-rwxr-xr-x   1 root root  10392 Sep  9 01:35 deploy-job-creation-fix.sh
+-rwxr-xr-x   1 root root   1849 Sep  9 01:35 deploy-on-server.sh
+-rwxr-xr-x   1 root root   1685 Sep  9 01:35 deploy-pipeline.sh
+-rwxr-xr-x   1 root root   2611 Sep  9 01:35 deploy-replit-env.sh
+-rwxr-xr-x   1 root root   6563 Sep  9 01:35 deploy-script.sh
+-rwxr-xr-x   1 root root  11558 Sep  9 01:35 deploy-to-new-server.sh
+-rwxr-xr-x   1 root root   6226 Sep  9 01:35 deploy-to-ubuntu.sh
+-rwxr-xr-x   1 root root   9863 Sep  9 01:35 deploy-with-key.sh
+-rwxr-xr-x   1 root root   3654 Sep  9 01:35 deploy-without-docker.sh
+-rwxr-xr-x   1 root root   8673 Sep  9 01:35 digital-ocean-job-fix.tar.gz.sh
+-rwxr-xr-x   1 root root  11692 Sep  9 01:35 direct-deploy.sh
+-rwxr-xr-x   1 root root   8434 Sep  9 01:35 direct-replit-deploy.sh
+drwxr-xr-x   3 root root   4096 Sep  9 01:20 dist
+-rwxr-xr-x   1 root root   1624 Sep  9 01:35 docker-debug.sh
+-rwxr-xr-x   1 root root   2692 Sep  9 01:35 docker-deploy-quick.sh
+-rwxr-xr-x   1 root root   3244 Sep  9 01:35 docker-deploy.sh
+-rwxr-xr-x   1 root root   1499 Sep  9 01:35 docker-fix-port.sh
+-rw-r--r--   1 root root      0 Sep  9 01:35 drizzle-kit
+-rw-r--r--   1 root root    228 Sep  9 01:35 drizzle.config.json
+-rw-r--r--   1 root root    369 Sep  9 01:51 ecosystem.config.cjs
+-rwxr-xr-x   1 root root   7997 Sep  9 01:35 final-auth-fix.sh
+-rwxr-xr-x   1 root root   1160 Sep  9 01:35 fix-build.sh
+-rwxr-xr-x   1 root root   6692 Sep  9 01:35 fix-categories-issue.sh
+-rwxr-xr-x   1 root root  10759 Sep  9 01:35 fix-digitalocean-auth.sh
+-rwxr-xr-x   1 root root   1775 Sep  9 01:35 fix-frontend-connection.sh
+-rwxr-xr-x   1 root root  10109 Sep  9 01:35 fix-job-creation-final.sh
+-rwxr-xr-x   1 root root   7785 Sep  9 01:35 fix-job-creation-production.sh
+-rwxr-xr-x   1 root root   1145 Sep  9 01:35 fix-pm2-config.sh
+-rwxr-xr-x   1 root root   1370 Sep  9 01:35 fix-session-auth.sh
+-rwxr-xr-x   1 root root  13071 Sep  9 01:35 fix-white-screen.sh
+drwxr-xr-x   2 root root   4096 Sep  9 01:52 logs
+-rwxr-xr-x   1 root root   5678 Sep  9 01:35 manage-environments.sh
+drwxr-xr-x 355 root root  12288 Sep  9 02:14 node_modules
+-rwxr-xr-x   1 root root   3414 Sep  9 01:35 package-docker-deployment.sh
+-rw-r--r--   1 root root 303836 Sep  9 02:14 package-lock.json
+-rw-r--r--   1 root root   3652 Sep  9 01:35 package.json
+-rwxr-xr-x   1 root root   5632 Sep  9 01:35 production-fixes.sh
+-rwxr-xr-x   1 root root   4332 Sep  9 01:35 quick-fix.sh
+-rwxr-xr-x   1 root root   9458 Sep  9 01:35 quick-job-fix.sh
+-rwxr-xr-x   1 root root   2462 Sep  9 01:35 quick-session-fix.sh
+-rw-r--r--   1 root root      0 Sep  9 01:35 rest-express@1.0.0
+-rwxr-xr-x   1 root root   6664 Sep  9 01:35 security-hardening.sh
+-rwxr-xr-x   1 root root   3947 Sep  9 01:35 setup-environments.sh
+-rwxr-xr-x   1 root root   2029 Sep  9 01:35 setup-ssh-and-deploy.sh
+-rwxr-xr-x   1 root root   2962 Sep  9 01:35 setup-ssl.sh
+-rwxr-xr-x   1 root root   9122 Sep  9 01:35 simple-deploy.sh
+-rwxr-xr-x   1 root root   4447 Sep  9 01:35 ssh-deploy-new-server.sh
+-rwxr-xr-x   1 root root   4101 Sep  9 01:35 ssh-deploy.sh
+-rwxr-xr-x   1 root root   1405 Sep  9 01:35 sync-with-github.sh
+-rwxr-xr-x   1 root root   1574 Sep  9 01:35 test-docker-local.sh
+-rwxr-xr-x   1 root root   1701 Sep  9 01:35 update-from-replit.sh
+-rwxr-xr-x   1 root root   1575 Sep  9 01:35 upload-and-deploy.sh
+-rwxr-xr-x   1 root root   3280 Sep  9 01:35 upload-to-new-server.sh
+-rwxr-xr-x   1 root root   3238 Sep  9 01:35 upload-to-server.sh
+drwxr-xr-x   2 root root   4096 Sep  9 01:46 uploads
+[PM2] Applying action deleteProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+
+up to date, audited 522 packages in 4s
+
+66 packages are looking for funding
+  run `npm fund` for details
+
+5 moderate severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+ls: cannot access 'server/': No such file or directory
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 5.6mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 67.5mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # First let's see what we actually have in the app directory
+pwd
+ls -la
+ls -la server/
+/var/www/career-portal
+total 704
+drwxr-xr-x   6 root root   4096 Sep  9 01:52 .
+drwxr-xr-x   4 root root   4096 Sep  9 01:17 ..
+-rw-r--r--   1 root root    510 Sep  9 01:35 .env
+-rwxr-xr-x   1 root root   3707 Sep  9 01:35 backup-new-server.sh
+-rwxr-xr-x   1 root root   3695 Sep  9 01:35 backup-server.sh
+-rwxr-xr-x   1 root root   1404 Sep  9 01:35 check-docker-status.sh
+-rwxr-xr-x   1 root root   2671 Sep  9 01:35 complete-deployment.sh
+-rwxr-xr-x   1 root root   6034 Sep  9 01:35 debug-server-issue.sh
+-rwxr-xr-x   1 root root    779 Sep  9 01:35 deploy-career-portal.sh
+-rwxr-xr-x   1 root root   5991 Sep  9 01:35 deploy-digitalocean.sh
+-rwxr-xr-x   1 root root    766 Sep  9 01:35 deploy-employee-portal.sh
+-rwxr-xr-x   1 root root  10392 Sep  9 01:35 deploy-job-creation-fix.sh
+-rwxr-xr-x   1 root root   1849 Sep  9 01:35 deploy-on-server.sh
+-rwxr-xr-x   1 root root   1685 Sep  9 01:35 deploy-pipeline.sh
+-rwxr-xr-x   1 root root   2611 Sep  9 01:35 deploy-replit-env.sh
+-rwxr-xr-x   1 root root   6563 Sep  9 01:35 deploy-script.sh
+-rwxr-xr-x   1 root root  11558 Sep  9 01:35 deploy-to-new-server.sh
+-rwxr-xr-x   1 root root   6226 Sep  9 01:35 deploy-to-ubuntu.sh
+-rwxr-xr-x   1 root root   9863 Sep  9 01:35 deploy-with-key.sh
+-rwxr-xr-x   1 root root   3654 Sep  9 01:35 deploy-without-docker.sh
+-rwxr-xr-x   1 root root   8673 Sep  9 01:35 digital-ocean-job-fix.tar.gz.sh
+-rwxr-xr-x   1 root root  11692 Sep  9 01:35 direct-deploy.sh
+-rwxr-xr-x   1 root root   8434 Sep  9 01:35 direct-replit-deploy.sh
+drwxr-xr-x   3 root root   4096 Sep  9 01:20 dist
+-rwxr-xr-x   1 root root   1624 Sep  9 01:35 docker-debug.sh
+-rwxr-xr-x   1 root root   2692 Sep  9 01:35 docker-deploy-quick.sh
+-rwxr-xr-x   1 root root   3244 Sep  9 01:35 docker-deploy.sh
+-rwxr-xr-x   1 root root   1499 Sep  9 01:35 docker-fix-port.sh
+-rw-r--r--   1 root root      0 Sep  9 01:35 drizzle-kit
+-rw-r--r--   1 root root    228 Sep  9 01:35 drizzle.config.json
+-rw-r--r--   1 root root    369 Sep  9 01:51 ecosystem.config.cjs
+-rwxr-xr-x   1 root root   7997 Sep  9 01:35 final-auth-fix.sh
+-rwxr-xr-x   1 root root   1160 Sep  9 01:35 fix-build.sh
+-rwxr-xr-x   1 root root   6692 Sep  9 01:35 fix-categories-issue.sh
+-rwxr-xr-x   1 root root  10759 Sep  9 01:35 fix-digitalocean-auth.sh
+-rwxr-xr-x   1 root root   1775 Sep  9 01:35 fix-frontend-connection.sh
+-rwxr-xr-x   1 root root  10109 Sep  9 01:35 fix-job-creation-final.sh
+-rwxr-xr-x   1 root root   7785 Sep  9 01:35 fix-job-creation-production.sh
+-rwxr-xr-x   1 root root   1145 Sep  9 01:35 fix-pm2-config.sh
+-rwxr-xr-x   1 root root   1370 Sep  9 01:35 fix-session-auth.sh
+-rwxr-xr-x   1 root root  13071 Sep  9 01:35 fix-white-screen.sh
+drwxr-xr-x   2 root root   4096 Sep  9 01:52 logs
+-rwxr-xr-x   1 root root   5678 Sep  9 01:35 manage-environments.sh
+drwxr-xr-x 355 root root  12288 Sep  9 22:50 node_modules
+-rwxr-xr-x   1 root root   3414 Sep  9 01:35 package-docker-deployment.sh
+-rw-r--r--   1 root root 303836 Sep  9 22:50 package-lock.json
+-rw-r--r--   1 root root   3652 Sep  9 01:35 package.json
+-rwxr-xr-x   1 root root   5632 Sep  9 01:35 production-fixes.sh
+-rwxr-xr-x   1 root root   4332 Sep  9 01:35 quick-fix.sh
+-rwxr-xr-x   1 root root   9458 Sep  9 01:35 quick-job-fix.sh
+-rwxr-xr-x   1 root root   2462 Sep  9 01:35 quick-session-fix.sh
+-rw-r--r--   1 root root      0 Sep  9 01:35 rest-express@1.0.0
+-rwxr-xr-x   1 root root   6664 Sep  9 01:35 security-hardening.sh
+-rwxr-xr-x   1 root root   3947 Sep  9 01:35 setup-environments.sh
+-rwxr-xr-x   1 root root   2029 Sep  9 01:35 setup-ssh-and-deploy.sh
+-rwxr-xr-x   1 root root   2962 Sep  9 01:35 setup-ssl.sh
+-rwxr-xr-x   1 root root   9122 Sep  9 01:35 simple-deploy.sh
+-rwxr-xr-x   1 root root   4447 Sep  9 01:35 ssh-deploy-new-server.sh
+-rwxr-xr-x   1 root root   4101 Sep  9 01:35 ssh-deploy.sh
+-rwxr-xr-x   1 root root   1405 Sep  9 01:35 sync-with-github.sh
+-rwxr-xr-x   1 root root   1574 Sep  9 01:35 test-docker-local.sh
+-rwxr-xr-x   1 root root   1701 Sep  9 01:35 update-from-replit.sh
+-rwxr-xr-x   1 root root   1575 Sep  9 01:35 upload-and-deploy.sh
+-rwxr-xr-x   1 root root   3280 Sep  9 01:35 upload-to-new-server.sh
+-rwxr-xr-x   1 root root   3238 Sep  9 01:35 upload-to-server.sh
+drwxr-xr-x   2 root root   4096 Sep  9 01:46 uploads
+ls: cannot access 'server/': No such file or directory
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

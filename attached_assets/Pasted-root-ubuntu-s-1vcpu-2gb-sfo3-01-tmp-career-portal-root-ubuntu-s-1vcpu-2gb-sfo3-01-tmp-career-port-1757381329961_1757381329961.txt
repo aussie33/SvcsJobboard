@@ -1,0 +1,91 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal# root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal# # Create the drizzle configuration file
+cat > drizzle.config.json << 'EOF'
+{
+  "schema": "./shared/schema.ts",
+  "out": "./drizzle",
+  "driver": "pg",
+  "dbCredentials": {
+    "connectionString": "postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db"
+  }
+}
+EOF
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal#  npm run db:push
+
+> rest-express@1.0.0 db:push
+> drizzle-kit push
+
+No config path provided, using default 'drizzle.config.json'
+Reading config file '/tmp/career-portal/drizzle.config.json'
+_ZodError: [
+  {
+    "expected": "'postgresql' | 'mysql' | 'sqlite' | 'turso' | 'singlestore' | 'gel'",
+    "received": "undefined",
+    "code": "invalid_type",
+    "path": [
+      "dialect"
+    ],
+    "message": "Required"
+  },
+  {
+    "code": "invalid_union",
+    "unionErrors": [
+      {
+        "issues": [
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "received": "pg",
+                    "code": "invalid_literal",
+                    "expected": "d1-http",
+                    "path": [
+                      "driver"
+                    ],
+                    "message": "Invalid literal value, expected \"d1-http\""
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+ Error  Please specify 'dialect' param in config fil 'turso' | 'singlestore' | 'gel'",931:29)
+-bash: root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal#: No such file or directory
+-bash: root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal#: No such file or directory
+db:push: command not found
+Command 'push' not found, did you mean:
+  command 'pwsh' from snap powershell (7.5.2)
+See 'snap info <snapname>' for additional versions.
+No: command not found
+Reading: command not found
+_ZodError:: command not found
+-bash: syntax error near unexpected token `('
+-bash: syntax error near unexpected token `('
+-bash: syntax error near unexpected token `('
+-bash: syntax error near unexpected token `('
+-bash: syntax error near unexpected token `('
+issues:: command not found
+-bash: syntax error near unexpected token `('
+-bash: syntax error near unexpected token `('
+errors:: command not found
+expected:: command not found
+received:: command not found
+Command 'code:' not found, did you mean:
+  command 'coder' from snap coder (2.24.2)
+  command 'code' from snap code (6f176361)
+  command 'codec' from snap codec (1.0.0)
+See 'snap info <snapname>' for additional versions.
+path:: command not found
+message:: command not found
+},: command not found
+Command 'code:' not found, did you mean:
+  command 'codec' from snap codec (1.0.0)
+  command 'coder' from snap coder (2.24.2)
+  command 'code' from snap code (6f176361)
+See 'snap info <snapname>' for additional versions.
+unionErrors:: command not found
+path:: command not found
+message:: command not found
+]: command not found
+Error: command not found
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/tmp/career-portal# 

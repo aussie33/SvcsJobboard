@@ -1,0 +1,48 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # Rename the config file to use CommonJS format
+mv ecosystem.config.js ecosystem.config.cjs
+
+# Now start with PM2
+pm2 start ecosystem.config.cjs
+
+# Check if it's running
+pm2 status
+
+# Save the configuration
+pm2 save
+[PM2][WARN] Applications career-portal not running, starting...
+[PM2] App [career-portal] launched (1 instances)
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ cluster  │ 0    │ online    │ 0%       │ 50.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ cluster  │ 0    │ online    │ 0%       │ 74.7mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # Start the application directly with PM2
+pm2 start dist/index.js --name "career-portal" -i 1
+
+# Check status
+pm2 status
+
+# Save configuration
+pm2 save
+[PM2][ERROR] Script already launched, add -f option to force re-execution
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ cluster  │ 0    │ online    │ 0%       │ 68.1mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # Test locally on the server
+curl http://localhost:5000
+
+# If that works, your Career Portal should be live at:
+# http://134.199.237.34
+curl: (7) Failed to connect to localhost port 5000 after 0 ms: Could not connect to server
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

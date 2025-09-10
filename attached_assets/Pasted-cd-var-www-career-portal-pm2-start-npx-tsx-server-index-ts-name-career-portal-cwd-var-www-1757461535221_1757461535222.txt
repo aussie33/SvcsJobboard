@@ -1,0 +1,245 @@
+cd /var/www/career-portal
+pm2 start "npx tsx server/index.ts" --name "career-portal" --cwd "/var/www/career-portal" -i 1
+
+# Check logs
+pm2 logs career-portal --lines 10
+cat: vite.config.ts: No such file or directory
+[PM2] Applying action stopProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 73   │ stopped   │ 0%       │ 0b       │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/bash in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 73   │ stopped   │ 0%       │ 0b       │
+│ 1  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 5.5mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error-0.log last 10 lines:
+0|career-p |     at async PluginContainer.hookParallel (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:48990:5)
+0|career-p |     at async PluginContainer.buildStart (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:48993:5)
+0|career-p |     at async <anonymous> (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:63291:7)
+0|career-p |     at async _createServer (/var/www/career-portal/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:63317:5)
+0|career-p |     at async setupVite (/var/www/career-portal/server/vite.ts:32:16)
+0|career-p |     at async <anonymous> (/var/www/career-portal/server/index.ts:96:5) {
+0|career-p |   plugin: 'vite-plugin-theme'
+0|career-p | }
+0|career-p | 
+0|career-p | Node.js v20.18.1
+
+/root/.pm2/logs/career-portal-out-0.log last 10 lines:
+0|career-p | requireAuth - Session ID: f5RcjN2gikSphWCWvhxL_t50EL-mOBBg
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: undefined
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 11:35:54 PM [express] GET /api/auth/me 401 in 6ms :: {"message":"Unauthorized"}
+0|career-p | Initialized users: 3
+0|career-p | Initialized categories: 30
+0|career-p | Initialized jobs: 3
+0|career-p | Initialized job tags: 9
+0|career-p | 11:38:18 PM [express] serving on port 5000
+
+/root/.pm2/logs/career-portal-out-1.log last 10 lines:
+/root/.pm2/logs/career-portal-error-1.log last 10 lines:
+1|career-portal  | Initialized users: 3
+1|career-portal  | Initialized categories: 30
+1|career-portal  | Initialized jobs: 3
+1|career-portal  | Initialized job tags: 9
+1|career-portal  | 11:43:07 PM [express] serving on port 5000
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
+2|career-portal  | node:internal/modules/cjs/loader:1228
+2|career-portal  |   throw err;
+2|career-portal  |   ^
+2|career-portal  | Error: Cannot find module '/root/dist/index.js'
+2|career-portal  |     at Module._resolveFilename (node:internal/modules/cjs/loader:1225:15)
+2|career-portal  |     at Module._load (node:internal/modules/cjs/loader:1051:27)
+2|career-portal  |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:173:12)
+2|career-portal  |     at node:internal/main/run_main_module:28:49 {
+2|career-portal  |   code: 'MODULE_NOT_FOUND',
+2|career-portal  |   requireStack: []
+2|career-portal  | }
+2|career-portal  | Node.js v20.18.1
