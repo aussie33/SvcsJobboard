@@ -1,0 +1,45 @@
+# 3. Check server logs for authentication errors
+pm2 logs career-portal --lines 20 | grep -E "login|auth|session|error"
+ERROR:  column "password" does not exist
+LINE 1: SELECT id, email, role, password FROM users;
+                                ^
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 39706 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 51
+> 
+* upload completely sent off: 51 bytes
+< HTTP/1.1 400 Bad Request
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 149
+< ETag: W/"95-/7KCCAcb3UwA2YxlK4q0yJwWBuU"
+< Date: Thu, 11 Sep 2025 14:23:51 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"message":"Validation error","errors":[{"code":"invalid_type","expected":"string","received":"undefined","path":["username"],"message":"Required"}]}/root/.pm2/logs/career-portal-error.log last 20 lines:
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 2:21:59 PM [express] GET /api/auth/me 401 in 1ms :: {"message":"Unauthorized"}
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 2:23:35 PM [express] GET /api/auth/me 401 in 1ms :: {"message":"Unauthorized"}
+0|career-p | requireAuth - No session or userId, returning 401
+0|career-p | 2:23:49 PM [express] GET /api/auth/me 401 in 2ms :: {"message":"Unauthorized"}
+0|career-p | 2:23:51 PM [express] POST /api/auth/login 400 in 3ms :: {"message":"Validation error","errors":[{"co…
+0|ca

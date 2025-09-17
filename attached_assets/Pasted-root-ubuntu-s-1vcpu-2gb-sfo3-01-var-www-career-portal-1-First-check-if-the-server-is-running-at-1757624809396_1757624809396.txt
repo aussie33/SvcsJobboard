@@ -1,0 +1,84 @@
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # 1. First check if the server is running at all
+cd /var/www/career-portal
+pm2 status
+
+# 2. Restart the server (it seems to be down)
+pm2 restart career-portal
+
+# 3. Check logs to see what's wrong
+pm2 logs career-portal --lines 20
+
+# 4. Install bcrypt (this is required for password hashing)
+npm install bcrypt @types/bcrypt
+
+# 5. Restart after installing bcrypt
+pm2 restart career-portal
+
+# 6. Test if server is now responding
+curl http://localhost:5000/api/health
+
+# 7. If server is working, test login with correct field name
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' \
+  -c cookies.txt \
+  -v
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 0    │ online    │ 0%       │ 69.8mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 1    │ online    │ 0%       │ 5.0mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+[TAILING] Tailing last 20 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error.log last 20 lines:
+0|career-p | /var/www/career-portal/server/vite.ts:77
+0|career-p |     throw new Error(
+0|career-p |           ^
+0|career-p | 
+0|career-p | 
+0|career-p | Error: Could not find the build directory: /var/www/career-portal/server/public, make sure to build the client first
+0|career-p |     at serveStatic (/var/www/career-portal/server/vite.ts:77:11)
+0|career-p |     at <anonymous> (/var/www/career-portal/server/index.ts:98:5)
+0|career-p | 
+0|career-p | Node.js v20.18.1
+0|career-p | /var/www/career-portal/server/vite.ts:77
+0|career-p |     throw new Error(
+0|career-p |           ^
+0|career-p | 
+0|career-p | 
+0|career-p | Error: Could not find the build directory: /var/www/career-portal/server/public, make sure to build the client first
+0|career-p |     at serveStatic (/var/www/career-portal/server/vite.ts:77:11)
+0|career-p |     at <anonymous> (/var/www/career-portal/server/index.ts:98:5)
+0|career-p | 
+0|career-p | Node.js v20.18.1
+
+/root/.pm2/logs/career-portal-out.log last 20 lines:
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: 1
+0|career-p | requireAuth - Success for user: admin
+0|career-p | 9:01:42 PM [express] GET /api/auth/me 304 in 2ms :: {"id":1,"username":"admin","email":"admin@theres…
+0|career-p | No status specified and showAllStatuses=false, defaulting to active only
+0|career-p | 9:03:31 PM [express] GET /api/jobs 304 in 3ms :: [{"id":1,"title":"Senior Frontend Developer","depar…
+0|career-p | requireAuth - Session ID: VJrZn9-nqp3lCHaVN6Da0NgjKTqFo_2s
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: 1
+0|career-p | requireAuth - Success for user: admin
+0|career-p | 9:03:31 PM [express] GET /api/auth/me 304 in 2ms :: {"id":1,"username":"admin","email":"admin@theres…
+0|career-p | 9:03:31 PM [express] GET /api/categories 304 in 1ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-p | No status specified and showAllStatuses=false, defaulting to active only
+0|career-p | 9:05:21 PM [express] GET /api/jobs 304 in 2ms :: [{"id":1,"title":"Senior Frontend Developer","depar…
+0|career-p | 9:05:21 PM [express] GET /api/categories 304 in 3ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-p | requireAuth - Session ID: VJrZn9-nqp3lCHaVN6Da0NgjKTqFo_2s
+0|career-p | requireAuth - Session exists: true
+0|career-p | requireAuth - Session userId: 1
+0|career-p | requireAuth - Success for user: admin
+0|career-p | 9:05:21 PM [express] GET /api/auth/me 304 in 2ms :: {"id":1,"username":"admin","email":"admin@theres…
+
+0|career-portal  

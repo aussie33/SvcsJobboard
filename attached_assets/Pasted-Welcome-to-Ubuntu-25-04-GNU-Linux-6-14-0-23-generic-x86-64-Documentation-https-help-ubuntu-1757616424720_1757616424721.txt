@@ -1,0 +1,109 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 11 18:32:04 UTC 2025
+
+  System load:  0.0               Processes:             121
+  Usage of /:   8.5% of 47.35GB   Users logged in:       1
+  Memory usage: 26%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+30 updates can be applied immediately.
+1 of these updates is a standard security update.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Search for actual admin routes
+cd /var/www/career-portal
+grep -n "admin.*users" server/routes.ts
+
+# 2. Look for any PUT/PATCH routes 
+grep -n "app\\.put\|app\\.patch" server/routes.ts
+
+# 3. Check what routes are actually defined
+grep -n "app\\." server/routes.ts | head -20
+
+# 4. Check if there's a specific admin routes file
+find . -name "*admin*" -type f
+
+# 5. See the server logs when we tried the password update
+pm2 logs career-portal --lines 10
+357:  app.patch("/api/users/:id", requireAuth, requireRole(["admin"]), async (req, res) => {
+455:  app.patch("/api/categories/:id", requireAuth, requireRole(["admin"]), async (req, res) => {
+601:  app.patch("/api/jobs/:id", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
+796:  app.patch("/api/applications/:id", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
+115:  app.get('/api/health', (req, res) => {
+124:  app.use((req, res, next) => {
+130:  app.use((req, res, next) => {
+137:  app.post("/api/auth/login", async (req, res) => {
+189:  app.post("/api/auth/logout", (req, res) => {
+204:  app.post("/api/users/register", async (req, res) => {
+255:  app.post("/api/auth/reset-password", async (req, res) => {
+278:  app.get("/api/auth/me", requireAuth, (req, res) => {
+288:  app.get("/api/users", requireAuth, requireRole(["admin"]), async (req, res) => {
+332:  app.post("/api/users", requireAuth, requireRole(["admin"]), async (req, res) => {
+357:  app.patch("/api/users/:id", requireAuth, requireRole(["admin"]), async (req, res) => {
+439:  app.get("/api/categories", async (req, res) => {
+445:  app.post("/api/categories", requireAuth, requireRole(["admin"]), async (req, res) => {
+455:  app.patch("/api/categories/:id", requireAuth, requireRole(["admin"]), async (req, res) => {
+484:  app.get("/api/jobs", async (req, res) => {
+542:  app.get("/api/jobs/:id", async (req, res) => {
+559:  app.post("/api/jobs", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
+601:  app.patch("/api/jobs/:id", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
+673:  app.get("/api/applications", requireAuth, requireRole(["admin", "employee"]), async (req, res) => {
+703:          applications = applications.filter(app => app.status === filters.status);
+[TAILING] Tailing last 10 lines for [career-portal] process (change the value with --lines option)
+/root/.pm2/logs/career-portal-error.log last 10 lines:
+0|career-p | /var/www/career-portal/server/vite.ts:77
+0|career-p |     throw new Error(
+0|career-p |           ^
+0|career-p | 
+0|career-p | 
+0|career-p | Error: Could not find the build directory: /var/www/career-portal/server/public, make sure to build the client first
+0|career-p |     at serveStatic (/var/www/career-portal/server/vite.ts:77:11)
+0|career-p |     at <anonymous> (/var/www/career-portal/server/index.ts:98:5)
+0|career-p | 
+0|career-p | Node.js v20.18.1
+
+/root/.pm2/logs/career-portal-out.log last 10 lines:
+0|career-p | requireAuth - Session userId: 1
+0|career-p | requireAuth - Success for user: admin
+0|career-p | GET /api/users - Request query params: {}
+0|career-p | Processed filters for getUsers: {}
+0|career-p | getUsers returning 4 users after applying filters
+0|career-p | Total users in system: 4
+0|career-p | getUsers returning 4 users after applying filters
+0|career-p | Filtered users count: 4
+0|career-p | Sending users response with 4 users
+0|career-p | 6:43:53 PM [express] GET /api/users 304 in 3ms :: [{"id":1,"username":"admin","email":"admin@thereso…
+
+hh0|career-portal  | No status specified and showAllStatuses=false, defaulting to active only
+0|career-portal  | 6:45:30 PM [express] GET /api/jobs 304 in 4ms :: [{"id":1,"title":"Senior Frontend Developer","depar…
+0|career-portal  | 6:45:31 PM [express] GET /api/categories 304 in 2ms :: [{"id":1,"name":"Engineering","description":"…
+0|career-portal  | requireAuth - Session ID: VJrZn9-nqp3lCHaVN6Da0NgjKTqFo_2s
+0|career-portal  | requireAuth - Session exists: true
+0|career-portal  | requireAuth - Session userId: 1
+0|career-portal  | requireAuth - Success for user: admin
+0|career-portal  | 6:45:31 PM [express] GET /api/auth/me 304 in 3ms :: {"id":1,"username":"admin","email":"admin@theres…
+0|career-portal  | requireAuth - Session ID: VJrZn9-nqp3lCHaVN6Da0NgjKTqFo_2s
+0|career-portal  | requireAuth - Session exists: true
+0|career-portal  | requireAuth - Session userId: 1
+0|career-portal  | requireAuth - Success for user: admin
+0|career-portal  | 6:45:43 PM [express] GET /api/auth/me 304 in 6ms :: {"id":1,"username":"admin","email":"admin@theres…
+0|career-portal  | requireAuth - Session ID: VJrZn9-nqp3lCHaVN6Da0NgjKTqFo_2s
+0|career-portal  | requireAuth - Session exists: true
+0|career-portal  | requireAuth - Session userId: 1
+0|career-portal  | requireAuth - Success for user: admin
+0|career-portal  | GET /api/users - Request query params: {}
+0|career-portal  | Processed filters for getUsers: {}
+0|career-portal  | getUsers returning 4 users after applying filters
+0|career-portal  | Total users in system: 4
+0|career-portal  | getUsers returning 4 users after applying filters
+0|career-portal  | Filtered users count: 4
+0|career-portal  | Sending users response with 4 users
+0|career-portal  | 6:45:43 PM [express] GET /api/users 304 in 5ms :: [{"id":1,"username":"admin","email":"admin@thereso…
+ 

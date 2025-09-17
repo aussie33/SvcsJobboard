@@ -1,0 +1,136 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 11 18:20:42 UTC 2025
+
+  System load:  0.0               Processes:             124
+  Usage of /:   8.5% of 47.35GB   Users logged in:       1
+  Memory usage: 26%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+30 updates can be applied immediately.
+1 of these updates is a standard security update.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Look for the exact admin route handling user updates
+cd /var/www/career-portal
+grep -A 20 -B 5 "PUT.*admin.*users" server/routes.ts
+
+# 2. Test a password update to see what actually happens
+curl -X PUT http://localhost:5000/api/admin/users/2 \
+  -H "Content-Type: application/json" \
+  -H "Cookie: connect.sid=s%3AhzUGQhngW7mUA0WZH82uq0LakJy_jxpF.nF37DZ8O7Zpn%2B9THoEXoXvbXncTvRiped0HVTPmzgZo" \
+  -d '{"password":"newpassword123"}' \
+  -v
+
+# 3. Check what the passwordhash looks like after the update
+psql postgresql://career_portal_user:career_portal_secure_pass@localhost:5432/career_portal_db -c "SELECT id, username, passwordhash FROM users WHERE id=2;"
+
+# 4. Check for bcrypt in the routes file
+grep -n "bcrypt\|hash" server/routes.ts
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 34072 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> PUT /api/admin/users/2 HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Cookie: connect.sid=s%3AhzUGQhngW7mUA0WZH82uq0LakJy_jxpF.nF37DZ8O7Zpn%2B9THoEXoXvbXncTvRiped0HVTPmzgZo
+> Content-Length: 29
+> 
+* upload completely sent off: 29 bytes
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Accept-Ranges: bytes
+< Cache-Control: public, max-age=0
+< Last-Modified: Tue, 09 Sep 2025 01:35:19 GMT
+< ETag: W/"788-1992c1cf758"
+< Content-Type: text/html; charset=UTF-8
+< Content-Length: 1928
+< Date: Thu, 11 Sep 2025 18:29:57 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style data-vite-theme="" data-inject-first="">:root {
+      --background: 0 0% 100%;
+--foreground: 20 14.3% 4.1%;
+--muted: 60 4.8% 95.9%;
+--muted-foreground: 25 5.3% 44.7%;
+--popover: 0 0% 100%;
+--popover-foreground: 20 14.3% 4.1%;
+--card: 0 0% 100%;
+--card-foreground: 20 14.3% 4.1%;
+--border: 20 5.9% 90%;
+--input: 20 5.9% 90%;
+--primary: 291 64% 42%;
+--primary-foreground: 291 49% 98%;
+--secondary: 60 4.8% 95.9%;
+--secondary-foreground: 24 9.8% 10%;
+--accent: 60 4.8% 95.9%;
+--accent-foreground: 24 9.8% 10%;
+--destructive: 0 84.2% 60.2%;
+--destructive-foreground: 60 9.1% 97.8%;
+--ring: 20 14.3% 4.1%;
+--radius: 0.5rem;
+  }
+  .dark {
+      --background: 240 10% 3.9%;
+--foreground: 0 0% 98%;
+--muted: 240 3.7% 15.9%;
+--muted-foreground: 240 5% 64.9%;
+--popover: 240 10% 3.9%;
+--popover-foreground: 0 0% 98%;
+--card: 240 10% 3.9%;
+--card-foreground: 0 0% 98%;
+--border: 240 3.7% 15.9%;
+--input: 240 3.7% 15.9%;
+--primary: 291 64% 42%;
+--primary-foreground: 291 49% 98%;
+--secondary: 240 3.7% 15.9%;
+--secondary-foreground: 0 0% 98%;
+--accent: 240 3.7% 15.9%;
+--accent-foreground: 0 0% 98%;
+--destructive: 0 62.8% 30.6%;
+--destructive-foreground: 0 0% 98%;
+--ring: 240 4.9% 83.9%;
+--radius: 0.5rem;
+  }</style>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The Resource Consultants - A comprehensive career portal for job seekers and employers">
+  <title>The Resource Consultants - Job Board Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script type="module" crossorigin src="/assets/index-Cll8dbUb.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Dm_e3IT3.css">
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+* Connection #0 to host localhost left intact
+ id | username |                         passwordhash                         
+----+----------+--------------------------------------------------------------
+  2 | employee | $2b$10$8K1p/a8jJZYpNqTKF3Q3P.VbA3Y8A2eU5N4l3oH/yMtQ7qWcJeJyO
+(1 row)
+
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

@@ -1,0 +1,101 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 11 14:56:52 UTC 2025
+
+  System load:  0.0               Processes:             117
+  Usage of /:   8.5% of 47.35GB   Users logged in:       1
+  Memory usage: 26%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+27 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 1. Check if bcrypt is installed and test current state
+cd /var/www/career-portal
+npm list bcrypt bcryptjs
+
+# 2. Test login with email (should work once we fix password verification)
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin@theresourceconsultants.com","password":"admin123"}' \
+  -v
+
+# 3. Test login with username
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' \
+  -v
+rest-express@1.0.0 /var/www/career-portal
+└── (empty)
+
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 45168 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 69
+> 
+* upload completely sent off: 69 bytes
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 326
+< ETag: W/"146-XFV+4vixUvLkMgY2tpN5kmIgj30"
+< Set-Cookie: connect.sid=s%3AWLQRl7yeD887tJ4Itx4AGYkL9yvyc39e.3prHlwacMWrqiWiRd3qYvVLEdWyxf6FyQtY0qswSQ%2B0; Path=/; Expires=Fri, 12 Sep 2025 14:57:04 GMT; HttpOnly; SameSite=Lax
+< Date: Thu, 11 Sep 2025 14:57:04 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"id":1,"username":"admin","email":"admin@theresourceconsultants.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true,"isSuperAdmin":true,"middleName":null,"preferredName":null,"department":"Management","createdAt":"2025-09-10T01:40:14.492Z","lastLogin":"2025-09-11T13:38:21.496Z"}Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 45176 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 42
+> 
+* upload completely sent off: 42 bytes
+< HTTP/1.1 200 OK
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 326
+< ETag: W/"146-ImepmfogqyKy6fBsqp4FbotQyDg"
+< Set-Cookie: connect.sid=s%3AhzUGQhngW7mUA0WZH82uq0LakJy_jxpF.nF37DZ8O7Zpn%2B9THoEXoXvbXncTvRiped0HVTPmzgZo; Path=/; Expires=Fri, 12 Sep 2025 14:57:04 GMT; HttpOnly; SameSite=Lax
+< Date: Thu, 11 Sep 2025 14:57:04 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"id":1,"username":"admin","email":"admin@theresourceconsultants.com","firstName":"Admin","lastName":"User","fullName":"Admin User","role":"admin","isActive":true,"isSuperAdmin":true,"middleName":null,"preferredName":null,"department":"Management","createdAt":"2025-09-10T01:40:14.492Z","lastLogin":"2025-09-11T14:57:04.695Z"}root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

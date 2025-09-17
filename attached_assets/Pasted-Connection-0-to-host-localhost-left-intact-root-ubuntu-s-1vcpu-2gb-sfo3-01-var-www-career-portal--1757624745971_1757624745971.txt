@@ -1,0 +1,139 @@
+Connection #0 to host localhost left intact
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# # 1. First, let's login to get a valid session cookieget a valid session cookie
+cd /var/www/career-portal
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"usernameOrEmail":"admin","password":"admin123"}' \
+  -c cookies.txt \
+  -v
+
+# 2. Now test the PATCH route with the valid session
+curl -X PATCH http://localhost:5000/api/users/2 \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{"firstName":"UpdatedEmployee"}' \
+  -v
+
+# 3. Test password update (should fail/be ignored)
+curl -X PATCH http://localhost:5000/api/users/2 \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{"password":"newpassword123"}' \
+  -v
+
+# 4. Check if bcrypt is installed
+npm list bcrypt
+
+# 5. Let's see what the existing password creation code looks like
+grep -A 10 -B 5 "password.*:" server/routes.ts
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 60064 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> POST /api/auth/login HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 49
+> 
+* upload completely sent off: 49 bytes
+< HTTP/1.1 400 Bad Request
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 149
+< ETag: W/"95-/7KCCAcb3UwA2YxlK4q0yJwWBuU"
+< Date: Thu, 11 Sep 2025 21:01:35 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"message":"Validation error","errors":[{"code":"invalid_type","expected":"string","received":"undefined","path":["username"],"message":"Required"}]}* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 60074 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> PATCH /api/users/2 HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 31
+> 
+* upload completely sent off: 31 bytes
+< HTTP/1.1 401 Unauthorized
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 26
+< ETag: W/"1a-pljHtlo127JYJR4E/RYOPb6ucbw"
+< Date: Thu, 11 Sep 2025 21:01:35 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"message":"Unauthorized"}* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 60086 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* Connected to localhost (127.0.0.1) port 5000
+* using HTTP/1.x
+> PATCH /api/users/2 HTTP/1.1
+> Host: localhost:5000
+> User-Agent: curl/8.12.1
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 29
+> 
+* upload completely sent off: 29 bytes
+< HTTP/1.1 401 Unauthorized
+< X-Powered-By: Express
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+< Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 26
+< ETag: W/"1a-pljHtlo127JYJR4E/RYOPb6ucbw"
+< Date: Thu, 11 Sep 2025 21:01:35 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< 
+* Connection #0 to host localhost left intact
+{"message":"Unauthorized"}rest-express@1.0.0 /var/www/career-portal
+└── (empty)
+
+        isActive: true,
+        department: null,
+      });
+      
+      // Remove password from response
+      const { password: _, ...userWithoutPassword } = newUser;
+      
+      res.status(201).json(userWithoutPassword);
+    } catch (err) {
+      handleZodError(err, res);
+    }
+  });
+  
+  // Password reset request route
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+root@ubuntu-s-1vcpu-2gb-sfo3-01:/var/www/career-portal# 

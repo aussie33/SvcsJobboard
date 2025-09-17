@@ -1,0 +1,74 @@
+Welcome to Ubuntu 25.04 (GNU/Linux 6.14.0-23-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Thu Sep 11 21:08:07 UTC 2025
+
+  System load:  0.12              Processes:             114
+  Usage of /:   8.5% of 47.35GB   Users logged in:       1
+  Memory usage: 27%               IPv4 address for eth0: 134.199.237.34
+  Swap usage:   0%                IPv4 address for eth0: 10.48.0.5
+
+30 updates can be applied immediately.
+1 of these updates is a standard security update.
+To see these additional updates run: apt list --upgradable
+
+
+*** System restart required ***
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# # 4. Install bcrypt (this is required for password hashing)
+npm install bcrypt @types/bcrypt
+
+# 5. Restart after installing bcrypt
+pm2 restart career-portal
+
+# 6. Test if server is now responding to API requests
+curl http://localhost:5000/api/health
+
+# 7. Test login with correct field name
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' \
+  -c cookies.txt \
+  -v
+
+# 8. If login works, test the existing PATCH route
+curl -X PATCH http://localhost:5000/api/users/2 \
+  -H "Content-Type: application/json" \
+  -b cookies.txt \
+  -d '{"firstName":"UpdatedEmployee"}' \
+  -v
+
+added 6 packages in 2s
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [career-portal](ids: [ 0 ])
+[PM2] [career-portal](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ career-portal      │ fork     │ 2    │ online    │ 0%       │ 5.6mb    │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+curl: (7) Failed to connect to localhost port 5000 after 0 ms: Could not connect to server
+Note: Unnecessary use of -X or --request, POST is already inferred.
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 50422 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* connect to 127.0.0.1 port 5000 from 127.0.0.1 port 51380 failed: Connection refused
+* Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+* closing connection #0
+curl: (7) Failed to connect to localhost port 5000 after 1 ms: Could not connect to server
+* Host localhost:5000 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+*   Trying [::1]:5000...
+* connect to ::1 port 5000 from ::1 port 50438 failed: Connection refused
+*   Trying 127.0.0.1:5000...
+* connect to 127.0.0.1 port 5000 from 127.0.0.1 port 51394 failed: Connection refused
+* Failed to connect to localhost port 5000 after 2 ms: Could not connect to server
+* closing connection #0
+curl: (7) Failed to connect to localhost port 5000 after 2 ms: Could not connect to server
+root@ubuntu-s-1vcpu-2gb-sfo3-01:~# 
