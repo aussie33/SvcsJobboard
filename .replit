@@ -42,5 +42,5 @@ waitForPort = 5000
 integrations = ["styling_shadcn==1.0.0"]
 
 [[ports]]
-localPort = 33767
+localPort = 5000
 externalPort = 80
