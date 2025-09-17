@@ -157,8 +157,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      // Use bcrypt to compare password with hash
-      const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+      // Use bcrypt to compare password with hash, with fallback for plain text passwords
+      let isValidPassword = false;
+      
+      // First try bcrypt comparison (for hashed passwords)
+      try {
+        isValidPassword = await bcrypt.compare(credentials.password, user.password);
+      } catch (error) {
+        // If bcrypt.compare fails, it might be a plain text password
+        isValidPassword = false;
+      }
+      
+      // Fallback for legacy plain text passwords
+      if (!isValidPassword && !user.password.startsWith('$2')) {
+        // This looks like a plain text password, check directly
+        if (user.password === credentials.password) {
+          console.log('Legacy plain text password detected, rehashing for user:', user.username);
+          // Rehash the password and update the user
+          const hashedPassword = await bcrypt.hash(credentials.password, 10);
+          await storage.updateUser(user.id, { password: hashedPassword });
+          isValidPassword = true;
+        }
+      }
+      
       if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
