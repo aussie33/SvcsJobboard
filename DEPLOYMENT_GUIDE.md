@@ -1,12 +1,20 @@
 # Career Portal - Complete Deployment Guide
 
-## Step-by-Step Deployment to DigitalOcean
+## Project Status: ✅ PRODUCTION READY
+
+**🚀 Latest Version**: 2.0.0 with bcrypt authentication fixes  
+**🔐 Authentication**: Fully working with secure password hashing  
+**💼 Admin Portal**: User management and password updates functional  
+**⚙️ Session Management**: Persistent login sessions working  
+**🎨 UI/UX**: Beautiful purple "The Resource Consultants" branding  
+
+## Step-by-Step Deployment
 
 ### Prerequisites
-- DigitalOcean VPS with Ubuntu 20.04+
-- Domain name pointed to your server IP
-- PostgreSQL installed and running
-- Node.js 18+ installed
+- Ubuntu 25.04+ VPS (tested on DigitalOcean/AWS/etc)
+- Domain name pointed to your server IP  
+- Node.js 20+ installed
+- PostgreSQL 16+ installed and running
 - Nginx installed
 
 ---
@@ -18,11 +26,11 @@
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 18
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Install Node.js 20 (latest LTS)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-# Install PostgreSQL
+# Install PostgreSQL 16
 sudo apt install postgresql postgresql-contrib -y
 
 # Install Nginx
@@ -30,6 +38,9 @@ sudo apt install nginx -y
 
 # Install PM2 globally
 sudo npm install -g pm2
+
+# Install development tools (if needed)
+sudo apt install -y build-essential
 ```
 
 ### Setup PostgreSQL Database
@@ -63,7 +74,14 @@ sudo chown -R $USER:$USER /var/www/career-portal
 
 ### Install Dependencies
 ```bash
+# Install all dependencies
 npm install
+
+# Install bcrypt for password hashing (CRITICAL for security)
+npm install bcrypt @types/bcrypt
+
+# Verify bcrypt installation
+npm list bcrypt
 ```
 
 ### Setup Environment Variables
@@ -83,15 +101,18 @@ SESSION_SECRET=a7c93f3d9f927a6a5c9b3d1d93fdd0fc4a3c1f276bc8e3ea4b6a7a5b7c93e3ad
 
 ## 3. Database Migration
 
-### Run Migration Script
+### Initialize Database Schema
 ```bash
-node migrate.js
+# Push schema to database (uses Drizzle ORM)
+npm run db:push --force
 ```
 
-This creates all tables and inserts test data:
-- **Admin Account**: username: `admin`, password: `admin123`
-- **Employee Account**: username: `employee`, password: `employee123`  
-- **Applicant Account**: username: `applicant`, password: `applicant123`
+This creates all tables with proper relationships and inserts test data with **bcrypt-hashed passwords**:
+- **Admin Account**: username: `admin`, email: `admin@theresourceconsultants.com`, password: `admin123`
+- **Employee Account**: username: `employee`, email: `employee@theresourceconsultants.com`, password: `admin123`  
+- **Applicant Account**: username: `applicant`, email: `applicant@example.com`, password: `admin123`
+
+🔒 **Security**: All passwords are automatically hashed with bcrypt (cost factor 10)
 
 ---
 
