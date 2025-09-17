@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import multer from "multer";
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcrypt';
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -152,7 +153,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         user = await storage.getUserByEmail(credentials.username);
       }
       
-      if (!user || user.password !== credentials.password) {
+      if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Use bcrypt to compare password with hash
+      const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+      if (!isValidPassword) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
@@ -227,11 +234,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Only applicant accounts can be created through registration" });
       }
       
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(password, 10);
+      
       // Create the user
       const newUser = await storage.createUser({
         username,
         email,
-        password,
+        password: hashedPassword,
         firstName,
         lastName,
         middleName: middleName || null,
@@ -344,7 +354,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Email already exists" });
       }
       
-      const newUser = await storage.createUser(userData);
+      // Hash password before storing
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      const userDataWithHashedPassword = { ...userData, password: hashedPassword };
+      
+      const newUser = await storage.createUser(userDataWithHashedPassword);
       
       // Remove password from response
       const { password, ...userWithoutPassword } = newUser;
@@ -369,7 +383,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Only allow certain fields to be updated
       const { 
         username, email, firstName, lastName, middleName, 
-        preferredName, fullName, role, department, isActive, isSuperAdmin 
+        preferredName, fullName, role, department, isActive, isSuperAdmin, password
       } = req.body;
       
       const updates: Partial<typeof user> = {};
@@ -402,6 +416,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (department !== undefined) updates.department = department;
       if (isActive !== undefined) updates.isActive = isActive;
       
+      // Handle password updates with bcrypt hashing
+      if (password !== undefined && password.trim() !== '') {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        updates.password = hashedPassword;
+      }
+
       // Only super admins can set another user as super admin
       if (isSuperAdmin !== undefined) {
         const currentUser = await storage.getUser(currentUserId!);
@@ -422,6 +442,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Remove password from response
         const { password, ...userWithoutPassword } = updatedUser;
+        res.json(userWithoutPassword);
+      } catch (error) {
+        // Handle specific error messages from the storage layer
+        if (error instanceof Error) {
+          return res.status(403).json({ message: error.message });
+        }
+        throw error;
+      }
+    } catch (err) {
+      handleZodError(err, res);
+    }
+  });
+
+  // Admin user update route (PUT method that frontend expects)
+  app.put("/api/admin/users/:id", requireAuth, requireRole(["admin"]), async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Get current user ID for permission checks
+      const currentUserId = req.user?.id;
+      
+      // Only allow certain fields to be updated
+      const { 
+        username, email, firstName, lastName, middleName, 
+        preferredName, fullName, role, department, isActive, isSuperAdmin, password
+      } = req.body;
+      
+      const updates: Partial<typeof user> = {};
+      
+      if (username !== undefined) {
+        const existingUser = await storage.getUserByUsername(username);
+        if (existingUser && existingUser.id !== userId) {
+          return res.status(400).json({ message: "Username already exists" });
+        }
+        updates.username = username;
+      }
+      
+      if (email !== undefined) {
+        const existingUser = await storage.getUserByEmail(email);
+        if (existingUser && existingUser.id !== userId) {
+          return res.status(400).json({ message: "Email already exists" });
+        }
+        updates.email = email;
+      }
+      
+      // Update name fields
+      if (firstName !== undefined) updates.firstName = firstName;
+      if (lastName !== undefined) updates.lastName = lastName;
+      if (middleName !== undefined) updates.middleName = middleName;
+      if (preferredName !== undefined) updates.preferredName = preferredName;
+      if (fullName !== undefined) updates.fullName = fullName;
+      
+      // Update role and status (protected by the storage.updateUser method)
+      if (role !== undefined) updates.role = role;
+      if (department !== undefined) updates.department = department;
+      if (isActive !== undefined) updates.isActive = isActive;
+
+      // Handle password updates with bcrypt hashing
+      if (password !== undefined && password.trim() !== '') {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        updates.password = hashedPassword;
+      }
+      
+      // Only super admins can set another user as super admin
+      if (isSuperAdmin !== undefined) {
+        const currentUser = await storage.getUser(currentUserId!);
+        if (currentUser && currentUser.isSuperAdmin) {
+          updates.isSuperAdmin = isSuperAdmin;
+        } else {
+          return res.status(403).json({ message: "Only super admins can assign super admin status" });
+        }
+      }
+      
+      try {
+        // Pass the current user ID to check permissions
+        const updatedUser = await storage.updateUser(userId, updates, currentUserId);
+        
+        if (!updatedUser) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        
+        // Remove password from response
+        const { password: _, ...userWithoutPassword } = updatedUser;
         res.json(userWithoutPassword);
       } catch (error) {
         // Handle specific error messages from the storage layer
