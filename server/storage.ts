@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { 
   users, type User, type InsertUser,
   categories, type Category, type InsertCategory,
@@ -91,7 +92,7 @@ export class MemStorage implements IStorage {
     const adminUser: User = {
       id: this.userIdCounter++,
       username: "admin",
-      password: "admin123",
+      password: bcrypt.hashSync("admin123", 10),
       email: "admin@theresourceconsultants.com",
       firstName: "Admin",
       lastName: "User",
@@ -111,7 +112,7 @@ export class MemStorage implements IStorage {
     const employeeUser: User = {
       id: this.userIdCounter++,
       username: "employee",
-      password: "employee123",
+      password: bcrypt.hashSync("admin123", 10),
       email: "employee@theresourceconsultants.com",
       firstName: "Employee",
       lastName: "User",
@@ -131,7 +132,7 @@ export class MemStorage implements IStorage {
     const applicantUser: User = {
       id: this.userIdCounter++,
       username: "applicant",
-      password: "applicant123",
+      password: bcrypt.hashSync("admin123", 10),
       email: "applicant@example.com",
       firstName: "Job",
       middleName: "A.",
